@@ -4,19 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>المدونة - ISeekPrice</title>
-    
     <link rel="icon" type="image/x-icon" href="/public/assets/static/favicon.ico">
     <link href='/public/css/style.min.css' rel='stylesheet'/> 
-
     <style>
-        .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px 0; }
-        .post-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: 0.3s; text-decoration: none; color: inherit; display: flex; flex-direction: column; }
-        .post-card:hover { transform: translateY(-5px); }
-        .post-card img { width: 100%; height: 180px; object-fit: cover; }
-        .post-card h2 { padding: 15px; font-size: 1rem; margin: 0; line-height: 1.4; }
+        .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding: 40px 0; }
+        .post-card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-decoration: none; color: inherit; display: flex; flex-direction: column; border: 1px solid #edf2f7; }
+        .post-card:hover { transform: translateY(-10px); box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
+        .img-container { position: relative; width: 100%; height: 200px; background: #f1f5f9; overflow: hidden; }
+        .post-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .post-card:hover img { transform: scale(1.08); }
+        .post-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+        .post-date { font-size: 0.85rem; color: #64748b; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+        .post-card h2 { font-size: 1.15rem; margin: 0; line-height: 1.5; font-weight: 700; color: #1e293b; transition: color 0.2s; }
+        .post-card:hover h2 { color: #2563eb; }
         
-        .dark-mode .post-card { background: #1e293b; color: #f1f5f9; }
-        #primary { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .dark-mode .post-card { background: #1e293b; border-color: #334155; color: #f1f5f9; }
+        .dark-mode .post-card h2 { color: #f1f5f9; }
+        .dark-mode .post-date { color: #94a3b8; }
+        .dark-mode .img-container { background: #0f172a; }
+        
+        #primary { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .loader { text-align: center; padding: 50px; font-weight: bold; color: #2563eb; }
     </style>
 </head>
 <body>
@@ -37,8 +45,9 @@
 
 <div id='primary'>
     <main>
-        <h1 style="text-align:center; color:#2563eb;">آخر المقالات</h1>
-        <div id="blog-root" class="blog-grid"></div>
+        <h1 style="text-align:center; font-size: 2.5rem; margin-top: 40px; color:#2563eb; font-weight: 800;">المدونة</h1>
+        <p style="text-align:center; color: #64748b; margin-bottom: 20px;">آخر الأخبار والمراجعات الاقتصادية</p>
+        <div id="blog-root" class="blog-grid"><div class="loader">جاري تحميل المقالات...</div></div>
     </main>
 </div>
 
@@ -48,19 +57,49 @@
 <script defer src='/public/js/search.js'></script>
 
 <script>
+    function parsePostDate(url) {
+        const parts = url.split('/');
+        if (parts.length >= 3) {
+            const year = parts[0];
+            const month = parts[1];
+            const day = parts[2];
+            if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+                const months = ["يناير", "فبراير", "مارس", "إبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+                return `${parseInt(day)} ${months[parseInt(month) - 1]} ${year}`;
+            }
+        }
+        return "مقال جديد";
+    }
+
     async function loadBlog() {
         const root = document.getElementById('blog-root');
         try {
             const res = await fetch(`https://data.iseekprice.com/General/posts.json?v=${Date.now()}`);
             const posts = await res.json();
-            root.innerHTML = posts.map(post => `
-                <a href="/post/${post.Url}" class="post-card">
-                    <img src="https://media.iseekprice.com/${post.Img}" alt="${post.Title}" loading="lazy">
-                    <h2>${post.Title}</h2>
+            
+            if (!posts.length) {
+                root.innerHTML = '<div class="loader">لا يوجد مقالات حالياً.</div>';
+                return;
+            }
+
+            root.innerHTML = posts.reverse().map(post => {
+                const dateText = parsePostDate(post.Url);
+                const imgSrc = post.Img ? `https://media.iseekprice.com/${post.Img}` : '/public/assets/static/no-image.png';
+                
+                return `
+                <a href="/post/${post.Url}.html" class="post-card">
+                    <div class="img-container">
+                        <img src="${imgSrc}" alt="${post.Title}" loading="lazy">
+                    </div>
+                    <div class="post-content">
+                        <span class="post-date"> ${dateText}</span>
+                        <h2>${post.Title}</h2>
+                    </div>
                 </a>
-            `).join('');
+                `;
+            }).join('');
         } catch (e) {
-            root.innerHTML = '<p>فشل تحميل المقالات.</p>';
+            root.innerHTML = '<div class="loader" style="color:red;">عذراً، فشل تحميل المدونة.</div>';
         }
     }
     document.addEventListener('DOMContentLoaded', loadBlog);
