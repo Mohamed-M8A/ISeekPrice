@@ -3,47 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدونة ISeekPrice</title>
+    <title>المدونة - ISeekPrice</title>
+    
+    <link rel="icon" type="image/x-icon" href="/public/assets/static/favicon.ico">
+    <link href='/public/css/style.min.css' rel='stylesheet'/> 
+
     <style>
-        :root { --primary: #2d3436; --bg: #f9f9f9; }
-        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--primary); margin: 0; padding: 20px; }
-        .blog-container { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .post-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s; text-decoration: none; color: inherit; }
+        .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px 0; }
+        .post-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: 0.3s; text-decoration: none; color: inherit; display: flex; flex-direction: column; }
         .post-card:hover { transform: translateY(-5px); }
-        .post-card img { width: 100%; height: 200px; object-fit: cover; background: #eee; }
-        .post-card h2 { padding: 15px; margin: 0; font-size: 1.1rem; line-height: 1.4; }
+        .post-card img { width: 100%; height: 180px; object-fit: cover; }
+        .post-card h2 { padding: 15px; font-size: 1rem; margin: 0; line-height: 1.4; }
+        
+        .darkmode .post-card { background: #1e293b; color: #f1f5f9; }
+        #primary { max-width: 1200px; margin: 0 auto; padding: 20px; }
     </style>
 </head>
 <body>
 
-    <h1 style="text-align: center; margin-bottom: 40px;">آخر المقالات</h1>
-
-    <div id="blog-grid" class="blog-container">
-        <!-- المقالات ستظهر هنا -->
+<header id='header' itemscope='itemscope' itemtype='https://schema.org/WPHeader'>
+  <div class='header-main-row'>
+    <div class='header-container'>
+      <div class='logo' id='logo-wrap'></div>
+      <div class='search-container' id='search-wrap'></div>
+      <div class='header-actions' id='actions-wrap'></div>
     </div>
+  </div>
+  <nav id='widget-topbar'></nav>
+</header>
 
-    <script>
-        async function loadBlog() {
-            const MEDIA_BASE = "https://media.iseekprice.com/";
-            const JSON_URL = "https://data.iseekprice.com/General/posts.json";
+<div id='widget-sidebar'></div>
+<div id='widget-overlay'></div>
 
-            try {
-                const response = await fetch(`${JSON_URL}?v=${Date.now()}`);
-                const posts = await response.json();
-                const grid = document.getElementById('blog-grid');
+<div id='primary'>
+    <main>
+        <h1 style="text-align:center; color:#2563eb;">آخر المقالات</h1>
+        <div id="blog-root" class="blog-grid"></div>
+    </main>
+</div>
 
-                grid.innerHTML = posts.map(post => `
-                    <a href="/post/${post.Url}" class="post-card">
-                        <img src="${MEDIA_BASE}${post.Img}" alt="${post.Title}" loading="lazy">
-                        <h2>${post.Title}</h2>
-                    </a>
-                `).join('');
-            } catch (error) {
-                console.error("خطأ في تحميل المدونة:", error);
-            }
+<footer id='footer' itemscope='itemscope' itemtype='https://schema.org/WPFooter'></footer>
+
+<script defer src='/public/js/corepress.js'></script>   
+<script defer src='/public/js/controller.js'></script>      
+<script defer src='/public/js/worker.js'></script>  
+<script defer src='/public/js/search.js'></script>
+
+<script>
+    async function loadBlog() {
+        const root = document.getElementById('blog-root');
+        try {
+            const res = await fetch(`https://data.iseekprice.com/General/posts.json?v=${Date.now()}`);
+            const posts = await res.json();
+            root.innerHTML = posts.map(post => `
+                <a href="/post/${post.Url}" class="post-card">
+                    <img src="https://media.iseekprice.com/${post.Img}" alt="${post.Title}" loading="lazy">
+                    <h2>${post.Title}</h2>
+                </a>
+            `).join('');
+        } catch (e) {
+            root.innerHTML = '<p>فشل تحميل المقالات.</p>';
         }
+    }
+    document.addEventListener('DOMContentLoaded', loadBlog);
+</script>
 
-        loadBlog();
-    </script>
 </body>
 </html>
