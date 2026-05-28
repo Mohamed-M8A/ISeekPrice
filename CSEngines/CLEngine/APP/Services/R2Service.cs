@@ -58,9 +58,9 @@ namespace ISeekPriceEngine.Services
 
             if (File.Exists(blogPath))
             {
-                if (await UploadFile(blogPath, "General/Posts.json"))
+                if (await UploadFile(blogPath, "General/posts.json"))
                 {
-                    sb.AppendLine(" [+] Blog Uploaded: Posts.json");
+                    sb.AppendLine(" [+] Blog Uploaded: posts.json");
                 }
             }
 
