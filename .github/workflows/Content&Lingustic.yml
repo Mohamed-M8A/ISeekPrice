@@ -36,25 +36,25 @@ jobs:
         PROJECT_PATH=$(find . -name "CLEngine.csproj" | head -n 1)
         PROJECT_DIR=$(dirname "$PROJECT_PATH")
         cd "$PROJECT_DIR"
-        
         mkdir -p Output
         mkdir -p Log
-        
         dotnet restore
         dotnet run --configuration Release
+        if [ -f Log/sync_report.txt ]; then
+          cat Log/sync_report.txt
+        fi
 
     - name: Commit and Push Outputs
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "github-actions[bot]"
-        
         find . -name "core.bin" -exec git add {} +
         find . -name "search.bin" -exec git add {} +
-        find . -name "posts.json" -exec git add {} +
-        
+        find . -name "post.json" -exec git add {} +
         if git diff --cached --quiet; then
-          echo "No changes in output files."
+          echo "No changes."
         else
           git commit -m "Update Engine Outputs (Core, Search, Blog)"
+          git pull origin main --rebase
           git push origin main
         fi
