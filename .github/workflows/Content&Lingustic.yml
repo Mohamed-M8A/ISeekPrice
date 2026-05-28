@@ -1,0 +1,60 @@
+name: Content&Lingustic.Engine
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/product/**'
+      - 'src/post/**'
+      - '**/CLEngine/**'
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET 8.0
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Execute Engine
+      env:
+        R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+        R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+        R2_API_TOKEN: ${{ secrets.R2_API_TOKEN }}
+      run: |
+        PROJECT_PATH=$(find . -name "CLEngine.csproj" | head -n 1)
+        PROJECT_DIR=$(dirname "$PROJECT_PATH")
+        cd "$PROJECT_DIR"
+        
+        mkdir -p Output
+        mkdir -p Log
+        
+        dotnet restore
+        dotnet run --configuration Release
+
+    - name: Commit and Push Outputs
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        find . -name "core.bin" -exec git add {} +
+        find . -name "search.bin" -exec git add {} +
+        find . -name "Posts.json" -exec git add {} +
+        
+        if git diff --cached --quiet; then
+          echo "No changes in output files."
+        else
+          git commit -m "Update Engine Outputs (Core, Search, Blog)"
+          git push origin main
+        fi

@@ -1,0 +1,51 @@
+name: VideoEngine
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Run Video Engine
+        env:
+          S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+          S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+        run: |
+          PROJECT_PATH=$(find . -name "VEngine.csproj" | head -n 1)
+          PROJECT_DIR=$(dirname "$PROJECT_PATH")
+          
+          echo "Target Project Directory: $PROJECT_DIR"
+          cd "$PROJECT_DIR"
+          
+          mkdir -p Output
+          
+          dotnet restore
+          dotnet run --configuration Release
+
+      - name: Commit and Push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          find . -name "videos.json" -exec git add {} +
+          
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Auto-sync: Video Feed Updated"
+            git push origin main
+          fi

@@ -1,0 +1,34 @@
+User-agent: *
+
+Allow: /
+
+# Allow iWatch Parameters
+Allow: /*?v=*
+
+# Store & Parameters Disallows
+Disallow: /*?*
+Disallow: /*&*
+
+# General Disallows
+Disallow: /pages/info/
+Disallow: /pages/cart.html
+Disallow: /pages/404.html
+Disallow: /pages/store.html
+Disallow: /package.json
+Disallow: /.eleventy.js
+Disallow: /_includes/
+Disallow: /src/
+Disallow: /*.bin
+
+# C# / .NET Disallows
+Disallow: /bin/
+Disallow: /obj/
+Disallow: /.vs/
+Disallow: /Properties/
+Disallow: /*.csproj
+Disallow: /*.sln
+Disallow: /*.config
+Disallow: /appsettings.json
+Disallow: /appsettings.*.json
+
+Sitemap: https://www.iseekprice.com/sitemap.xml

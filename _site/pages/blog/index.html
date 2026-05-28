@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المدونة</title>
+    <link rel="icon" type="image/x-icon" href="https://www.iseekprice.com/public/assets/static/favicon.ico">
+    <link href='/public/css/style.min.css' rel='stylesheet'/>
+    <style>
+        .glass-container{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:25px;padding:20px;font-family:'Tajawal',sans-serif;direction:rtl}.glass-card{background:#fff;border:1px solid #e1e4e8;border-radius:20px;overflow:hidden;transition:all .4s ease;display:flex;flex-direction:column;box-shadow:0 4px 15px rgba(0,0,0,.05)}.glass-card:hover{transform:translateY(-10px);box-shadow:0 12px 30px rgba(0,0,0,.1)}.glass-card img{width:100%;height:200px;object-fit:cover;border-bottom:1px solid #eee}.card-body{padding:15px;display:flex;flex-direction:column;flex-grow:1}.card-title{font-size:1.1rem;font-weight:700;color:#131921;margin-bottom:15px;line-height:1.5;text-decoration:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color .3s}.read-more{margin-top:auto;background:#232f3e;color:#fff!important;text-align:center;padding:10px;border-radius:12px;text-decoration:none;font-size:.9rem;transition:.3s;font-weight:700}.read-more:hover{background:#febd69;color:#111!important}.loader-glass{color:#333;text-align:center;grid-column:1/-1;padding:50px}.dark-mode .glass-card{background:rgba(255,255,255,.05);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,.1);box-shadow:0 8px 32px rgba(0,0,0,.3)}.dark-mode .card-title{color:#fff}.dark-mode .glass-card img{border-bottom:1px solid rgba(255,255,255,.1)}.dark-mode .read-more{background:#febd69;color:#111!important}.dark-mode .read-more:hover{background:#fff}.dark-mode .loader-glass{color:#fff}@media (max-width:768px){.glass-container{grid-template-columns:repeat(2,1fr);gap:12px;padding:10px}.glass-card img{height:150px}.card-title{font-size:.9rem}}@media (max-width:480px){.glass-container{grid-template-columns:1fr}}.pagination-wrapper{display:flex;justify-content:center;align-items:center;gap:20px;padding:40px 20px;font-family:'Tajawal',sans-serif}.pagination-wrapper button{background:#232f3e;color:#fff;border:none;padding:10px 25px;border-radius:8px;cursor:pointer;font-weight:700;transition:.3s}.pagination-wrapper button:hover:not(:disabled){background:#febd69;color:#111}.pagination-wrapper button:disabled{background:#ccc;cursor:not-allowed;opacity:.6}#page-info{font-weight:700;color:#333}.dark-mode #page-info{color:#fff}.dark-mode .pagination-wrapper button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2)}.dark-mode .pagination-wrapper button:hover:not(:disabled){background:#febd69;color:#111}
+    </style>
+</head>
+<body>
+
+<div class="glass-container" id="feed-target">
+    <div class="loader-glass">جاري جلب المقالات...</div>
+</div>
+
+<div id="pagination-controls" class="pagination-wrapper">
+    <button id="prev-btn" onclick="changePage(-1)" disabled>السابق</button>
+    <span id="page-info">الصفحة 1</span>
+    <button id="next-btn" onclick="changePage(1)">التالي</button>
+</div>
+
+<footer id='footer' itemscope='itemscope' itemtype='https://schema.org/WPFooter'>
+</footer>
+
+<script>
+    const blogUrl = "https://www.iseekprice.com";
+    const category = "مقال";
+    const maxPostsPerPage = 30;
+    let currentIndex = 1;
+
+    async function getGlassPosts(startIndex) {
+        const target = document.getElementById('feed-target');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const pageInfo = document.getElementById('page-info');
+        
+        target.innerHTML = '<div class="loader-glass">جاري جلب المقالات...</div>';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        const apiPath = `${blogUrl}/feeds/posts/default/-/${encodeURIComponent(category)}?alt=json&start-index=${startIndex}&max-results=${maxPostsPerPage}`;
+
+        try {
+            const response = await fetch(apiPath);
+            const data = await response.json();
+            const posts = data.feed.entry;
+
+            if (!posts || posts.length === 0) {
+                target.innerHTML = '<div class="loader-glass">لا توجد مقالات في هذه الصفحة.</div>';
+                nextBtn.disabled = true;
+                return;
+            }
+
+            target.innerHTML = '';
+            posts.forEach(post => {
+                const title = post.title.$t;
+                const link = post.link.find(l => l.rel === 'alternate').href;
+                let img = "https://via.placeholder.com/600x400/222/fff?text=No+Image";
+                
+                if (post.media$thumbnail) {
+                    img = post.media$thumbnail.url.replace(/\/s[0-9]+.*-c/, '/s1600');
+                } else if (post.content && post.content.$t) {
+                    const doc = new DOMParser().parseFromString(post.content.$t, 'text/html');
+                    const firstImg = doc.querySelector('img');
+                    if (firstImg) img = firstImg.src.replace(/\/s[0-9]+.*-c/, '/s1600');
+                }
+
+                target.innerHTML += `
+                    <div class="glass-card">
+                        <a href="${link}"><img src="${img}" alt="${title}" loading="lazy"></a>
+                        <div class="card-body">
+                            <a href="${link}" class="card-title">${title}</a>
+                            <a href="${link}" class="read-more">تفاصيل المقال</a>
+                        </div>
+                    </div>`;
+            });
+
+            prevBtn.disabled = startIndex === 1;
+            nextBtn.disabled = posts.length < maxPostsPerPage;
+            pageInfo.innerText = `الصفحة ${Math.ceil(startIndex / maxPostsPerPage)}`;
+        } catch (e) {
+            target.innerHTML = '<div class="loader-glass">فشل في تحميل البيانات.</div>';
+        }
+    }
+
+    function changePage(direction) {
+        if (direction === 1) currentIndex += maxPostsPerPage;
+        else if (direction === -1 && currentIndex > 1) currentIndex -= maxPostsPerPage;
+        getGlassPosts(currentIndex);
+    }
+
+    getGlassPosts(currentIndex);
+</script>
+
+</body>
+</html>
