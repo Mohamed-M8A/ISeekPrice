@@ -49,6 +49,10 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "github-actions[bot]"
         
+        git fetch origin main
+        git checkout main
+        git reset --mixed origin/main
+        
         git add **/Output/core.bin
         git add **/Output/search.bin
         git add **/Output/posts.json
@@ -57,6 +61,5 @@ jobs:
           echo "No changes to commit."
         else
           git commit -m "Update Engine Outputs (Core, Search, Blog)"
-          git pull origin main --rebase
           git push origin main
         fi
