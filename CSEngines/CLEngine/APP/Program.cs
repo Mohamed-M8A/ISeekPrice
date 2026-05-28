@@ -36,7 +36,7 @@ namespace ISeekPriceEngine
                 double coreSize = new FileInfo(Path.Combine(_outputPath, "core.bin")).Length / 1024.0;
                 double searchSize = new FileInfo(Path.Combine(_outputPath, "search.bin")).Length / 1024.0;
                 
-                string blogFile = Path.Combine(_outputPath, "Posts.json");
+                string blogFile = Path.Combine(_outputPath, "posts.json");
                 double blogSize = File.Exists(blogFile) ? new FileInfo(blogFile).Length / 1024.0 : 0;
 
                 report.AppendLine("============================================================");
