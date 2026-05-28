@@ -51,7 +51,7 @@ namespace ISeekPriceEngine.Engines
             }
 
             if (!Directory.Exists(_outputPath)) Directory.CreateDirectory(_outputPath);
-            File.WriteAllText(Path.Combine(_outputPath, "Posts.json"), JsonConvert.SerializeObject(blogPosts, Formatting.Indented));
+            File.WriteAllText(Path.Combine(_outputPath, "posts.json"), JsonConvert.SerializeObject(blogPosts, Formatting.Indented));
         }
     }
 }
