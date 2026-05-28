@@ -87,7 +87,7 @@
                 const imgSrc = post.Img ? `https://media.iseekprice.com/${post.Img}` : '/public/assets/static/no-image.png';
                 
                 return `
-                <a href="/post/${post.Url}.html" class="post-card">
+                <a href="/post/${post.Url}" class="post-card">
                     <div class="img-container">
                         <img src="${imgSrc}" alt="${post.Title}" loading="lazy">
                     </div>
