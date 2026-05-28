@@ -48,13 +48,13 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "github-actions[bot]"
-        git fetch origin main
-        git checkout main
-        find . -name "core.bin" -exec git add {} +
-        find . -name "search.bin" -exec git add {} +
-        find . -name "posts.json" -exec git add {} +
-        if git diff --cached --quiet; then
-          echo "No changes."
+        
+        git add **/Output/core.bin
+        git add **/Output/search.bin
+        git add **/Output/posts.json
+        
+        if git diff --quiet --cached; then
+          echo "No changes to commit."
         else
           git commit -m "Update Engine Outputs (Core, Search, Blog)"
           git pull origin main --rebase
