@@ -41,7 +41,7 @@ namespace ISeekPriceEngine.Services
 
             string corePath = Path.Combine(outputDir, "core.bin");
             string searchPath = Path.Combine(outputDir, "search.bin");
-            string blogPath = Path.Combine(outputDir, "Posts.json");
+            string blogPath = Path.Combine(outputDir, "posts.json");
 
             if (File.Exists(corePath))
             {
