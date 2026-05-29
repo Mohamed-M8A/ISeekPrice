@@ -3,7 +3,7 @@
 (function injectAndInitializeHeader() {
     
     const logoWrap = document.getElementById('logo-wrap');
-    if (logoWrap) logoWrap.innerHTML = `<a href='/'><img alt='شعار الموقع' src='/public/assets/static/favicon.png'/></a>`;
+    if (logoWrap) logoWrap.innerHTML = `<a href='/'><img alt='شعار الموقع' src='/public/assets/static/favicon.webp'/></a>`;
 
     const searchWrap = document.getElementById('search-wrap');
     if (searchWrap) {
