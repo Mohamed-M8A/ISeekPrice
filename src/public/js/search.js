@@ -1,5 +1,5 @@
 // =================== ✅ Search ===================
-const searchPageURL = "https://www.iseekprice.com/pages/search/";
+const searchPageURL = "https://www.iseekprice.com/page/search/";
 let searches = JSON.parse(localStorage.getItem('searches')) || [];
 
 function generateLink(queryTerm, parentName = null) {
