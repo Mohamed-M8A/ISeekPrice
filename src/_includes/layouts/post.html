@@ -7,33 +7,71 @@
   <link rel="icon" type="image/x-icon" href="/public/assets/static/favicon.ico">
   <link rel="stylesheet" href="/public/css/style.min.css">
   <style>
-    :root{--navy:#001f3f}#post-body{line-height:1.8;font-size:1.15rem;color:#334155}#post-body img{max-width:100%;height:auto;border-radius:4px;margin-bottom:20px}#post-body p{margin-bottom:20px;text-align:justify}.dark-mode #post-body{color:#cbd5e1}.post-header{margin-bottom:30px;border-bottom:4px solid var(--navy);padding-bottom:15px}.post-header h1{font-size:2.2rem;color:var(--navy);margin:0}.dark-mode .post-header h1{color:#f1f5f9}.clean-divider{border:0;border-top:1px solid #eee;margin:30px 0}.main-share-button{background:var(--navy);color:#fff;border:none;padding:12px 25px;border-radius:4px;cursor:pointer;font-weight:700;width:100%}#primary{max-width:850px;margin:0 auto;padding:20px}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;margin-top:20px}.rel-card{background:#fff;border:1px solid #eee;border-bottom:3px solid var(--navy);text-decoration:none;color:inherit;border-radius:2px;overflow:hidden;display:flex;flex-direction:column}.rel-card img{width:100%;height:140px;object-fit:cover}.rel-card h3{padding:10px;font-size:.95rem;margin:0;line-height:1.4}.dark-mode .rel-card{background:#1e293b;border-color:#334155;color:#f1f5f9}.meta-info{font-size:.9rem;color:#666;margin-bottom:15px}
-  </style>
+:root{--navy:#001f3f;--grey:#64748b}#post-body{line-height:1.8;font-size:1.15rem;color:#334155}#post-body img{max-width:100%;height:auto;border-radius:4px;margin-bottom:20px}#post-body p{margin-bottom:20px;text-align:justify}.dark-mode #post-body{color:#cbd5e1}.post-header{margin-bottom:30px;border-bottom:4px solid var(--navy);padding-bottom:15px}.post-header h1{font-size:2.2rem;color:var(--navy);margin:0}.dark-mode .post-header h1{color:#f1f5f9}.clean-divider{border:0;border-top:1px solid #eee;margin:30px 0}.main-share-button{background:var(--navy);color:#fff;border:none;padding:12px 25px;border-radius:4px;cursor:pointer;font-weight:700;width:100%}#primary{max-width:850px;margin:0 auto;padding:20px}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;margin-top:20px}.rel-card{background:#fff;border:1px solid #eee;border-bottom:3px solid var(--navy);text-decoration:none;color:inherit;border-radius:2px;overflow:hidden;display:flex;flex-direction:column}.rel-card img{width:100%;height:140px;object-fit:cover}.rel-card h3{padding:10px;font-size:.95rem;margin:0;line-height:1.4}.dark-mode .rel-card{background:#1e293b;border-color:#334155;color:#f1f5f9}.meta-info{font-size:.9rem;color:var(--grey);margin-bottom:15px}
+</style>
   <script src="/public/js/corepress.js" defer></script>
   <script src="/public/js/search.js" defer></script>
 </head>
+  
 <body>
-  <header id="header"><div class="header-main-row"><div class="header-container"><div class="logo" id="logo-wrap"></div><div class="search-container" id="search-wrap"></div><div class="header-actions" id="actions-wrap"></div></div></div></header>
+  <header id="header">
+    <div class="header-main-row">
+      <div class="header-container">
+        <div class="logo" id="logo-wrap"></div>
+        <div class="search-container" id="search-wrap"></div>
+        <div class="header-actions" id="actions-wrap"></div>
+      </div>
+    </div>
+  </header>
+
   <div id="primary">
     <article id="single-content">
       <header class="post-header">
         <h1>{{ title }}</h1>
-        <div class="meta-info">منشور في: {{ date | dateArabic }}</div>
+        <div class="meta-info"> منشور في: {{ date | dateArabic }}</div>
       </header>
+
       <div id="post-body">
         {{ content }}
       </div>
-      <div class="share-box-wrap"><button id="shareOpenBtn" class="main-share-button">مشاركة المقال</button></div>
+
+      <div class="share-box-wrap">
+        <button id="shareOpenBtn" class="main-share-button">مشاركة هذا المقال</button>
+      </div>
+
       <div style="margin-top:50px;">
-          <h2 style="color:var(--navy);font-size:1.4rem;border-right:5px solid var(--navy);padding-right:10px;">مقالات قد تهمك</h2>
-          <div id="related-posts-root" class="related-grid"></div>
+        <h2 style="color:var(--navy);font-size:1.4rem;border-right:5px solid var(--navy);padding-right:10px;">مقالات قد تهمك</h2>
+        <div id="related-posts-root" class="related-grid"></div>
       </div>
     </article>
   </div>
+
   <footer id='footer'></footer>
+
   <script>
-    async function loadRelated(){const r=document.getElementById('related-posts-root');try{const s=await fetch(`https://data.iseekprice.com/General/posts.json?v=${Date.now()}`);let p=await s.json();const h=p.sort(()=>.5-Math.random()).slice(0,3);r.innerHTML=h.map(x=>`<a href="/post/${x.Url}" class="rel-card"><img src="${x.Img?'https://media.iseekprice.com/'+x.Img:'/public/assets/static/no-image.png'}"><h3>${x.Title}</h3></a>`).join('')}catch(e){r.style.display='none'}}
-    document.addEventListener('DOMContentLoaded',loadRelated);
+    
+    async function loadRelated() {
+      const root = document.getElementById('related-posts-root');
+      const currentPath = window.location.pathname;
+
+      try {
+        const response = await fetch(`https://data.iseekprice.com/General/posts.json?v=${Date.now()}`);
+        const allPosts = await response.json();
+        const filtered = allPosts.filter(p => !currentPath.includes(p.Url));
+        const shuffled = filtered.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+        root.innerHTML = shuffled.map(post => `
+          <a href="/post/${post.Url}" class="rel-card">
+            <img src="${post.Img ? 'https://media.iseekprice.com/' + post.Img : '/public/assets/static/no-image.png'}" loading="lazy" alt="${post.Title}">
+            <h3>${post.Title}</h3>
+          </a>
+        `).join('');
+      } catch (e) {
+        root.style.display = 'none';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', loadRelated)
+    
   </script>
 </body>
 </html>
