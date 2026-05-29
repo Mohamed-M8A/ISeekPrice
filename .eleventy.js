@@ -1,4 +1,6 @@
 module.exports = function(eleventyConfig) {
+  eleventyConfig.addFilter("safe", (content) => content);
+
   eleventyConfig.addFilter("dateArabic", function(date) {
     if (!date) return "";
     const months = [
