@@ -57,7 +57,7 @@ let savedTheme=localStorage.getItem("theme")||(window.matchMedia("(prefers-color
 
     
 function updateCartWidget(){const cart=JSON.parse(localStorage.getItem("cart"))||[];const countEl=document.getElementById("cart-count");if(countEl){countEl.textContent=cart.length;cart.length>0?countEl.classList.add("active"):countEl.classList.remove("active")}}
-updateCartWidget();window.addEventListener("cartUpdated",updateCartWidget);const cartBtn=document.getElementById("cart-widget-header");if(cartBtn)cartBtn.onclick=()=>window.location.href="/pages/cart/";
+updateCartWidget();window.addEventListener("cartUpdated",updateCartWidget);const cartBtn=document.getElementById("cart-widget-header");if(cartBtn)cartBtn.onclick=()=>window.location.href="/page/cart/";
     
 
 const dropdown=document.getElementById("countryDropdown"),selected=dropdown?dropdown.querySelector(".selected"):null,options=dropdown?dropdown.querySelector(".options"):null,url=new URL(window.location.href),paramCountry=url.searchParams.get("country"),savedCountry=localStorage.getItem("Cntry");function setActiveCountry(e,t=!0){if(!options)return;const n=options.querySelector(`li[data-value="${e}"]`);if(!n)return;localStorage.setItem("Cntry",e),selected&&(selected.innerHTML=n.innerHTML),t&&(url.searchParams.set("country",e),window.history.replaceState({},"",url))}if(paramCountry)setActiveCountry(paramCountry);else if(savedCountry)setActiveCountry(savedCountry);else{setActiveCountry("SA",!1);fetch("/cdn-cgi/trace").then(e=>e.text()).then(e=>{const t=e.match(/loc=([A-Z]+)/);if(t&&t[1]){const e=t[1];["SA","AE","OM","MA","DZ","TN"].includes(e)&&"SA"!==e&&(localStorage.setItem("Cntry",e),window.location.reload())}}).catch(()=>{})}if(selected&&options){selected.onclick=e=>{e.stopPropagation(),dropdown.classList.toggle("open"),options.style.display=dropdown.classList.contains("open")?"block":"none"},options.onclick=e=>{const t=e.target.closest("li");t&&(setActiveCountry(t.getAttribute("data-value")),window.location.reload())}}const canonical=document.createElement("link");canonical.rel="canonical";canonical.href=window.location.origin+window.location.pathname;document.head.appendChild(canonical);if(paramCountry){const robots=document.createElement("meta");robots.name="robots";robots.content="noindex";document.head.appendChild(robots)}})()
@@ -73,17 +73,17 @@ if (footerInjector) {
         {
             title: "عن الموقع",
             links: [
-                { text: "من نحن", url: "/pages/info/about-us/" },
-                { text: "سياسة الموقع", url: "/pages/info/policy/" },
-                { text: "اتصل بنا", url: "/pages/info/contact/" }
+                { text: "من نحن", url: "/page/info/about-us/" },
+                { text: "سياسة الموقع", url: "/page/info/policy/" },
+                { text: "اتصل بنا", url: "/page/info/contact/" }
             ]
         },
         {
             title: "الأكثر متابعة",
             links: [
-                { text: "IWatch", url: "/pages/iwatch/" },
-                { text: "Blog", url: "/pages/blog/" },
-                { text: "Chat", url: "/pages/iseekchat/" }
+                { text: "IWatch", url: "/page/iwatch/" },
+                { text: "Blog", url: "/page/blog/" },
+                { text: "Chat", url: "/page/iseekchat/" }
             ]
         }
     ];
