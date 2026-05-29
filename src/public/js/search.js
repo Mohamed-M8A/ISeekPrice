@@ -1,5 +1,4 @@
 // =================== ✅ Search ===================
-
 const searchPageURL = "https://www.iseekprice.com/pages/search/";
 let searches = JSON.parse(localStorage.getItem('searches')) || [];
 
