@@ -82,7 +82,7 @@ if (footerInjector) {
             title: "الأكثر متابعة",
             links: [
                 { text: "IWatch", url: "/pages/iwatch/" },
-                { text: "Blog", url: "/pages/blog/" }
+                { text: "Blog", url: "/pages/blog/" },
                 { text: "Chat", url: "/pages/iseekchat/" }
             ]
         }
