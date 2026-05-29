@@ -1,4 +1,5 @@
 // =================== ✅ Search ===================
+
 const searchPageURL = "https://www.iseekprice.com/pages/search/";
 let searches = JSON.parse(localStorage.getItem('searches')) || [];
 
@@ -42,9 +43,38 @@ function updateDropdown() {
 
 function startSearch(queryTerm) {
     if (queryTerm) {
-        searches = [queryTerm, ...searches.filter(t => t !== queryTerm)].slice(0, 10);
+        const cleanQuery = queryTerm.trim();
+        
+        const ownDomainPattern = /^(https?:\/\/)?((www|media)\.)?iseekprice\.com/i;
+        
+        const socialPatterns = [
+            { regex: /^(https?:\/\/)?(www\.)?youtube\.com\/@ISeekPrice/i, fullUrl: "https://www.youtube.com/@ISeekPrice" },
+            { regex: /^(https?:\/\/)?(www\.)?pinterest\.com\/ISeekPrice/i, fullUrl: "https://www.pinterest.com/ISeekPrice" },
+            { regex: /^(https?:\/\/)?(www\.)?facebook\.com\/profile\.php\?id=61579522981793/i, fullUrl: "https://www.facebook.com/profile.php?id=61579522981793" },
+            { regex: /^(https?:\/\/)?(www\.)?instagram\.com\/iseekprice/i, fullUrl: "https://www.instagram.com/iseekprice/" },
+            { regex: /^(https?:\/\/)?(www\.)?x\.com\/ISeekPrice/i, fullUrl: "https://x.com/ISeekPrice" },
+            { regex: /^(https?:\/\/)?(www\.)?t\.me\/\+bmBnY0FumOwxZDQ0/i, fullUrl: "https://t.me/+bmBnY0FumOwxZDQ0" }
+        ];
+
+        if (ownDomainPattern.test(cleanQuery)) {
+            let targetUrl = cleanQuery;
+            if (!/^https?:\/\//i.test(targetUrl)) {
+                targetUrl = 'https://' + targetUrl;
+            }
+            window.location.href = targetUrl;
+            return;
+        }
+
+        for (const social of socialPatterns) {
+            if (social.regex.test(cleanQuery)) {
+                window.location.href = social.fullUrl;
+                return;
+            }
+        }
+
+        searches = [cleanQuery, ...searches.filter(t => t !== cleanQuery)].slice(0, 10);
         localStorage.setItem('searches', JSON.stringify(searches));
-        window.location.href = generateLink(queryTerm);
+        window.location.href = generateLink(cleanQuery);
     }
 }
 
@@ -67,7 +97,7 @@ document.addEventListener('focusin', (e) => {
 document.addEventListener('click', (e) => {
     const historyDropdown = document.getElementById("searchHistoryDropdown");
     if (historyDropdown && !e.target.closest('.search-container')) {
-        historyDropdown.style.display = 'none';
+        document.getElementById("searchHistoryDropdown").style.display = 'none';
     }
 });
 
