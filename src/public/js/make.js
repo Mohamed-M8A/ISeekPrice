@@ -302,7 +302,7 @@ window.injectData = function(data) {
         const storeData = { name: data.storeName, aff: data.storeAffCode || "" };
         localStorage.setItem(storeKey, JSON.stringify(storeData));
 
-        const storeLink = `/pages/store?store=${data.storeId}`;
+        const storeLink = `/page/store?store=${data.storeId}`;
         const defaultImg = "/public/assets/static/store.webp";
         
         storeWrapper.innerHTML = `
