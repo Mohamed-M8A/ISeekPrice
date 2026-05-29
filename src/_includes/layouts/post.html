@@ -7,9 +7,7 @@
   <link rel="icon" type="image/x-icon" href="/public/assets/static/favicon.ico">
   <link rel="stylesheet" href="/public/css/style.min.css">
   <style>
-    
-:root{--navy:#001f3f;--border:#e2e8f0;--text:#334155}#primary{max-width:850px;margin:0 auto;padding:20px;background:#fff}.dark-mode #primary{background:#111827}.post-header{margin-bottom:30px;border-bottom:4px solid var(--navy);padding-bottom:15px}.post-header h1{font-size:2rem;color:var(--navy);margin:0}.dark-mode .post-header h1{color:#f1f5f9}#post-body{line-height:1.8;font-size:1.15rem;color:var(--text);display:block}.dark-mode #post-body{color:#cbd5e1}.post-image,#post-body img{display:block;width:100%;height:auto;max-height:500px;object-fit:cover;border-radius:4px;margin:25px 0;position:relative;z-index:1}#post-body p{margin-bottom:20px;text-align:justify}.meta-info{font-size:.9rem;color:#64748b;margin-bottom:10px}.main-share-button{background:var(--navy);color:#fff;border:none;padding:12px 25px;border-radius:2px;cursor:pointer;font-weight:700;width:100%}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;margin-top:20px}.rel-card{background:#fff;border:1px solid var(--border);border-bottom:3px solid var(--navy);text-decoration:none;color:inherit;border-radius:2px;overflow:hidden}.rel-card img{width:100%;height:140px;object-fit:cover}.rel-card h3{padding:10px;font-size:.95rem;margin:0}.dark-mode .rel-card{background:#1e293b;border-color:#334155;color:#f1f5f9}
-    
+:root{--navy:#001f3f;--border:#e2e8f0;--text:#334155}#primary{max-width:850px;margin:0 auto;padding:20px;background:#fff}.dark-mode #primary{background:#111827}.post-header{margin-bottom:30px;border-bottom:4px solid var(--navy);padding-bottom:15px}.post-header h1{font-size:2rem;color:var(--navy);margin:0}.dark-mode .post-header h1{color:#f1f5f9}#post-body{line-height:1.8;font-size:1.15rem;color:var(--text);display:block}.dark-mode #post-body{color:#cbd5e1}.post-image,#post-body img{display:block;width:100%;height:auto;max-height:500px;object-fit:cover;border-radius:4px;margin:25px 0;position:relative;z-index:1}#post-body p{margin-bottom:20px;text-align:justify}.meta-info{font-size:.9rem;color:#64748b;margin-bottom:10px}.main-share-button{background:var(--navy);color:#fff;border:none;padding:12px 25px;border-radius:2px;cursor:pointer;font-weight:700;width:100%}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;margin-top:20px}.rel-card{background:#fff;border:1px solid var(--border);border-bottom:3px solid var(--navy);text-decoration:none;color:inherit;border-radius:2px;overflow:hidden}.rel-card img{width:100%;height:140px;object-fit:cover}.rel-card h3{padding:10px;font-size:.95rem;margin:0}.dark-mode .rel-card{background:#1e293b;border-color:#334155;color:#f1f5f9}.tags span{transition:all .3s ease;cursor:pointer}.tags span:hover{background:#007bff!important;color:#fff!important}.toc-box{background:#f8fafc;border:1px solid var(--border);border-radius:4px;margin-bottom:25px;padding:15px}.dark-mode .toc-box{background:#1e293b}.toc-box summary{cursor:pointer;font-weight:700;color:var(--navy);outline:none;user-select:none}.dark-mode .toc-box summary{color:#f1f5f9}.toc-content{margin-top:10px;padding-right:20px}.toc-content ul{list-style:none;padding:0;margin:0}.toc-content li{margin-bottom:8px}.toc-content a{text-decoration:none;color:var(--text);font-size:1rem;transition:color .2s}.dark-mode .toc-content a{color:#cbd5e1}.toc-content a:hover{color:#007bff}.back-link{display:inline-flex;align-items:center;text-decoration:none;color:#64748b;font-size:.95rem;margin-bottom:20px;transition:color .2s}.back-link:hover{color:var(--navy)}.back-link::before{content:"→";margin-left:8px}
   </style>
   <script src="/public/js/corepress.js" defer></script>
   <script src="/public/js/search.js" defer></script>
@@ -30,16 +28,22 @@
 <div id='widget-sidebar'></div>
 <div id='widget-overlay'></div>
 
-  
   <div id="primary">
+    <a href="/blog" class="back-link">العودة للمدونة</a>
+    
     <article id="single-content">
       <header class="post-header">
         <h1>{{ title }}</h1>
         <div class="meta-info">منشور في: {{ date | dateArabic }}</div>
       </header>
 
+      <details class="toc-box" id="toc-container" style="display:none;">
+        <summary>محتويات المقال (فهرس)</summary>
+        <nav class="toc-content" id="toc-list"></nav>
+      </details>
+
       <div id="post-body">
-        {{ content }}
+        {{ content | safe }}
       </div>
 
       <div class="share-box-wrap" style="margin-top:30px;">
@@ -56,6 +60,30 @@
   <footer id='footer'></footer>
 
   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const postBody = document.getElementById('post-body');
+      const tocList = document.getElementById('toc-list');
+      const tocContainer = document.getElementById('toc-container');
+      const headings = postBody.querySelectorAll('h2, h3');
+      
+      if (headings.length > 0) {
+        tocContainer.style.display = 'block';
+        const ul = document.createElement('ul');
+        headings.forEach((heading, index) => {
+          const id = 'heading-' + index;
+          heading.setAttribute('id', id);
+          const li = document.createElement('li');
+          li.style.marginRight = heading.tagName === 'H3' ? '20px' : '0';
+          const a = document.createElement('a');
+          a.href = '#' + id;
+          a.textContent = heading.textContent;
+          li.appendChild(a);
+          ul.appendChild(li);
+        });
+        tocList.appendChild(ul);
+      }
+    });
+
     async function loadRelated(){const r=document.getElementById('related-posts-root');const c=window.location.pathname;try{const s=await fetch(`https://data.iseekprice.com/General/posts.json?v=${Date.now()}`);let p=await s.json();const h=p.filter(x=>!c.includes(x.Url)).sort(()=>.5-Math.random()).slice(0,3);r.innerHTML=h.map(x=>`<a href="/post/${x.Url}" class="rel-card"><img src="${x.Img?'https://media.iseekprice.com/'+x.Img:'/public/assets/static/no-image.png'}"><h3>${x.Title}</h3></a>`).join('')}catch(e){r.style.display='none'}}
     document.addEventListener('DOMContentLoaded',loadRelated);
   </script>
