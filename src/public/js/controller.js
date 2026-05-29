@@ -7,7 +7,7 @@
         BASE_URL: "https://data.iseekprice.com/",
         IMG_BASE_URL: "https://media.iseekprice.com/",
         ALI_IMG_BASE: "https://ae-pic-a1.aliexpress-media.com/kf/",
-        PLACEHOLDER: "/public/assets/static/save.jpg",
+        PLACEHOLDER: "/public/assets/static/save.webp",
         INITIAL_SIZE: 20,
         BATCH_SIZE: 150
     };
