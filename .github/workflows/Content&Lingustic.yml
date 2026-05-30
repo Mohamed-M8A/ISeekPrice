@@ -2,13 +2,8 @@ name: Content&Lingustic.Engine
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - 'src/product/**'
-      - 'src/post/**'
-      - '**/CLEngine/**'
+  schedule:
+    - cron: '0 0 */3 * *'
 
 jobs:
   build-and-run:
