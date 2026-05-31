@@ -80,118 +80,121 @@
 <script>
 
 (function() {
-    const navyStyles = `#skuHubOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,25,47,0.98);backdrop-filter:blur(12px);display:none;z-index:1000000;justify-content:center;align-items:center;font-family:system-ui,-apple-system,sans-serif;direction:rtl}#skuHubOverlay *{box-sizing:border-box}.sku-hub-container{width:95%;max-width:1200px;height:90vh;display:flex;flex-direction:column;color:#e6f1ff}.sku-hub-header{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid rgba(100,255,218,0.1)}.sku-hub-title{font-size:1.5rem;font-weight:300;letter-spacing:1px;color:#64ffda}.sku-search-input{background:#112240;border:1px solid #233554;padding:12px 25px;border-radius:30px;color:#fff;width:300px;outline:none;transition:0.3s}.sku-search-input:focus{border-color:#64ffda;box-shadow:0 0 10px rgba(100,255,218,0.1)}.sku-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;padding:30px 0;overflow-y:auto;flex-grow:1}.sku-card{background:#112240;border-radius:4px;overflow:hidden;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);position:relative;border:1px solid transparent}.sku-card:hover{transform:translateY(-5px);background:#1d2d50;border-color:rgba(100,255,218,0.3)}.sku-card-img{width:100%;height:200px;object-fit:cover;opacity:0.9}.sku-card-body{padding:15px}.sku-card-props{font-size:0.85rem;color:#8892b0;margin-bottom:12px;line-height:1.4;height:40px;overflow:hidden}.sku-card-price-row{display:flex;align-items:center;gap:10px}.sku-card-now{font-size:1.4rem;font-weight:600;color:#ccd6f6}.sku-card-old{font-size:0.9rem;color:#495670;text-decoration:line-through}.sku-card-badge{position:absolute;top:10px;right:10px;background:rgba(100,255,218,0.1);color:#64ffda;padding:4px 12px;font-size:0.7rem;border-radius:2px;border:1px solid #64ffda}.close-btn{background:none;border:none;color:#8892b0;font-size:2rem;cursor:pointer;transition:0.2s}.close-btn:hover{color:#64ffda}.trigger-btn-fab{position:fixed;bottom:30px;right:30px;background:#64ffda;color:#0a192f;border:none;padding:16px 32px;border-radius:4px;font-weight:600;cursor:pointer;box-shadow:0 10px 30px -10px rgba(100,255,218,0.3);z-index:999999;transition:0.3s}.trigger-btn-fab:hover{transform:translateY(-3px);box-shadow:0 20px 30px -15px rgba(100,255,218,0.5)}.sku-grid::-webkit-scrollbar{width:5px}.sku-grid::-webkit-scrollbar-track{background:#0a192f}.sku-grid::-webkit-scrollbar-thumb{background:#233554;border-radius:10px}`;
+    const css = `
+        :root { --navy-deep: #0a192f; --navy-light: #112240; --mint: #64ffda; --slate: #8892b0; --white: #e6f1ff; }
+        .sku-hub-trigger { display: none; margin-top: 15px; width: 100%; padding: 12px; background: none; border: 1px solid var(--mint); color: var(--mint); cursor: pointer; font-weight: 500; transition: 0.3s; border-radius: 4px; font-family: inherit; }
+        .sku-hub-trigger.visible { display: block; }
+        .sku-hub-trigger:hover { background: rgba(100,255,218,0.1); }
+        #skuOverlay { position: fixed; inset: 0; background: rgba(10,25,47,0.95); backdrop-filter: blur(10px); z-index: 999999; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; }
+        #skuOverlay.active { display: flex; opacity: 1; }
+        .sku-modal { width: 95%; max-width: 1100px; height: 85vh; display: flex; flex-direction: column; position: relative; animation: skuFade 0.4s ease forwards; }
+        @keyframes skuFade { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .sku-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .sku-title { color: var(--mint); font-size: 1.2rem; font-weight: 300; text-transform: uppercase; letter-spacing: 2px; }
+        .sku-close { background: none; border: none; color: var(--slate); font-size: 2rem; cursor: pointer; transition: 0.2s; }
+        .sku-close:hover { color: var(--white); }
+        .sku-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; padding: 25px 0; overflow-y: auto; flex-grow: 1; scrollbar-width: thin; }
+        .sku-grid::-webkit-scrollbar { width: 4px; }
+        .sku-grid::-webkit-scrollbar-thumb { background: var(--navy-light); }
+        .sku-item { background: var(--navy-light); border-radius: 2px; overflow: hidden; cursor: pointer; transition: 0.3s; border: 1px solid transparent; display: flex; flex-direction: column; }
+        .sku-item:hover { border-color: var(--mint); transform: translateY(-3px); }
+        .sku-img { width: 100%; height: 160px; object-fit: cover; filter: grayscale(20%); transition: 0.3s; }
+        .sku-item:hover .sku-img { filter: grayscale(0%); }
+        .sku-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+        .sku-props { font-size: 0.8rem; color: var(--slate); margin-bottom: 10px; line-height: 1.4; height: 35px; overflow: hidden; }
+        .sku-price-row { display: flex; align-items: baseline; gap: 8px; margin-top: auto; }
+        .sku-p-new { color: var(--white); font-size: 1.2rem; font-weight: 600; }
+        .sku-p-old { color: var(--slate); font-size: 0.8rem; text-decoration: line-through; }
+        .sku-meta { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--mint); margin-top: 10px; opacity: 0.8; }
+    `;
 
-    const htmlLayout = `
-        <button class="trigger-btn-fab" onclick="window.SKU_HUB.open()">استعراض الخيارات</button>
-        <div id="skuHubOverlay">
-            <div class="sku-hub-container">
-                <div class="sku-hub-header">
-                    <div class="sku-hub-title">SKU MASTER EXPLORER</div>
-                    <input type="text" class="sku-search-input" id="skuHubSearch" placeholder="بحث في الموديلات...">
-                    <button class="close-btn" onclick="window.SKU_HUB.close()">&times;</button>
+    const style = document.createElement('style');
+    style.textContent = css.replace(/\s+/g, ' ');
+    document.head.appendChild(style);
+
+    const modalHtml = `
+        <div id="skuOverlay">
+            <div class="sku-modal">
+                <div class="sku-header">
+                    <span class="sku-title">Models Explorer</span>
+                    <button class="sku-close" onclick="SKU_CORE.close()">&times;</button>
                 </div>
-                <div id="skuHubGrid" class="sku-grid"></div>
+                <div class="sku-grid" id="skuGrid"></div>
             </div>
         </div>
     `;
 
-    const styleElement = document.createElement('style');
-    styleElement.innerHTML = navyStyles;
-    document.head.appendChild(styleElement);
+    const div = document.createElement('div');
+    div.innerHTML = modalHtml;
+    document.body.appendChild(div);
 
-    const containerWrapper = document.createElement('div');
-    containerWrapper.innerHTML = htmlLayout;
-    document.body.appendChild(containerWrapper);
+    const injectTrigger = () => {
+        const shelf = document.getElementById('dynamic-shelf');
+        if (shelf && !document.getElementById('skuBtn')) {
+            const btn = document.createElement('button');
+            btn.id = 'skuBtn';
+            btn.className = 'sku-hub-trigger';
+            btn.textContent = 'استعراض كافة الموديلات';
+            btn.onclick = () => SKU_CORE.open();
+            shelf.appendChild(btn);
+        }
+    };
 
-    window.SKU_HUB = {
-        data: [],
-        parse: function(buffer) {
-            const view = new DataView(buffer);
-            const decoder = new TextDecoder('utf-8');
-            const results = [];
-            const offsetStart = 8;
-
-            for (let i = 0; i < 30; i++) {
-                const ptr = offsetStart + (i * 214);
-                const pOrig = view.getFloat32(ptr, true);
-                
-                if (pOrig > 0) {
-                    const pDisc = view.getFloat32(ptr + 4, true);
-                    const sFee = view.getFloat32(ptr + 8, true);
-                    const delivery = `${view.getUint8(ptr + 12)}-${view.getUint8(ptr + 13)} يوم`;
-                    
-                    const imgB = new Uint8Array(buffer, ptr + 14, 40);
-                    const slug = decoder.decode(imgB).replace(/\0/g, '').trim();
-                    
-                    const propB = new Uint8Array(buffer, ptr + 54, 160);
-                    const props = decoder.decode(propB).replace(/\0/g, '').trim();
-
-                    results.push({
-                        priceOriginal: pOrig,
-                        priceDiscounted: pDisc,
-                        shippingFee: sFee,
-                        delivery: delivery,
-                        image: `https://ae01.alicdn.com/kf/${slug}.jpg`,
-                        props: props,
-                        discount: Math.round(((pOrig - pDisc) / pOrig) * 100)
-                    });
-                }
-            }
-            this.data = results;
-            this.render(results);
+    window.SKU_CORE = {
+        list: [],
+        open: function() {
+            document.getElementById('skuOverlay').classList.add('active');
         },
-        render: function(list) {
-            const grid = document.getElementById('skuHubGrid');
-            grid.innerHTML = list.map(item => `
-                <div class="sku-card" onclick="window.SKU_HUB.select('${encodeURIComponent(JSON.stringify(item))}')">
-                    ${item.discount > 0 ? `<div class="sku-card-badge">توفير ${item.discount}%</div>` : ''}
-                    <img class="sku-card-img" src="${item.image}" loading="lazy">
-                    <div class="sku-card-body">
-                        <div class="sku-card-props">${item.props}</div>
-                        <div class="sku-card-price-row">
-                            <span class="sku-card-now">${item.priceDiscounted.toFixed(2)}</span>
-                            <span class="sku-card-old">${item.priceOriginal.toFixed(2)}</span>
+        close: function() {
+            document.getElementById('skuOverlay').classList.remove('active');
+        },
+        render: function(data) {
+            this.list = data.filter(i => i.priceDiscounted > 0);
+            const grid = document.getElementById('skuGrid');
+            const btn = document.getElementById('skuBtn');
+            
+            if (btn && this.list.length > 0) btn.classList.add('visible');
+
+            grid.innerHTML = this.list.map(item => `
+                <div class="sku-item" onclick="SKU_CORE.select('${encodeURIComponent(JSON.stringify(item))}')">
+                    <img class="sku-img" src="${item.image}" loading="lazy">
+                    <div class="sku-info">
+                        <div class="sku-props">${item.props}</div>
+                        <div class="sku-price-row">
+                            <span class="sku-p-new">${item.priceDiscounted.toFixed(2)}</span>
+                            <span class="sku-p-old">${item.priceOriginal.toFixed(2)}</span>
                         </div>
-                        <div style="font-size: 0.7rem; color: #64ffda; margin-top: 10px; display: flex; justify-content: space-between;">
-                            <span>🚚 ${item.delivery}</span>
-                            <span>${item.shippingFee <= 0 ? 'FREE SHIPPING' : 'SHIPPING: ' + item.shippingFee}</span>
+                        <div class="sku-meta">
+                            <span>🚚 ${item.maxDelivery}d</span>
+                            <span>${item.shippingFee <= 0 ? 'FREE' : item.shippingFee.toFixed(2)}</span>
                         </div>
                     </div>
                 </div>
             `).join('');
         },
-        open: function() {
-            document.getElementById('skuHubOverlay').style.display = 'flex';
-            if(this.data.length === 0) this.mock();
-        },
-        close: function() {
-            document.getElementById('skuHubOverlay').style.display = 'none';
-        },
-        select: function(encoded) {
-            const item = JSON.parse(decodeURIComponent(encoded));
-            if (window.injectData) window.injectData(item);
+        select: function(enc) {
+            const item = JSON.parse(decodeURIComponent(enc));
+            if (window.updateSKUPrice) window.updateSKUPrice(item);
+            if (window.changeImage) {
+                const thumbs = Array.from(document.querySelectorAll('.thumbnails-slider img'));
+                const idx = thumbs.findIndex(img => img.src === item.image);
+                if (idx !== -1) window.changeImage(idx);
+            }
             this.close();
-        },
-        mock: function() {
-            const dummy = Array.from({length: 12}, (_, i) => ({
-                priceOriginal: 200,
-                priceDiscounted: 150,
-                shippingFee: 0,
-                delivery: "10-15 يوم",
-                image: "",
-                props: "عينة تجريبية لموديل رقم " + (i + 1),
-                discount: 25
-            }));
-            this.render(dummy);
         }
     };
 
-    document.getElementById('skuHubSearch').addEventListener('input', function(e) {
-        const q = e.target.value.toLowerCase();
-        const filtered = window.SKU_HUB.data.filter(x => x.props.toLowerCase().includes(q));
-        window.SKU_HUB.render(filtered);
+    window.renderSKUs = function(skuList) {
+        SKU_CORE.render(skuList);
+    };
+
+    const observer = new MutationObserver(() => {
+        if (document.getElementById('dynamic-shelf')) {
+            injectTrigger();
+            observer.disconnect();
+        }
     });
+    observer.observe(document.body, { childList: true, subtree: true });
 })();
   
 </script>
