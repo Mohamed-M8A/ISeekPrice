@@ -102,28 +102,29 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
                 else if (item.maxDelivery === minD) badge = '<span class="sku-badge badge-delivery">أسرع شحن</span>';
                 return `
                 <div class="sku-card" onclick="window.SKU_HUB.select('${encodeURIComponent(JSON.stringify(item))}')">
-                    ${badge}
-                    <div class="sku-card-img-wrap">
-                        <img src="${item.image}" class="sku-card-img" loading="lazy">
-                    </div>
-                    <div class="sku-card-info">
-                        <div class="sku-card-name">${item.props}</div>
-                        <div class="sku-card-pricing">
-                            <span class="sku-card-now">${item.priceDiscounted.toFixed(2)}</span>
-                            <span class="sku-card-old">${item.priceOriginal.toFixed(2)}</span>
-                        </div>
-                        <div class="sku-card-meta">
-                            <div class="meta-row">
-                                <svg viewBox="0 0 24 24"><path d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
-                                <span>التوصيل: ${item.minDelivery}-${item.maxDelivery} يوم</span>
-                            </div>
-                            <div class="meta-row" style="color: ${item.shippingFee <= 0 ? '#10b981' : 'inherit'}">
-                                <svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14v4m0 0l8 4m-8-4l-8 4m0-4v10l8 4"/></svg>
-                                <span>${item.shippingFee <= 0 ? 'شحن مجاني بالكامل' : 'رسوم الشحن: ' + item.shippingFee.toFixed(2)}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
+                ${badge}
+                <div class="sku-card-img-wrap">
+                <img src="${item.image}" class="sku-card-img" loading="lazy">
+                </div>
+                <div class="sku-card-info">
+                <div class="sku-card-name">${item.props}</div>
+                <div class="sku-card-pricing">
+                <span class="sku-card-now">${item.priceDiscounted.toFixed(2)}</span>
+                <span class="sku-card-old">${item.priceOriginal.toFixed(2)}</span>
+                </div>
+                <div class="sku-card-meta">
+                <div class="meta-row">
+                <svg viewBox="0 0 24 24"><path d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+                <span>التوصيل: ${item.minDelivery}-${item.maxDelivery} يوم</span>
+                </div>
+                <div class="meta-row" style="color: ${item.shippingFee <= 0 ? '#10b981' : 'inherit'}">
+                <!-- الأيقونة الجديدة الدقيقة والاحترافية هنا -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; fill: none;"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+                <span>${item.shippingFee <= 0 ? 'شحن مجاني بالكامل' : 'رسوم الشحن: ' + item.shippingFee.toFixed(2)}</span>
+            </div>
+            </div>
+            </div>
+            </div>`;
             }).join('');
             const btn = document.getElementById('skuHubBtn');
             if (btn) btn.style.display = 'block';
