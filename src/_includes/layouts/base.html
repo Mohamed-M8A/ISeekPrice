@@ -81,98 +81,140 @@
 
 (function() {
     const style = document.createElement('style');
-    style.textContent = `#skuHubOverlay{position:fixed;inset:0;background:rgba(2,12,27,0.99);backdrop-filter:blur(20px);display:none;z-index:2147483647;justify-content:center;align-items:center;font-family:system-ui,-apple-system,sans-serif;direction:rtl}#skuHubOverlay.active{display:flex}.sku-wrapper{width:92%;max-width:1200px;height:88vh;display:flex;flex-direction:column;animation:skuReveal 0.4s cubic-bezier(0.16,1,0.3,1)}@keyframes skuReveal{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}.sku-header{display:flex;justify-content:space-between;align-items:center;padding:0 10px 20px 10px;border-bottom:1px solid rgba(255,255,255,0.05)}.sku-title{color:#64ffda;font-size:0.9rem;font-weight:400;letter-spacing:3px;text-transform:uppercase}.sku-close-btn{background:none;border:none;color:#8892b0;font-size:2.2rem;cursor:pointer;line-height:1}.sku-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;padding:30px 10px;overflow-y:auto;flex-grow:1;scrollbar-width:thin;scrollbar-color:#233554 #020c1b}.sku-grid::-webkit-scrollbar{width:4px}.sku-grid::-webkit-scrollbar-thumb{background:#233554}.sku-card{background:#112240;border-radius:12px;overflow:hidden;cursor:pointer;transition:all 0.3s ease;border:1px solid rgba(100,255,218,0);display:flex;flex-direction:column;position:relative}.sku-card:hover{transform:translateY(-8px);border-color:rgba(100,255,218,0.4);box-shadow:0 15px 35px rgba(0,0,0,0.4)}.sku-card-img{width:100%;height:220px;object-fit:cover;transition:0.5s}.sku-card-content{padding:18px;display:flex;flex-direction:column;gap:12px}.sku-card-props{color:#ccd6f6;font-size:0.85rem;font-weight:500;line-height:1.5;height:40px;overflow:hidden}.sku-card-price-box{display:flex;align-items:center;gap:12px}.sku-card-new{color:#fff;font-size:1.5rem;font-weight:700}.sku-card-old{color:#495670;font-size:0.9rem;text-decoration:line-through}.sku-card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,0.05);font-size:0.75rem}.sku-delivery-tag{color:#64ffda;display:flex;align-items:center;gap:5px}.sku-shipping-tag{color:#8892b0}.sku-open-trigger{width:100%;padding:14px;background:#f0f2f5;border:1px solid #dcdfe6;color:#495670;font-weight:600;font-size:0.95rem;border-radius:8px;cursor:pointer;margin:15px 0;transition:0.2s;display:none;text-align:center;font-family:inherit}.sku-open-trigger:hover{background:#e4e7ed;color:#2c3e50;border-color:#c0c4cc}`;
+    style.textContent = `
+    #skuHubOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); display: none; z-index: 9999999; justify-content: center; align-items: center; font-family: 'Cairo', sans-serif; direction: rtl; }
+    #skuHubOverlay.active { display: flex; }
+    .sku-modal-content { width: 95%; max-width: 1000px; height: 85vh; background: #fff; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+    .dark-mode .sku-modal-content { background: #1a1a1a; color: #fff; border: 1px solid #333; }
+    .sku-modal-header { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; }
+    .dark-mode .sku-modal-header { background: #111; border-bottom: 1px solid #333; }
+    .sku-modal-header h3 { margin: 0; font-size: 16px; color: #333; }
+    .dark-mode .sku-modal-header h3 { color: #64ffda; }
+    .sku-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #888; }
+    .sku-grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; padding: 20px; overflow-y: auto; flex: 1; }
+    .sku-item-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; transition: 0.2s; cursor: pointer; display: flex; flex-direction: column; position: relative; }
+    .dark-mode .sku-item-card { background: #222; border-color: #333; }
+    .sku-item-card:hover { border-color: #3498db; transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    .sku-item-img { width: 100%; height: 160px; object-fit: cover; border-bottom: 1px solid #eee; }
+    .dark-mode .sku-item-img { border-bottom-color: #333; }
+    .sku-item-details { padding: 12px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .sku-item-name { font-size: 12px; font-weight: 600; color: #64748b; height: 34px; overflow: hidden; }
+    .dark-mode .sku-item-name { color: #8892b0; }
+    .sku-item-pricing { display: flex; align-items: baseline; gap: 8px; }
+    .sku-item-now { font-size: 18px; font-weight: 900; color: #059669; }
+    .dark-mode .sku-item-now { color: #10b981; }
+    .sku-item-old { font-size: 12px; color: #94a3b8; text-decoration: line-through; }
+    .sku-item-shipping { font-size: 11px; display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid #f1f5f9; color: #64748b; }
+    .dark-mode .sku-item-shipping { border-top-color: #333; color: #8892b0; }
+    .sku-badge { position: absolute; top: 8px; left: 8px; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; color: #fff; z-index: 2; }
+    .badge-best { background: #059669; }
+    .badge-fast { background: #3b82f6; }
+    .sku-trigger-wrap { width: 100%; display: flex; justify-content: center; margin-bottom: 15px; }
+    .sku-mini-btn { background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; display: none; }
+    .dark-mode .sku-mini-btn { background: #222; border-color: #333; color: #cbd5e1; }
+    .sku-mini-btn:hover { background: #e2e8f0; color: #1e293b; }
+    .dark-mode .sku-mini-btn:hover { background: #2d2d2d; color: #fff; }
+    @media (max-width: 480px) { .sku-grid-view { grid-template-columns: repeat(2, 1fr); padding: 10px; gap: 10px; } .sku-item-img { height: 130px; } .sku-item-now { font-size: 15px; } }
+    `.replace(/\s+/g, ' ');
     document.head.appendChild(style);
 
     const modalMarkup = `
         <div id="skuHubOverlay">
-            <div class="sku-wrapper">
-                <div class="sku-header">
-                    <div class="sku-title">Product Variants Explorer</div>
-                    <button class="sku-close-btn" onclick="window.SKU_MANAGER.toggle(false)">&times;</button>
+            <div class="sku-modal-content">
+                <div class="sku-modal-header">
+                    <h3>خيارات المنتج والموديلات</h3>
+                    <button class="sku-close" onclick="window.SKU_MANAGER.toggle(false)">&times;</button>
                 </div>
-                <div id="skuHubGrid" class="sku-grid"></div>
+                <div id="skuHubGrid" class="sku-grid-view"></div>
             </div>
         </div>`;
     document.body.insertAdjacentHTML('beforeend', modalMarkup);
 
     window.SKU_MANAGER = {
-        store: [],
-        toggle: function(state) {
-            const el = document.getElementById('skuHubOverlay');
-            el.classList.toggle('active', state);
-            document.body.style.overflow = state ? 'hidden' : '';
+        variants: [],
+        toggle: function(s) {
+            document.getElementById('skuHubOverlay').classList.toggle('active', s);
+            document.body.style.overflow = s ? 'hidden' : '';
         },
-        render: function(list) {
-            this.store = list.filter(i => i.priceDiscounted > 0);
-            if (!this.store.length) return;
+        render: function(data) {
+            this.variants = data.filter(i => i.priceDiscounted > 0);
+            if (!this.variants.length) return;
+
+            const minPrice = Math.min(...this.variants.map(v => v.priceDiscounted));
+            const minDelivery = Math.min(...this.variants.map(v => v.maxDelivery));
 
             const grid = document.getElementById('skuHubGrid');
-            grid.innerHTML = this.store.map(item => `
-                <div class="sku-card" onclick="window.SKU_MANAGER.select('${encodeURIComponent(JSON.stringify(item))}')">
-                    <img src="${item.image}" class="sku-card-img" loading="lazy">
-                    <div class="sku-card-content">
-                        <div class="sku-card-props">${item.props}</div>
-                        <div class="sku-card-price-box">
-                            <span class="sku-card-new">${item.priceDiscounted.toFixed(2)}</span>
-                            <span class="sku-card-old">${item.priceOriginal.toFixed(2)}</span>
+            grid.innerHTML = this.variants.map(item => {
+                let badge = "";
+                if (item.priceDiscounted === minPrice) badge = '<span class="sku-badge badge-best">أقل سعر</span>';
+                else if (item.maxDelivery === minDelivery) badge = '<span class="sku-badge badge-fast">الأسرع توصيلاً</span>';
+
+                return `
+                <div class="sku-item-card" onclick="window.SKU_MANAGER.select('${encodeURIComponent(JSON.stringify(item))}')">
+                    ${badge}
+                    <img src="${item.image}" class="sku-item-img" loading="lazy">
+                    <div class="sku-item-details">
+                        <div class="sku-item-name">${item.props}</div>
+                        <div class="sku-item-pricing">
+                            <span class="sku-item-now">${item.priceDiscounted.toFixed(2)}</span>
+                            <span class="sku-item-old">${item.priceOriginal.toFixed(2)}</span>
                         </div>
-                        <div class="sku-card-footer">
-                            <span class="sku-delivery-tag">🚚 ${item.maxDelivery} Days Delivery</span>
-                            <span class="sku-shipping-tag">${item.shippingFee <= 0 ? 'FREE SHIPPING' : 'SHIPPING: ' + item.shippingFee.toFixed(2)}</span>
+                        <div class="sku-item-shipping">
+                            <span>🚚 ${item.maxDelivery} أيام</span>
+                            <span>${item.shippingFee <= 0 ? 'شحن مجاني' : 'شحن: ' + item.shippingFee.toFixed(2)}</span>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
 
-            this.placeButton();
+            this.injectTrigger();
         },
-        placeButton: function() {
+        injectTrigger: function() {
             const shelf = document.getElementById('dynamic-shelf');
             if (!shelf) return;
-            const target = shelf.querySelector('.info-boxes-wrapper') || shelf.querySelector('.button-container');
-            if (target && !document.getElementById('skuMainAction')) {
+            const ref = shelf.querySelector('.info-boxes-wrapper');
+            if (ref && !document.getElementById('skuMiniBtn')) {
+                const wrap = document.createElement('div');
+                wrap.className = 'sku-trigger-wrap';
                 const btn = document.createElement('button');
-                btn.id = 'skuMainAction';
-                btn.className = 'sku-open-trigger';
-                btn.textContent = 'استعراض كافة الموديلات والأسعار المتوفرة';
-                btn.onclick = () => this.toggle(true);
+                btn.id = 'skuMiniBtn';
+                btn.className = 'sku-mini-btn';
+                btn.textContent = 'استعراض كافة الموديلات';
                 btn.style.display = 'block';
-                shelf.insertBefore(btn, target);
+                btn.onclick = () => this.toggle(true);
+                wrap.appendChild(btn);
+                shelf.insertBefore(wrap, ref);
             }
         },
-        select: function(data) {
-            const item = JSON.parse(decodeURIComponent(data));
+        select: function(enc) {
+            const item = JSON.parse(decodeURIComponent(enc));
             if (window.updateSKUPrice) window.updateSKUPrice(item);
             if (window.changeImage) {
-                const gallery = Array.from(document.querySelectorAll('.thumbnails-slider img'));
-                const found = gallery.findIndex(img => img.src === item.image);
-                if (found !== -1) window.changeImage(found);
+                const th = Array.from(document.querySelectorAll('.thumbnails-slider img'));
+                const i = th.findIndex(m => m.src === item.image);
+                if (i !== -1) window.changeImage(i);
             }
             this.toggle(false);
         }
     };
 
-    const syncWithController = () => {
+    const run = () => {
         if (typeof window.renderSKUs === 'function') {
-            const coreFunc = window.renderSKUs;
-            window.renderSKUs = function(data) {
-                coreFunc(data);
-                window.SKU_MANAGER.render(data);
+            const old = window.renderSKUs;
+            window.renderSKUs = function(d) {
+                old(d);
+                window.SKU_MANAGER.render(d);
             };
             return true;
         }
         return false;
     };
 
-    if (!syncWithController()) {
-        const poller = setInterval(() => {
-            if (syncWithController()) clearInterval(poller);
-        }, 100);
-        setTimeout(() => clearInterval(poller), 10000);
+    if (!run()) {
+        const t = setInterval(() => { if (run()) clearInterval(t); }, 100);
+        setTimeout(() => clearInterval(t), 5000);
     }
 })();
-
   
 </script>
 
