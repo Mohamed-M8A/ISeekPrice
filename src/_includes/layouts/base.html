@@ -76,5 +76,240 @@
   <div id="widget-sidebar"></div>
   <div id="widget-overlay"></div>
 
+
+<script>
+
+
+/**
+ * SKU INTELLIGENT BROWSER - ALL IN ONE
+ * Developed for: AliExpress Binary SKU Data
+ */
+
+(function() {
+    // 1. الأنماط (CSS) - تصميم عصري وفخم
+    const styles = `
+        :root { --primary-color: #ff6000; --dark-bg: #1a1a1a; --glass: rgba(255, 255, 255, 0.95); }
+        
+        /* الزر العائم للتجربة */
+        .sku-trigger-btn {
+            position: fixed; bottom: 20px; right: 20px; z-index: 999999;
+            background: var(--primary-color); color: #fff; border: none;
+            padding: 15px 25px; border-radius: 50px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex; align-items: center; gap: 10px; font-family: sans-serif;
+        }
+
+        /* النافذة المنبثقة */
+        #skuHubOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            display: none; z-index: 1000000; justify-content: center; align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction: rtl;
+        }
+        
+        .sku-hub-container {
+            background: #f5f5f5; width: 95%; max-width: 1100px; height: 85vh;
+            border-radius: 24px; display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sku-hub-header {
+            padding: 25px; background: #fff; border-bottom: 1px solid #ddd;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .sku-search-bar {
+            display: flex; gap: 10px; flex-grow: 1; margin: 0 30px;
+        }
+
+        .sku-search-bar input {
+            flex-grow: 1; padding: 12px 20px; border-radius: 12px;
+            border: 1px solid #ddd; font-size: 16px; outline: none;
+        }
+
+        .sku-grid {
+            padding: 25px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px; overflow-y: auto; flex-grow: 1;
+        }
+
+        /* كارت الموديل */
+        .sku-pro-card {
+            background: #fff; border-radius: 18px; overflow: hidden;
+            transition: 0.3s; cursor: pointer; border: 2px solid transparent;
+            display: flex; flex-direction: column; position: relative;
+        }
+
+        .sku-pro-card:hover { transform: translateY(-8px); border-color: var(--primary-color); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+
+        .sku-pro-card img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
+
+        .sku-pro-card .badge {
+            position: absolute; top: 10px; right: 10px; background: #27ae60;
+            color: #fff; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: bold;
+        }
+
+        .sku-pro-content { padding: 15px; }
+        .sku-pro-title { font-size: 14px; font-weight: 600; color: #333; height: 40px; overflow: hidden; margin-bottom: 10px; }
+        
+        .sku-pro-pricing { display: flex; align-items: baseline; gap: 8px; }
+        .price-now { font-size: 22px; font-weight: 900; color: #e74c3c; }
+        .price-old { font-size: 14px; color: #999; text-decoration: line-through; }
+
+        .sku-pro-footer {
+            margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;
+            display: flex; justify-content: space-between; font-size: 12px; color: #666;
+        }
+
+        .close-hub-btn { font-size: 35px; cursor: pointer; color: #999; transition: 0.2s; }
+        .close-hub-btn:hover { color: #333; transform: rotate(90deg); }
+    `;
+
+    // 2. حقن الـ HTML الأساسي
+    const html = `
+        <button class="sku-trigger-btn" onclick="window.SKU_MODULE.open()">
+            <span>📊</span> مستعرض الموديلات الذكي
+        </button>
+
+        <div id="skuHubOverlay">
+            <div class="sku-hub-container">
+                <div class="sku-hub-header">
+                    <h2 style="margin:0; font-size: 20px;">مقارنة الموديلات (30 خيار)</h2>
+                    <div class="sku-search-bar">
+                        <input type="text" id="skuHubSearch" placeholder="ابحث في المواصفات (مثلاً: أزرق، XL...)" oninput="window.SKU_MODULE.filter()">
+                    </div>
+                    <div class="close-hub-btn" onclick="window.SKU_MODULE.close()">&times;</div>
+                </div>
+                <div id="skuHubGrid" class="sku-grid">
+                    <!-- البيانات ستحقن هنا -->
+                </div>
+            </div>
+        </div>
+    `;
+
+    // حقن الاستايل والهيكل في الصفحة
+    const styleEl = document.createElement('style'); styleEl.innerHTML = styles; document.head.appendChild(styleEl);
+    const div = document.createElement('div'); div.innerHTML = html; document.body.appendChild(div);
+
+    // 3. المحرك البرمجي (The Engine)
+    window.SKU_MODULE = {
+        allData: [],
+        
+        // دالة فك التشفير البيناري (Binary Parser)
+        parseBinary: function(buffer) {
+            const view = new DataView(buffer);
+            const decoder = new TextDecoder('utf-8');
+            const slots = [];
+            let offset = 8; // تخطي الـ ID (8 بايت)
+
+            for (let i = 0; i < 30; i++) {
+                const slotOffset = offset + (i * 214);
+                if (slotOffset + 214 > buffer.byteLength) break;
+
+                const original = view.getFloat32(slotOffset, true);
+                const discounted = view.getFloat32(slotOffset + 4, true);
+                const shipping = view.getFloat32(slotOffset + 8, true);
+                const minD = view.getUint8(slotOffset + 12);
+                const maxD = view.getUint8(slotOffset + 13);
+
+                const imgBuff = new Uint8Array(buffer, slotOffset + 14, 40);
+                const imgSlug = decoder.decode(imgBuff).replace(/\0/g, '').trim();
+
+                const propBuff = new Uint8Array(buffer, slotOffset + 54, 160);
+                const props = decoder.decode(propBuff).replace(/\0/g, '').trim();
+
+                if (original > 0) {
+                    slots.push({
+                        priceOriginal: original,
+                        priceDiscounted: discounted,
+                        shippingFee: shipping,
+                        minDelivery: minD,
+                        maxDelivery: maxD,
+                        image: `https://ae01.alicdn.com/kf/${imgSlug}.jpg`,
+                        props: props
+                    });
+                }
+            }
+            return slots;
+        },
+
+        // فتح النافذة
+        open: function() {
+            document.getElementById('skuHubOverlay').style.display = 'flex';
+            // إذا لم تكن هناك بيانات، نصنع بيانات وهمية للتجربة (Mock Data)
+            if (this.allData.length === 0) {
+                console.warn("لم يتم تحميل ملف بيناري، سأعرض بيانات تجريبية.");
+                this.render(this.generateMockData());
+            }
+        },
+
+        close: function() { document.getElementById('skuHubOverlay').style.display = 'none'; },
+
+        // عرض العناصر في الشبكة
+        render: function(items) {
+            const grid = document.getElementById('skuHubGrid');
+            grid.innerHTML = items.map(item => `
+                <div class="sku-pro-card" onclick="window.SKU_MODULE.selectItem('${encodeURIComponent(JSON.stringify(item))}')">
+                    <span class="badge">وفر ${Math.round((item.priceOriginal - item.priceDiscounted)/item.priceOriginal * 100)}%</span>
+                    <img src="${item.image}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
+                    <div class="sku-pro-content">
+                        <div class="sku-pro-title">${item.props || 'موديل غير مسمى'}</div>
+                        <div class="sku-pro-pricing">
+                            <span class="price-now">${item.priceDiscounted.toFixed(2)}</span>
+                            <span class="price-old">${item.priceOriginal.toFixed(2)}</span>
+                        </div>
+                        <div class="sku-pro-footer">
+                            <span>🚚 توصيل: ${item.maxDelivery} يوم</span>
+                            <span style="color: ${item.shippingFee <=0 ? '#27ae60' : '#666'}">
+                                ${item.shippingFee <= 0 ? 'شحن مجاني' : 'شحن: ' + item.shippingFee}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        },
+
+        filter: function() {
+            const query = document.getElementById('skuHubSearch').value.toLowerCase();
+            const filtered = this.allData.filter(i => i.props.toLowerCase().includes(query));
+            this.render(filtered);
+        },
+
+        selectItem: function(encoded) {
+            const item = JSON.parse(decodeURIComponent(encoded));
+            console.log("تم اختيار الموديل:", item);
+            
+            // تحديث واجهة الموقع (نستخدم الدوال الموجودة في ملفك make.js)
+            if (window.injectData) window.injectData(item);
+            
+            // إغلاق النافذة
+            this.close();
+            alert("تم تحديث البيانات للموديل: " + item.props);
+        },
+
+        // بيانات وهمية فقط لتستطيع رؤية التصميم الآن
+        generateMockData: function() {
+            const mock = [];
+            for(let i=1; i<=30; i++) {
+                mock.push({
+                    priceOriginal: 100 + (i*5),
+                    priceDiscounted: 80 + (i*3),
+                    shippingFee: i % 3 === 0 ? 0 : 5.5,
+                    minDelivery: 7, maxDelivery: 15,
+                    image: '',
+                    props: "لون عشوائي موديل رقم " + i + " مقاس XL جودة ممتازة"
+                });
+            }
+            this.allData = mock;
+            return mock;
+        }
+    };
+})();
+
+</script>
+
+
+
+  
+
 </body>
 </html>
