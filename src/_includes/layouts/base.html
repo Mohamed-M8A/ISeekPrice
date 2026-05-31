@@ -81,90 +81,96 @@
 
 (function() {
     const style = document.createElement('style');
-    style.textContent = `#skuHubOverlay{position:fixed;inset:0;background:rgba(2,12,27,0.98);backdrop-filter:blur(15px);display:none;z-index:2147483647;justify-content:center;align-items:center;font-family:system-ui,sans-serif;direction:rtl}#skuHubOverlay.active{display:flex}.sku-container{width:90%;max-width:1100px;height:85vh;display:flex;flex-direction:column;animation:skuIn 0.5s cubic-bezier(0.16,1,0.3,1)}.sku-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:20px;border-bottom:1px solid rgba(100,255,218,0.1)}.sku-title{color:#64ffda;font-size:1.1rem;letter-spacing:2px;font-weight:300}.sku-close{background:none;border:none;color:#8892b0;font-size:2.5rem;cursor:pointer}.sku-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;padding:30px 0;overflow-y:auto}.sku-card{background:#112240;border-radius:4px;overflow:hidden;cursor:pointer;transition:0.3s;border:1px solid transparent;display:flex;flex-direction:column}.sku-card:hover{border-color:#64ffda;transform:translateY(-5px)}.sku-img{width:100%;height:180px;object-fit:cover;opacity:0.8;transition:0.3s}.sku-card:hover .sku-img{opacity:1}.sku-content{padding:15px;flex-grow:1;display:flex;flex-direction:column}.sku-props{color:#8892b0;font-size:0.8rem;margin-bottom:10px;height:35px;overflow:hidden}.sku-price{display:flex;align-items:baseline;gap:10px}.sku-new{color:#ccd6f6;font-size:1.3rem;font-weight:600}.sku-old{color:#495670;font-size:0.8rem;text-decoration:line-through}.sku-footer{margin-top:auto;padding-top:10px;display:flex;justify-content:space-between;font-size:0.7rem;color:#64ffda;text-transform:uppercase}.sku-btn-main{display:none;width:100%;padding:14px;background:none;border:1px solid #64ffda;color:#64ffda;cursor:pointer;border-radius:4px;margin-top:15px;transition:0.3s;font-family:inherit}.sku-btn-main:hover{background:rgba(100,255,218,0.1)}@keyframes skuIn{from{opacity:0;transform:scale(0.98)}to{opacity:1;transform:scale(1)}}`;
+    style.textContent = `#skuHubOverlay{position:fixed;inset:0;background:rgba(2,12,27,0.99);backdrop-filter:blur(20px);display:none;z-index:2147483647;justify-content:center;align-items:center;font-family:system-ui,-apple-system,sans-serif;direction:rtl}#skuHubOverlay.active{display:flex}.sku-wrapper{width:92%;max-width:1200px;height:88vh;display:flex;flex-direction:column;animation:skuReveal 0.4s cubic-bezier(0.16,1,0.3,1)}@keyframes skuReveal{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}.sku-header{display:flex;justify-content:space-between;align-items:center;padding:0 10px 20px 10px;border-bottom:1px solid rgba(255,255,255,0.05)}.sku-title{color:#64ffda;font-size:0.9rem;font-weight:400;letter-spacing:3px;text-transform:uppercase}.sku-close-btn{background:none;border:none;color:#8892b0;font-size:2.2rem;cursor:pointer;line-height:1}.sku-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;padding:30px 10px;overflow-y:auto;flex-grow:1;scrollbar-width:thin;scrollbar-color:#233554 #020c1b}.sku-grid::-webkit-scrollbar{width:4px}.sku-grid::-webkit-scrollbar-thumb{background:#233554}.sku-card{background:#112240;border-radius:12px;overflow:hidden;cursor:pointer;transition:all 0.3s ease;border:1px solid rgba(100,255,218,0);display:flex;flex-direction:column;position:relative}.sku-card:hover{transform:translateY(-8px);border-color:rgba(100,255,218,0.4);box-shadow:0 15px 35px rgba(0,0,0,0.4)}.sku-card-img{width:100%;height:220px;object-fit:cover;transition:0.5s}.sku-card-content{padding:18px;display:flex;flex-direction:column;gap:12px}.sku-card-props{color:#ccd6f6;font-size:0.85rem;font-weight:500;line-height:1.5;height:40px;overflow:hidden}.sku-card-price-box{display:flex;align-items:center;gap:12px}.sku-card-new{color:#fff;font-size:1.5rem;font-weight:700}.sku-card-old{color:#495670;font-size:0.9rem;text-decoration:line-through}.sku-card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,0.05);font-size:0.75rem}.sku-delivery-tag{color:#64ffda;display:flex;align-items:center;gap:5px}.sku-shipping-tag{color:#8892b0}.sku-open-trigger{width:100%;padding:14px;background:#f0f2f5;border:1px solid #dcdfe6;color:#495670;font-weight:600;font-size:0.95rem;border-radius:8px;cursor:pointer;margin:15px 0;transition:0.2s;display:none;text-align:center;font-family:inherit}.sku-open-trigger:hover{background:#e4e7ed;color:#2c3e50;border-color:#c0c4cc}`;
     document.head.appendChild(style);
 
-    const hubHtml = `
+    const modalMarkup = `
         <div id="skuHubOverlay">
-            <div class="sku-container">
+            <div class="sku-wrapper">
                 <div class="sku-header">
-                    <div class="sku-title">SELECT VARIANT</div>
-                    <button class="sku-close" onclick="window.SKU_HUB.toggle(false)">&times;</button>
+                    <div class="sku-title">Product Variants Explorer</div>
+                    <button class="sku-close-btn" onclick="window.SKU_MANAGER.toggle(false)">&times;</button>
                 </div>
-                <div class="sku-grid" id="skuHubGrid"></div>
+                <div id="skuHubGrid" class="sku-grid"></div>
             </div>
         </div>`;
-    document.body.insertAdjacentHTML('beforeend', hubHtml);
+    document.body.insertAdjacentHTML('beforeend', modalMarkup);
 
-    window.SKU_HUB = {
-        data: [],
-        toggle: function(show) {
-            document.getElementById('skuHubOverlay').classList.toggle('active', show);
-            document.body.style.overflow = show ? 'hidden' : '';
+    window.SKU_MANAGER = {
+        store: [],
+        toggle: function(state) {
+            const el = document.getElementById('skuHubOverlay');
+            el.classList.toggle('active', state);
+            document.body.style.overflow = state ? 'hidden' : '';
         },
         render: function(list) {
-            this.data = list.filter(i => i.priceDiscounted > 0);
-            if (this.data.length === 0) return;
+            this.store = list.filter(i => i.priceDiscounted > 0);
+            if (!this.store.length) return;
 
             const grid = document.getElementById('skuHubGrid');
-            grid.innerHTML = this.data.map(item => `
-                <div class="sku-card" onclick="window.SKU_HUB.select('${encodeURIComponent(JSON.stringify(item))}')">
-                    <img src="${item.image}" class="sku-img" loading="lazy">
-                    <div class="sku-content">
-                        <div class="sku-props">${item.props}</div>
-                        <div class="sku-price">
-                            <span class="sku-new">${item.priceDiscounted.toFixed(2)}</span>
-                            <span class="sku-old">${item.priceOriginal.toFixed(2)}</span>
+            grid.innerHTML = this.store.map(item => `
+                <div class="sku-card" onclick="window.SKU_MANAGER.select('${encodeURIComponent(JSON.stringify(item))}')">
+                    <img src="${item.image}" class="sku-card-img" loading="lazy">
+                    <div class="sku-card-content">
+                        <div class="sku-card-props">${item.props}</div>
+                        <div class="sku-card-price-box">
+                            <span class="sku-card-new">${item.priceDiscounted.toFixed(2)}</span>
+                            <span class="sku-card-old">${item.priceOriginal.toFixed(2)}</span>
                         </div>
-                        <div class="sku-footer">
-                            <span>📦 Express Delivery</span>
-                            <span>Save ${Math.round((item.priceOriginal-item.priceDiscounted)/item.priceOriginal*100)}%</span>
+                        <div class="sku-card-footer">
+                            <span class="sku-delivery-tag">🚚 ${item.maxDelivery} Days Delivery</span>
+                            <span class="sku-shipping-tag">${item.shippingFee <= 0 ? 'FREE SHIPPING' : 'SHIPPING: ' + item.shippingFee.toFixed(2)}</span>
                         </div>
                     </div>
                 </div>
             `).join('');
 
-            this.injectButton();
+            this.placeButton();
         },
-        injectButton: function() {
+        placeButton: function() {
             const shelf = document.getElementById('dynamic-shelf');
-            if (shelf && !document.getElementById('openSkuBtn')) {
+            if (!shelf) return;
+            const target = shelf.querySelector('.info-boxes-wrapper') || shelf.querySelector('.button-container');
+            if (target && !document.getElementById('skuMainAction')) {
                 const btn = document.createElement('button');
-                btn.id = 'openSkuBtn';
-                btn.className = 'sku-btn-main';
-                btn.textContent = 'استعراض كافة الخيارات والموديلات';
+                btn.id = 'skuMainAction';
+                btn.className = 'sku-open-trigger';
+                btn.textContent = 'استعراض كافة الموديلات والأسعار المتوفرة';
                 btn.onclick = () => this.toggle(true);
                 btn.style.display = 'block';
-                shelf.appendChild(btn);
+                shelf.insertBefore(btn, target);
             }
         },
-        select: function(enc) {
-            const item = JSON.parse(decodeURIComponent(enc));
+        select: function(data) {
+            const item = JSON.parse(decodeURIComponent(data));
             if (window.updateSKUPrice) window.updateSKUPrice(item);
             if (window.changeImage) {
-                const imgs = Array.from(document.querySelectorAll('.thumbnails-slider img'));
-                const idx = imgs.findIndex(i => i.src === item.image);
-                if (idx !== -1) window.changeImage(idx);
+                const gallery = Array.from(document.querySelectorAll('.thumbnails-slider img'));
+                const found = gallery.findIndex(img => img.src === item.image);
+                if (found !== -1) window.changeImage(found);
             }
             this.toggle(false);
         }
     };
 
-    // حلقة فحص ذكية لانتظار الكنترولر وربط البيانات
-    let attempt = 0;
-    const hookInterval = setInterval(() => {
-        attempt++;
+    const syncWithController = () => {
         if (typeof window.renderSKUs === 'function') {
-            const originalRender = window.renderSKUs;
-            window.renderSKUs = function(skuList) {
-                originalRender(skuList); // تشغيل كودك الأصلي أولاً
-                window.SKU_HUB.render(skuList); // تشغيل المستعرض الفخم
+            const coreFunc = window.renderSKUs;
+            window.renderSKUs = function(data) {
+                coreFunc(data);
+                window.SKU_MANAGER.render(data);
             };
-            clearInterval(hookInterval);
+            return true;
         }
-        if (attempt > 100) clearInterval(hookInterval); // توقف بعد 10 ثواني
-    }, 100);
+        return false;
+    };
 
+    if (!syncWithController()) {
+        const poller = setInterval(() => {
+            if (syncWithController()) clearInterval(poller);
+        }, 100);
+        setTimeout(() => clearInterval(poller), 10000);
+    }
 })();
 
   
