@@ -56,7 +56,8 @@
     
 <style>
 
-.site-promo-banner{width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;background:#0a192f;color:#fff;padding:45px 0;border-bottom:3px solid #0056b3}.promo-container{max-width:1150px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 30px;gap:40px}.promo-content{flex:2;text-align:right}.promo-tag{color:#64ffda;font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}.promo-content h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:700;margin:0 0 8px 0;transition:all .4s ease}.promo-content p{font-size:1.1rem;opacity:0.7;margin:0;height:1.4em;transition:all .4s ease}.promo-link{flex-shrink:0;background:#0056b3;color:#fff;padding:14px 40px;border-radius:6px;font-weight:600;text-decoration:none;transition:all .3s ease;border:1px solid #0056b3}.promo-link:hover{background:transparent;color:#0056b3}@media (max-width:768px){.promo-container{flex-direction:column;text-align:center;padding:35px 20px}.promo-content{text-align:center}.promo-link{width:100%;text-align:center;box-sizing:border-box}}    
+.hero-offer-banner{width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;background:#004b91;color:#fff;padding:40px 0;font-family:Segoe UI,Tahoma,Arial,sans-serif;border-bottom:5px solid #003a70}.offer-wrapper{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 25px;gap:20px}.offer-text{flex:1;text-align:right}.offer-badge{background:#ff6b00;color:#fff;padding:3px 10px;font-size:12px;font-weight:bold;border-radius:2px;margin-bottom:12px;display:inline-block;text-transform:uppercase}.offer-text h2{font-size:clamp(1.4rem,3.5vw,2.1rem);font-weight:700;margin:0 0 10px 0;line-height:1.2}.offer-text p{font-size:1.1rem;opacity:0.9;margin:0;height:1.5em;transition:opacity 0.4s}.offer-button{background:#ff6b00;color:#fff;padding:14px 35px;border-radius:4px;font-weight:700;text-decoration:none;font-size:1.1rem;display:inline-block;transition:background 0.2s ease;box-shadow:0 2px 4px rgba(0,0,0,0.2);border:none}.offer-button:hover{background:#e66000;box-shadow:0 4px 8px rgba(0,0,0,0.3)}@media (max-width:768px){.offer-wrapper{flex-direction:column;text-align:center;padding:30px 20px}.offer-text{text-align:center;margin-bottom:20px}.offer-button{width:100%;text-align:center;box-sizing:border-box}}
+    
 </style>
 </head>
 <body>
@@ -81,19 +82,19 @@
 
 
     
-<div class="site-promo-banner">
-  <div class="promo-container">
+<div class="hero-offer-banner">
+  <div class="offer-wrapper">
     <!-- الجانب النصي -->
-    <div class="promo-content">
-      <div class="promo-tag">تحديث يومي</div>
-      <h2 id="promo-title">أفضل الصفقات العالمية بين يديك</h2>
-      <p id="promo-desc">اكتشف منتجات علي إكسبريس المختارة بعناية لأجلك</p>
+    <div class="offer-text">
+      <span class="offer-badge">عروض حصرية</span>
+      <h2 id="rotating-title">وفر أموالك مع أفضل صفقات اليوم</h2>
+      <p id="rotating-desc">منتجات مختارة من علي إكسبريس بأسعار تنافسية</p>
     </div>
 
-    <!-- جانب زر الضغط -->
-    <div class="promo-action">
-      <a href="https://s.click.aliexpress.com/e/_c3FEbhnP" class="promo-link" target="_blank">
-        تصفح العروض
+    <!-- الجانب التفاعلي -->
+    <div class="offer-cta">
+      <a href="https://s.click.aliexpress.com/e/_c3FEbhnP" class="offer-button" target="_blank">
+        اكتشف السعر الآن
       </a>
     </div>
   </div>
@@ -110,28 +111,29 @@
 
 <script type='text/javascript'>
     
-const promoSlides = [
-  {t: "أفضل الصفقات العالمية بين يديك", d: "اكتشف منتجات علي إكسبريس المختارة بعناية لأجلك"},
-  {t: "وفّر حتى 70% على الإلكترونيات", d: "عروض حصرية لفترة محدودة من كبار البائعين"},
-  {t: "تسوق مباشر من المصنع", d: "ضمان أقل الأسعار مع شحن سريع وآمن لجميع الوجهات"}
+const slides = [
+  {t: "وفر أموالك مع أفضل صفقات اليوم", d: "منتجات مختارة من علي إكسبريس بأسعار تنافسية"},
+  {t: "أحدث التقنيات بأسعار المصنع", d: "اكتشف تشكيلة واسعة من الإلكترونيات الذكية"},
+  {t: "تسوق بذكاء.. تسوق مباشرة", d: "خصومات تصل إلى 70% مع حماية كاملة للمشتري"}
 ];
 
-let promoIdx = 0;
-const titleEl = document.getElementById('promo-title');
-const descEl = document.getElementById('promo-desc');
+let currentIndex = 0;
+const titleNode = document.getElementById('rotating-title'),
+      descNode = document.getElementById('rotating-desc');
 
-function updatePromoContent() {
-  titleEl.style.opacity = descEl.style.opacity = '0';
+function rotateTexts() {
+  titleNode.style.opacity = descNode.style.opacity = '0';
   
   setTimeout(() => {
-    promoIdx = (promoIdx + 1) % promoSlides.length;
-    titleEl.innerText = promoSlides[promoIdx].t;
-    descEl.innerText = promoSlides[promoIdx].d;
-    titleEl.style.opacity = descEl.style.opacity = '1';
-  }, 450);
+    currentIndex = (currentIndex + 1) % slides.length;
+    titleNode.innerText = slides[currentIndex].t;
+    descNode.innerText = slides[currentIndex].d;
+    titleNode.style.opacity = descNode.style.opacity = '1';
+  }, 400);
 }
 
-setInterval(updatePromoContent, 6000);
+titleNode.style.transition = descNode.style.transition = "opacity 0.4s ease";
+setInterval(rotateTexts, 5000);
     
 </script>
 
