@@ -56,8 +56,7 @@
     
 <style>
 
-.premium-hero{width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;min-height:400px;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;background:linear-gradient(-45deg,#ee7752,#e73c7e,#23a6d5,#23d5ab);background-size:400% 400%;animation:gradient 15s ease infinite;overflow:hidden;padding:40px 20px;box-sizing:border-box}.hero-content{position:relative;z-index:2;max-width:800px}.hero-badge{background:rgba(255,255,255,0.2);padding:6px 16px;border-radius:50px;font-size:0.9rem;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.3);margin-bottom:20px;display:inline-block}.premium-hero h1{font-size:clamp(1.8rem,6vw,3.5rem);font-weight:900;line-height:1.2;margin-bottom:20px;text-shadow:0 10px 30px rgba(0,0,0,0.1)}.premium-hero p{font-size:clamp(1rem,3vw,1.3rem);opacity:0.9;margin-bottom:35px;height:1.6em}.hero-btn{display:inline-flex;align-items:center;gap:10px;background:#fff;color:#e73c7e;padding:16px 40px;border-radius:50px;font-weight:800;text-decoration:none;transition:all 0.3s cubic-bezier(.4,0,.2,1);box-shadow:0 10px 20px rgba(0,0,0,0.1)}.hero-btn:hover{transform:translateY(-5px);box-shadow:0 15px 30px rgba(0,0,0,0.2);background:#f8f9fa}@keyframes gradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}@media (max-width:768px){.premium-hero{min-height:300px}}
-    
+.site-promo-banner{width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;background:#0a192f;color:#fff;padding:45px 0;border-bottom:3px solid #0056b3}.promo-container{max-width:1150px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 30px;gap:40px}.promo-content{flex:2;text-align:right}.promo-tag{color:#64ffda;font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}.promo-content h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:700;margin:0 0 8px 0;transition:all .4s ease}.promo-content p{font-size:1.1rem;opacity:0.7;margin:0;height:1.4em;transition:all .4s ease}.promo-link{flex-shrink:0;background:#0056b3;color:#fff;padding:14px 40px;border-radius:6px;font-weight:600;text-decoration:none;transition:all .3s ease;border:1px solid #0056b3}.promo-link:hover{background:transparent;color:#0056b3}@media (max-width:768px){.promo-container{flex-direction:column;text-align:center;padding:35px 20px}.promo-content{text-align:center}.promo-link{width:100%;text-align:center;box-sizing:border-box}}    
 </style>
 </head>
 <body>
@@ -80,55 +79,59 @@
 <div id='widget-overlay'></div>
 
 
-<section class="premium-hero">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-        <span class="hero-badge" id="hero-badge">عروض عالمية</span>
-        <h1 id="hero-title">تسوق أحدث المنتجات من المصنع مباشرة</h1>
-        <p id="hero-desc">استمتع بتجربة تسوق فريدة مع خصومات تصل إلى 70% وشحن سريع</p>
-        <a href="https://s.click.aliexpress.com/e/_c3FEbhnP" class="hero-btn" target="_blank">
-            <span>ابدأ التسوق الآن</span>
-            <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M13.172 12l-4.95-4.95 1.414-1.414L16 12l-6.364 6.364-1.414-1.414z"></path></svg>
-        </a>
+
+    
+<div class="site-promo-banner">
+  <div class="promo-container">
+    <!-- الجانب النصي -->
+    <div class="promo-content">
+      <div class="promo-tag">تحديث يومي</div>
+      <h2 id="promo-title">أفضل الصفقات العالمية بين يديك</h2>
+      <p id="promo-desc">اكتشف منتجات علي إكسبريس المختارة بعناية لأجلك</p>
     </div>
-</section>    
+
+    <!-- جانب زر الضغط -->
+    <div class="promo-action">
+      <a href="https://s.click.aliexpress.com/e/_c3FEbhnP" class="promo-link" target="_blank">
+        تصفح العروض
+      </a>
+    </div>
+  </div>
+</div>
     
   
 <!-- Main Content -->
 <div id='primary'>
 <main><div id="souq-widget-root"></div></main>
 </div>
-
 <footer id='footer' itemscope='itemscope' itemtype='https://schema.org/WPFooter'></footer>
 
 
 
 <script type='text/javascript'>
     
-const content = [
-    {b:"عروض حصرية", t:"أفضل المنتجات العالمية بأسعار المصنع", d:"اكتشف تشكيلة واسعة من الإلكترونيات والأزياء بأفضل سعر"},
-    {b:"شحن سريع", t:"تسوق من علي إكسبريس واحمِ محفظتك", d:"خصومات مذهلة لفترة محدودة على جميع الأقسام"},
-    {b:"الأكثر مبيعاً", t:"ملايين المنتجات تنتظر اكتشافك", d:"ضمان استعادة الأموال وحماية كاملة للمشتري"}
+const promoSlides = [
+  {t: "أفضل الصفقات العالمية بين يديك", d: "اكتشف منتجات علي إكسبريس المختارة بعناية لأجلك"},
+  {t: "وفّر حتى 70% على الإلكترونيات", d: "عروض حصرية لفترة محدودة من كبار البائعين"},
+  {t: "تسوق مباشر من المصنع", d: "ضمان أقل الأسعار مع شحن سريع وآمن لجميع الوجهات"}
 ];
 
-let i = 0;
-const b = document.getElementById('hero-badge'),
-      t = document.getElementById('hero-title'),
-      d = document.getElementById('hero-desc');
+let promoIdx = 0;
+const titleEl = document.getElementById('promo-title');
+const descEl = document.getElementById('promo-desc');
 
-function updateHero() {
-    [b, t, d].forEach(el => el.style.opacity = 0);
-    setTimeout(() => {
-        i = (i + 1) % content.length;
-        b.innerText = content[i].b;
-        t.innerText = content[i].t;
-        d.innerText = content[i].d;
-        [b, t, d].forEach(el => el.style.opacity = 1);
-    }, 600);
+function updatePromoContent() {
+  titleEl.style.opacity = descEl.style.opacity = '0';
+  
+  setTimeout(() => {
+    promoIdx = (promoIdx + 1) % promoSlides.length;
+    titleEl.innerText = promoSlides[promoIdx].t;
+    descEl.innerText = promoSlides[promoIdx].d;
+    titleEl.style.opacity = descEl.style.opacity = '1';
+  }, 450);
 }
 
-[b, t, d].forEach(el => el.style.transition = "all 0.6s ease-in-out");
-setInterval(updateHero, 5000);
+setInterval(updatePromoContent, 6000);
     
 </script>
 
