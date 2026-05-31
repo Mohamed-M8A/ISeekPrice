@@ -56,11 +56,7 @@
     
 <style>
 
-.full-width-banner{width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;padding:60px 0;background:linear-gradient(135deg,#0f172a 0%,#2563eb 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;box-shadow:0 10px 25px rgb(0 0 0 / .1);z-index:10}.full-width-banner h2{font-size:clamp(1.5rem, 5vw, 2.5rem);margin-bottom:20px;font-weight:800;letter-spacing:-.5px}.banner-link{display:inline-block;background:#fff;color:#2563eb;padding:14px 35px;border-radius:50px;font-weight:700;text-decoration:none;transition:all 0.3s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 12px rgb(0 0 0 / .15)}.banner-link:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 8px 20px rgb(0 0 0 / .2);background:#f1f5f9}
-
-
-    
-.ali-banner-container{width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;padding:40px 0;background:linear-gradient(135deg,#fd3813 0%,#ff7324 100%);color:#fff;overflow:hidden;box-shadow:0 10px 30px rgba(253,56,19,.3);z-index:10}.ali-wrapper{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-around;padding:0 20px;gap:20px;flex-wrap:wrap}.ali-text-side{flex:1;min-width:300px;text-align:right}.ali-text-side h2{font-size:clamp(1.2rem,4vw,2.2rem);font-weight:800;margin-bottom:10px;transition:0.5s}.ali-text-side p{font-size:1.1rem;opacity:.9;margin-bottom:15px;height:1.5em}.ali-badge{display:inline-block;background:rgba(255,255,255,.2);padding:5px 15px;border-radius:50px;font-size:.8rem;backdrop-filter:blur(5px);border:1px solid rgba(255,255,255,.3)}.ali-img-side img{max-width:100%;height:auto;border-radius:12px;box-shadow:0 15px 35px rgba(0,0,0,.2);transition:transform .3s ease}.ali-img-side img:hover{transform:scale(1.03)}@media (max-width:768px){.ali-wrapper{flex-direction:column;text-align:center}.ali-text-side{text-align:center}.ali-img-side img{width:100%}}
+.premium-hero{width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;min-height:400px;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;background:linear-gradient(-45deg,#ee7752,#e73c7e,#23a6d5,#23d5ab);background-size:400% 400%;animation:gradient 15s ease infinite;overflow:hidden;padding:40px 20px;box-sizing:border-box}.hero-content{position:relative;z-index:2;max-width:800px}.hero-badge{background:rgba(255,255,255,0.2);padding:6px 16px;border-radius:50px;font-size:0.9rem;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.3);margin-bottom:20px;display:inline-block}.premium-hero h1{font-size:clamp(1.8rem,6vw,3.5rem);font-weight:900;line-height:1.2;margin-bottom:20px;text-shadow:0 10px 30px rgba(0,0,0,0.1)}.premium-hero p{font-size:clamp(1rem,3vw,1.3rem);opacity:0.9;margin-bottom:35px;height:1.6em}.hero-btn{display:inline-flex;align-items:center;gap:10px;background:#fff;color:#e73c7e;padding:16px 40px;border-radius:50px;font-weight:800;text-decoration:none;transition:all 0.3s cubic-bezier(.4,0,.2,1);box-shadow:0 10px 20px rgba(0,0,0,0.1)}.hero-btn:hover{transform:translateY(-5px);box-shadow:0 15px 30px rgba(0,0,0,0.2);background:#f8f9fa}@keyframes gradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}@media (max-width:768px){.premium-hero{min-height:300px}}
     
 </style>
 </head>
@@ -84,34 +80,18 @@
 <div id='widget-overlay'></div>
 
 
-<!-- Hero Banner
-<div id='Hero-Banner-Container'>
-  <div class='full-width-banner'>
-    <h2>مرحباً بك في عالم الإبداع</h2>
-    <p style='margin-bottom: 25px; opacity: 0.9;'>تصفح أحدث المقالات والخدمات الحصرية لدينا</p>
-    <a class='banner-link' href='/2024/12/surveillance-camera.html'>ابدأ الرحلة الآن</a>
-  </div>
-</div>    -->
-
-
-    
-<div class='full-width-banner ali-banner-container'>
-  <div class='ali-wrapper'>
-    <!-- الجانب النصي -->
-    <div class='ali-text-side'>
-      <h2 id='ali-title'>أفضل الصفقات العالمية</h2>
-      <p id='ali-desc'>ملايين المنتجات بأسعار المصنع مباشرة بين يديك</p>
-      <div class='ali-badge'>عرض لفترة محدودة</div>
+<section class="premium-hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <span class="hero-badge" id="hero-badge">عروض عالمية</span>
+        <h1 id="hero-title">تسوق أحدث المنتجات من المصنع مباشرة</h1>
+        <p id="hero-desc">استمتع بتجربة تسوق فريدة مع خصومات تصل إلى 70% وشحن سريع</p>
+        <a href="https://s.click.aliexpress.com/e/_c3FEbhnP" class="hero-btn" target="_blank">
+            <span>ابدأ التسوق الآن</span>
+            <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M13.172 12l-4.95-4.95 1.414-1.414L16 12l-6.364 6.364-1.414-1.414z"></path></svg>
+        </a>
     </div>
-    
-    <!-- جانب البنر الخاص بك -->
-    <div class='ali-img-side'>
-      <a href='https://s.click.aliexpress.com/e/_c3FEbhnP?bz=300*250' target='_parent'>
-        <img src='https://ae01.alicdn.com/kf/S3619e57974f148d087c950fe497cdf55q/300x250.jpg' alt='AliExpress Banner' width='725' height='90' loading='lazy'/>
-      </a>
-    </div>
-  </div>
-</div>
+</section>    
     
   
 <!-- Main Content -->
@@ -123,45 +103,35 @@
 
 
 
-
-
 <script type='text/javascript'>
     
-const aliData = [
-  {t: "أفضل الصفقات العالمية", d: "ملايين المنتجات بأسعار المصنع مباشرة"},
-  {t: "شحن سريع وموثوق", d: "اطلب الآن واستمتع بتجربة تسوق فريدة"},
-  {t: "وفر الكثير مع علي إكسبريس", d: "خصومات حصرية تصل إلى 70% على الإلكترونيات"}
+const content = [
+    {b:"عروض حصرية", t:"أفضل المنتجات العالمية بأسعار المصنع", d:"اكتشف تشكيلة واسعة من الإلكترونيات والأزياء بأفضل سعر"},
+    {b:"شحن سريع", t:"تسوق من علي إكسبريس واحمِ محفظتك", d:"خصومات مذهلة لفترة محدودة على جميع الأقسام"},
+    {b:"الأكثر مبيعاً", t:"ملايين المنتجات تنتظر اكتشافك", d:"ضمان استعادة الأموال وحماية كاملة للمشتري"}
 ];
 
-let aliIdx = 0;
-const aliTitle = document.getElementById('ali-title');
-const aliDesc = document.getElementById('ali-desc');
+let i = 0;
+const b = document.getElementById('hero-badge'),
+      t = document.getElementById('hero-title'),
+      d = document.getElementById('hero-desc');
 
-function rotateAliContent() {
-  aliTitle.style.opacity = aliDesc.style.opacity = 0;
-  
-  setTimeout(() => {
-    aliIdx = (aliIdx + 1) % aliData.length;
-    aliTitle.innerText = aliData[aliIdx].t;
-    aliDesc.innerText = aliData[aliIdx].d;
-    aliTitle.style.opacity = aliDesc.style.opacity = 1;
-  }, 500);
+function updateHero() {
+    [b, t, d].forEach(el => el.style.opacity = 0);
+    setTimeout(() => {
+        i = (i + 1) % content.length;
+        b.innerText = content[i].b;
+        t.innerText = content[i].t;
+        d.innerText = content[i].d;
+        [b, t, d].forEach(el => el.style.opacity = 1);
+    }, 600);
 }
 
-aliTitle.style.transition = aliDesc.style.transition = "opacity 0.5s ease-in-out";
-setInterval(rotateAliContent, 4000);
+[b, t, d].forEach(el => el.style.transition = "all 0.6s ease-in-out");
+setInterval(updateHero, 5000);
     
 </script>
 
-
-
-
-
-
-
-
-
-    
 
 <!-- (JS LINKS) -->     
 <script defer src='/public/js/corepress.js'></script>   
