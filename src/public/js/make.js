@@ -54,6 +54,92 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
 // =================== Product UI Layout & Data Injection ===================
 
 (function() {
+    const markup = `
+        <div id="skuHubOverlay">
+            <div class="sku-modal-content">
+                <div class="sku-modal-header">
+                    <h3>خيارات وموديلات المنتج</h3>
+                    <button class="sku-close" onclick="window.SKU_HUB.toggle(false)">&times;</button>
+                </div>
+                <div class="sku-slider-container">
+                    <button class="sku-nav prev" onclick="window.SKU_HUB.scroll('right')">
+                        <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                    <div class="sku-track" id="skuTrack"></div>
+                    <button class="sku-nav next" onclick="window.SKU_HUB.scroll('left')">
+                        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    document.body.insertAdjacentHTML('beforeend', markup);
+
+    window.SKU_HUB = {
+        items: [],
+        toggle: function(s) {
+            const el = document.getElementById('skuHubOverlay');
+            if (el) {
+                el.classList.toggle('active', s);
+                document.body.style.overflow = s ? 'hidden' : '';
+            }
+        },
+        scroll: function(d) {
+            const t = document.getElementById('skuTrack');
+            if (t) {
+                const a = 300;
+                t.scrollBy({ left: d === 'left' ? -a : a, behavior: 'smooth' });
+            }
+        },
+        render: function(data) {
+            this.items = data.filter(i => i.priceDiscounted > 0);
+            if (!this.items.length) return;
+            const minP = Math.min(...this.items.map(v => v.priceDiscounted));
+            const minD = Math.min(...this.items.map(v => v.maxDelivery));
+            const track = document.getElementById('skuTrack');
+            track.innerHTML = this.items.map(item => {
+                let badge = "";
+                if (item.priceDiscounted === minP) badge = '<span class="sku-badge badge-price">أفضل سعر</span>';
+                else if (item.maxDelivery === minD) badge = '<span class="sku-badge badge-delivery">أسرع شحن</span>';
+                return `
+                <div class="sku-card" onclick="window.SKU_HUB.select('${encodeURIComponent(JSON.stringify(item))}')">
+                    ${badge}
+                    <div class="sku-card-img-wrap">
+                        <img src="${item.image}" class="sku-card-img" loading="lazy">
+                    </div>
+                    <div class="sku-card-info">
+                        <div class="sku-card-name">${item.props}</div>
+                        <div class="sku-card-pricing">
+                            <span class="sku-card-now">${item.priceDiscounted.toFixed(2)}</span>
+                            <span class="sku-card-old">${item.priceOriginal.toFixed(2)}</span>
+                        </div>
+                        <div class="sku-card-meta">
+                            <div class="meta-row">
+                                <svg viewBox="0 0 24 24"><path d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+                                <span>التوصيل: ${item.minDelivery}-${item.maxDelivery} يوم</span>
+                            </div>
+                            <div class="meta-row" style="color: ${item.shippingFee <= 0 ? '#10b981' : 'inherit'}">
+                                <svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14v4m0 0l8 4m-8-4l-8 4m0-4v10l8 4"/></svg>
+                                <span>${item.shippingFee <= 0 ? 'شحن مجاني بالكامل' : 'رسوم الشحن: ' + item.shippingFee.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+            const btn = document.getElementById('skuHubBtn');
+            if (btn) btn.style.display = 'block';
+        },
+        select: function(enc) {
+            const item = JSON.parse(decodeURIComponent(enc));
+            if (window.updateSKUPrice) window.updateSKUPrice(item);
+            if (window.changeImage) {
+                const th = Array.from(document.querySelectorAll('.thumbnails-slider img'));
+                const i = th.findIndex(m => m.src === item.image);
+                if (i !== -1) window.changeImage(i);
+            }
+            this.toggle(false);
+        }
+    };
+
     const UILayout = {
         injectEmptyShelf() {
             const root = document.getElementById('dynamic-shelf');
@@ -76,6 +162,9 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
                     </div>
                     <span class="price-original"></span>
                 </div>
+                <div class="sku-trigger-wrap">
+                    <button id="skuHubBtn" class="sku-btn-minimal" onclick="window.SKU_HUB.toggle(true)" style="display:none">خيارات الموديلات والأسعار</button>
+                </div>
                 <div class="info-boxes-wrapper">
                     <div class="info-box product-variant"><span class="label">الموديل</span><span class="value variant-value">_</span></div>
                     <div class="info-box orders-count-box"><span class="label">الطلبات آخر 6 شهور</span><span class="value orders-count">_</span></div>
@@ -83,7 +172,6 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
                     <div class="info-box shipping-fee"><span class="label">رسوم التوصيل</span><span class="value fee-value">_</span></div>
                 </div>
                 <hr class="clean-divider">
-
                 <div class="button-container">
                     <a href="#" class="buy-button" target="_blank" rel="nofollow">اطلب الآن</a>
                     <button class="add-to-cart">اضف للسلة</button>
@@ -113,14 +201,13 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
                     </div>
                 `);
             }
-            
             const reviewGroups = document.querySelectorAll('.Customer-Reviews .stars-group');
             reviewGroups.forEach(group => {
                 const rating = parseFloat(group.getAttribute('data-rating')) || 5;
                 this.drawStars(group, rating);
             });
         }
-       };
+    };
 
     const init = () => {
         UILayout.injectEmptyShelf();
@@ -145,15 +232,12 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
     const activeCountry = localStorage.getItem("Cntry") || "SA";
     const formatPrice = num => parseFloat(num).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-    
-     window.renderSKUs = function(skuList) {
+    window.renderSKUs = function(skuList) {
         const skuWrapper = document.getElementById('sku-images-wrapper') || Object.assign(document.createElement('div'), {id: 'sku-images-wrapper'});
         skuWrapper.style.display = 'contents';
         skuWrapper.innerHTML = "";
-        
         const thumbSlider = document.querySelector('.thumbnails-slider');
         if (thumbSlider) thumbSlider.appendChild(skuWrapper);
-
         skuList.forEach(item => {
             const img = document.createElement("img");
             img.src = item.image;
@@ -161,14 +245,12 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
             img.title = item.props;
             img.loading = "lazy";
             img._skuData = item; 
-            
             img.addEventListener('click', () => {
                 if (typeof window.updateSKUPrice === "function") window.updateSKUPrice(item);
             });
-            
             skuWrapper.appendChild(img);
         });
-
+        if (window.SKU_HUB) window.SKU_HUB.render(skuList);
         const skuParam = new URLSearchParams(window.location.search).get('sku');
         if (skuParam && skuParam !== '255') {
             setTimeout(() => {
@@ -181,143 +263,107 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
         }
     };
 
-    
-window.injectData = function(data) {
-    const root = document.getElementById('dynamic-shelf');
-    if (!root || root.innerHTML.trim() === "") {
-        UILayout.injectEmptyShelf();
-    }
-    const config = countryInfo[activeCountry] || countryInfo["SA"];
-    const weight = config.rate || 1; 
-    const symbol = config.symbol;
-    const pOriginal = data.priceOriginal;
-    const pDiscounted = data.priceDiscounted;
-    const diff = pOriginal - pDiscounted;
-    const hasDiscount = diff > 0.01;
-
-    document.querySelectorAll(".price-discounted").forEach(el => el.textContent = `${formatPrice(pDiscounted)} ${symbol}`);
-
-    const savingEl = document.querySelector(".price-saving");
-    const discountEl = document.querySelector(".discount-percentage");
-    const originalPriceEls = document.querySelectorAll(".price-original");
-
-    if (hasDiscount) {
-        originalPriceEls.forEach(el => {
-            el.textContent = `${formatPrice(pOriginal)} ${symbol}`;
-            el.style.display = "inline-block";
-        });
-        
-        if (discountEl) {
-            discountEl.textContent = `-${Math.round((diff / pOriginal) * 100)}%`;
-            discountEl.style.display = "inline-block";
+    window.injectData = function(data) {
+        const root = document.getElementById('dynamic-shelf');
+        if (!root || root.innerHTML.trim() === "") {
+            UILayout.injectEmptyShelf();
         }
-
-        if (savingEl) {
-            savingEl.style.display = "block";
-            savingEl.innerHTML = `<span class="save-label">وفر:</span> <span class="save-amount">${formatPrice(diff)} ${symbol}</span>`;
-            const weightedDiff = diff / weight; 
-            let color = "#7f8c8d";
-            if (weightedDiff < 100) color = "#16a085";
-            else if (weightedDiff < 400) color = "#1abc9c";
-            else if (weightedDiff < 600) color = "#3498db";
-            else if (weightedDiff < 900) color = "#2ecc71";
-            else if (weightedDiff < 1200) color = "#e67e22";
-            else if (weightedDiff < 1600) color = "#c0392b";
-            else if (weightedDiff < 2000) color = "#f5008b";
-            else if (weightedDiff < 3000) color = "#8e44ad";
-            else color = "#FFD700";
-            
-            savingEl.style.color = color;
-            savingEl.style.fontWeight = "bold";
-
-            if (weightedDiff >= 500) {
-                const saveAmount = savingEl.querySelector(".save-amount");
-                if (saveAmount && !saveAmount.querySelector(".fire-gif")) {
-                    const fireGif = document.createElement("img");
-                    fireGif.alt = "سعر مميز";
-                    fireGif.src = "/public/assets/static/fire.gif";
-                    fireGif.style.cssText = "width:20px; vertical-align:middle; margin-left:5px;";
-                    fireGif.classList.add("fire-gif");
-                    saveAmount.appendChild(fireGif);
+        const config = countryInfo[activeCountry] || countryInfo["SA"];
+        const weight = config.rate || 1; 
+        const symbol = config.symbol;
+        const pOriginal = data.priceOriginal;
+        const pDiscounted = data.priceDiscounted;
+        const diff = pOriginal - pDiscounted;
+        const hasDiscount = diff > 0.01;
+        document.querySelectorAll(".price-discounted").forEach(el => el.textContent = `${formatPrice(pDiscounted)} ${symbol}`);
+        const savingEl = document.querySelector(".price-saving");
+        const discountEl = document.querySelector(".discount-percentage");
+        const originalPriceEls = document.querySelectorAll(".price-original");
+        if (hasDiscount) {
+            originalPriceEls.forEach(el => {
+                el.textContent = `${formatPrice(pOriginal)} ${symbol}`;
+                el.style.display = "inline-block";
+            });
+            if (discountEl) {
+                discountEl.textContent = `-${Math.round((diff / pOriginal) * 100)}%`;
+                discountEl.style.display = "inline-block";
+            }
+            if (savingEl) {
+                savingEl.style.display = "block";
+                savingEl.innerHTML = `<span class="save-label">وفر:</span> <span class="save-amount">${formatPrice(diff)} ${symbol}</span>`;
+                const weightedDiff = diff / weight; 
+                let color = "#7f8c8d";
+                if (weightedDiff < 100) color = "#16a085";
+                else if (weightedDiff < 400) color = "#1abc9c";
+                else if (weightedDiff < 600) color = "#3498db";
+                else if (weightedDiff < 900) color = "#2ecc71";
+                else if (weightedDiff < 1200) color = "#e67e22";
+                else if (weightedDiff < 1600) color = "#c0392b";
+                else if (weightedDiff < 2000) color = "#f5008b";
+                else if (weightedDiff < 3000) color = "#8e44ad";
+                else color = "#FFD700";
+                savingEl.style.color = color;
+                savingEl.style.fontWeight = "bold";
+                if (weightedDiff >= 500) {
+                    const saveAmount = savingEl.querySelector(".save-amount");
+                    if (saveAmount && !saveAmount.querySelector(".fire-gif")) {
+                        const fireGif = document.createElement("img");
+                        fireGif.alt = "سعر مميز";
+                        fireGif.src = "/public/assets/static/fire.gif";
+                        fireGif.style.cssText = "width:20px; vertical-align:middle; margin-left:5px;";
+                        fireGif.classList.add("fire-gif");
+                        saveAmount.appendChild(fireGif);
+                    }
                 }
             }
+        } else {
+            originalPriceEls.forEach(el => el.style.display = "none");
+            if (discountEl) discountEl.style.display = "none";
+            if (savingEl) savingEl.style.display = "none";
         }
-    } else {
-        originalPriceEls.forEach(el => el.style.display = "none");
-        if (discountEl) discountEl.style.display = "none";
-        if (savingEl) savingEl.style.display = "none";
-    }
-
-    document.querySelectorAll(".fee-value").forEach(el => {
-        const isFree = data.shippingFee <= 0;
-        el.textContent = isFree ? "شحن مجاني" : `${formatPrice(data.shippingFee)} ${symbol}`;
-        if (isFree) {
-            el.style.color = "#00b894";
-            el.style.fontWeight = "bold";
+        document.querySelectorAll(".fee-value").forEach(el => {
+            const isFree = data.shippingFee <= 0;
+            el.textContent = isFree ? "شحن مجاني" : `${formatPrice(data.shippingFee)} ${symbol}`;
+            if (isFree) {
+                el.style.color = "#00b894";
+                el.style.fontWeight = "bold";
+            }
+        });
+        document.querySelectorAll(".time-value").forEach(el => {
+            const min = data.minDelivery;
+            const max = data.maxDelivery;
+            el.textContent = (min === max || !max) ? `${min} أيام` : `${max}-${min} أيام`;
+        });
+        const ordersEl = document.querySelector(".orders-count");
+        if (ordersEl) ordersEl.textContent = data.orders.toLocaleString();
+        const ratingValueEl = document.getElementById("ratingValue");
+        if (ratingValueEl) ratingValueEl.textContent = data.score.toFixed(1);
+        const ratingCountEl = document.getElementById("goToReviews");
+        if (ratingCountEl) ratingCountEl.textContent = `${(data.reviews || 0).toLocaleString()} تقييمات`;
+        UILayout.drawStars(document.getElementById("stars"), parseFloat(data.score) || 0);
+        const affLink = data.productAffCode ? `https://s.click.aliexpress.com/${data.productAffCode}` : null;
+        const buyBtn = document.querySelector(".buy-button");
+        if (buyBtn && affLink) buyBtn.href = affLink;
+        const moreRev = document.querySelector(".more-reviews-link a");
+        if (moreRev && affLink) moreRev.href = affLink;
+        const storeWrapper = document.getElementById('store-bar-wrapper');
+        if (storeWrapper && data.storeName) {
+            const storeKey = `store_${data.storeId}`;
+            const storeData = { name: data.storeName, aff: data.storeAffCode || "" };
+            localStorage.setItem(storeKey, JSON.stringify(storeData));
+            const storeLink = `/page/store?store=${data.storeId}`;
+            const defaultImg = "/public/assets/static/store.webp";
+            storeWrapper.innerHTML = `
+                <div class="bar">
+                    <img src="${defaultImg}" class="profile-image" alt="Store">
+                    <div class="text">${data.storeName}</div>
+                    <div class="buttons">
+                        <a href="${storeLink}" class="button">زيارة المتجر</a>
+                        <a href="https://s.click.aliexpress.com/${data.storeAffCode}" target="_blank" rel="nofollow" class="button">متابعة</a>
+                    </div>
+                </div>`;
         }
-    });
-
-    document.querySelectorAll(".time-value").forEach(el => {
-        const min = data.minDelivery;
-        const max = data.maxDelivery;
-        el.textContent = (min === max || !max) ? `${min} أيام` : `${max}-${min} أيام`;
-    });
-
-    const ordersEl = document.querySelector(".orders-count");
-    if (ordersEl) ordersEl.textContent = data.orders.toLocaleString();
-
-    const ratingValueEl = document.getElementById("ratingValue");
-    if (ratingValueEl) ratingValueEl.textContent = data.score.toFixed(1);
-
-    const ratingCountEl = document.getElementById("goToReviews");
-    if (ratingCountEl) ratingCountEl.textContent = `${(data.reviews || 0).toLocaleString()} تقييمات`;
-
-    UILayout.drawStars(document.getElementById("stars"), parseFloat(data.score) || 0);
-
-    const affLink = data.productAffCode ? `https://s.click.aliexpress.com/${data.productAffCode}` : null;
-
-    const buyBtn = document.querySelector(".buy-button");
-    if (buyBtn && affLink) {
-        buyBtn.href = affLink;
-    }
-
-    const moreRev = document.querySelector(".more-reviews-link a");
-    if (moreRev && affLink) {
-        moreRev.href = affLink;
-    } else if (affLink) {
-        setTimeout(() => {
-            const retryRev = document.querySelector(".more-reviews-link a");
-            if (retryRev) retryRev.href = affLink;
-        }, 1000);
-    }
-
-    const moreRevContainer = document.querySelector(".more-reviews-link a");
-    if (moreRevContainer && affLink) {
-        moreRevContainer.href = affLink;
-    }
-
-    const storeWrapper = document.getElementById('store-bar-wrapper');
-    if (storeWrapper && data.storeName) {
-        const storeKey = `store_${data.storeId}`;
-        const storeData = { name: data.storeName, aff: data.storeAffCode || "" };
-        localStorage.setItem(storeKey, JSON.stringify(storeData));
-
-        const storeLink = `/page/store?store=${data.storeId}`;
-        const defaultImg = "/public/assets/static/store.webp";
-        
-        storeWrapper.innerHTML = `
-            <div class="bar">
-                <img src="${defaultImg}" class="profile-image" alt="Store">
-                <div class="text">${data.storeName}</div>
-                <div class="buttons">
-                    <a href="${storeLink}" class="button">زيارة المتجر</a>
-                    <a href="https://s.click.aliexpress.com/${data.storeAffCode}" target="_blank" rel="nofollow" class="button">متابعة</a>
-                </div>
-            </div>
-        `;
-    }
-};
-    
+    };
 })();
 
 // =================== Promo ===================
