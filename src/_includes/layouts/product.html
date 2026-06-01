@@ -4,38 +4,47 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ title }}</title>
+  
+  <link rel="alternate" hreflang="ar-SA" href="https://sa.iseekprice.com{{ page.url }}" />
+  <link rel="alternate" hreflang="ar-AE" href="https://ae.iseekprice.com{{ page.url }}" />
+  <link rel="alternate" hreflang="ar-OM" href="https://om.iseekprice.com{{ page.url }}" />
+  <link rel="alternate" hreflang="ar-MA" href="https://ma.iseekprice.com{{ page.url }}" />
+  <link rel="alternate" hreflang="ar-DZ" href="https://dz.iseekprice.com{{ page.url }}" />
+  <link rel="alternate" hreflang="ar-TN" href="https://tn.iseekprice.com{{ page.url }}" />
+  <link rel="alternate" hreflang="ar" href="https://www.iseekprice.com{{ page.url }}" />
+
   <link rel="icon" type="image/x-icon" href="/public/assets/static/favicon.ico">
   <link rel="stylesheet" href="/public/css/style.min.css">
+  
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <script src="/public/js/make.js" defer></script>
   <script src="/public/js/worker.js" defer></script>
   <script src="/public/js/controller.js" defer></script>
   <script src="/public/js/corepress.js" defer></script>
   <script src="/public/js/search.js" defer></script>
-
-   <!-- Google tag (gtag.js) -->
-    <script async src='https://www.googletagmanager.com/gtag/js?id=G-FRWKEMXVYT'></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-FRWKEMXVYT');
-    </script>
-
-<script type="application/ld+json" id="product-json-ld">
-{
-  "@context": "https://schema.org/",
-  "@type": "Product",
-  "name": "{{ title }}",
-  "offers": {
-    "@type": "Offer",
-    "priceCurrency": "SAR",
-    "availability": "https://schema.org/InStock",
-    "price": "0.00"
-  }
-}
-</script>
   
+  <!-- Google tag (gtag.js) -->
+  <script async src='https://www.googletagmanager.com/gtag/js?id=G-FRWKEMXVYT'></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FRWKEMXVYT');
+  </script>
+
+  <script type="application/ld+json" id="product-json-ld">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": "{{ title }}",
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "{{ currency.code }}",
+      "availability": "https://schema.org/InStock",
+      "price": "{{ productData.price }}"
+    }
+  }
+  </script>
 </head>
 <body>
 
@@ -49,29 +58,29 @@
     </div>
     <nav id="widget-topbar"></nav>
   </header>
+  
   <div id="widget-sidebar"></div>
   <div id="widget-overlay"></div>
 
+  <div id="primary">
+      <article id="single-content">
+          <div id="post-body">
+              <hr class="clean-divider">
+              {{ content }}
+          </div>
+          <hr class="clean-divider">
+          <div class="share-box-wrap">
+              <button id="shareOpenBtn" class="main-share-button">
+                  مشاركة مع الأصدقاء
+              </button>
+          </div>
+          <hr class="clean-divider">
+          <p>عروض ستعجبك</p>
+          <div id="souq-widget-root"></div>
+      </article>
+  </div>
 
-<div id="primary">
-    <article id="single-content">
-        <div id="post-body">
-            <hr class="clean-divider">
-            {{ content }}
-        </div>
-        <hr class="clean-divider">
-        <div class="share-box-wrap">
-            <button id="shareOpenBtn" class="main-share-button">
-                مشاركة مع الأصدقاء
-            </button>
-        </div>
-        <hr class="clean-divider">
-        <p>عروض ستعجبك</p>
-        <div id="souq-widget-root"></div>
-    </article>
-</div>
-
-<footer id='footer' itemscope='itemscope' itemtype='https://schema.org/WPFooter'></footer>
+  <footer id='footer' itemscope='itemscope' itemtype='https://schema.org/WPFooter'></footer>
 
 </body>
 </html>
