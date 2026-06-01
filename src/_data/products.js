@@ -7,15 +7,28 @@ module.exports = async function() {
     try {
         const mapRes = await fetch(`${baseUrl}General/map.json?v=${Date.now()}`);
         const map = await mapRes.json();
+        const region = map.regions[country];
+
+        const fetchBuf = async (url) => {
+            if (!url) return Buffer.alloc(0);
+            const r = await fetch(url);
+            return r.ok ? Buffer.from(await r.arrayBuffer()) : Buffer.alloc(0);
+        };
 
         const coreUrl = `${baseUrl}General/core_${map.core}.bin`;
-        const feedUrl = `${baseUrl}${country}/feed_${map.regions[country].feed}.bin`;
-        const linksUrl = `${baseUrl}General/links_${map.links}.bin`;
+        const feedUrl = region && region.feed ? `${baseUrl}${country}/feed_${region.feed}.bin` : null;
+        const linksUrl = region && region.links ? `${baseUrl}${country}/links_${region.links}.bin` : null;
+        const skuUrl = region && region.sku ? `${baseUrl}${country}/sku_${region.sku}.bin` : null;
+        const promoUrl = region && region.promo ? `${baseUrl}${country}/promo_${region.promo}.bin` : null;
+        const chartUrl = region && region.fluctuation ? `${baseUrl}${country}/fluctuation_${region.fluctuation}.bin` : null;
 
-        const [coreBuf, feedBuf, linksBuf] = await Promise.all([
-            fetch(coreUrl).then(r => r.arrayBuffer()).then(b => Buffer.from(b)),
-            fetch(feedUrl).then(r => r.arrayBuffer()).then(b => Buffer.from(b)),
-            fetch(linksUrl).then(r => r.arrayBuffer()).then(b => Buffer.from(b))
+        const [coreBuf, feedBuf, linksBuf, skuBuf, promoBuf, chartBuf] = await Promise.all([
+            fetchBuf(coreUrl),
+            fetchBuf(feedUrl),
+            fetchBuf(linksUrl),
+            fetchBuf(skuUrl),
+            fetchBuf(promoUrl),
+            fetchBuf(chartUrl)
         ]);
 
         const products = new Map();
@@ -24,10 +37,11 @@ module.exports = async function() {
             const id = coreBuf.readBigUInt64LE(i).toString();
             products.set(id, {
                 id: id,
-                imgOffset: coreBuf.readUInt32LE(i + 8),
-                urlOffset: coreBuf.readUInt32LE(i + 12),
                 slug: coreBuf.toString('utf8', i + 16, i + 80).replace(/\0/g, '').trim(),
-                title: coreBuf.toString('utf8', i + 80, i + 280).replace(/\0/g, '').trim()
+                title: coreBuf.toString('utf8', i + 80, i + 280).replace(/\0/g, '').trim(),
+                skus: [],
+                promo: null,
+                chart: []
             });
         }
 
@@ -39,16 +53,16 @@ module.exports = async function() {
                 Object.assign(item, {
                     storeId: feedBuf.readUInt32LE(i + 8),
                     priceOriginal: feedBuf.readUInt32LE(i + 12) / 100,
-                    price: feedBuf.readUInt32LE(i + 16) / 100,
-                    shipping: feedBuf.readUInt32LE(i + 20) / 100,
+                    priceDiscounted: feedBuf.readUInt32LE(i + 16) / 100,
+                    shippingFee: feedBuf.readUInt32LE(i + 20) / 100,
                     orders: feedBuf.readUInt16LE(i + 24),
                     reviews: feedBuf.readUInt16LE(i + 26),
                     score: feedBuf.readUInt8(i + 28) / 10,
-                    minDel: feedBuf.readUInt8(i + 29),
-                    maxDel: feedBuf.readUInt8(i + 30),
+                    minDelivery: feedBuf.readUInt8(i + 29),
+                    maxDelivery: feedBuf.readUInt8(i + 30),
                     inStock: (status & 0x20) !== 0,
-                    hasPromo: (status & 0x80) !== 0,
-                    hasSku: (status & 0x40) !== 0
+                    hasSku: (status & 0x40) !== 0,
+                    hasPromo: (status & 0x80) !== 0
                 });
             }
         }
@@ -57,9 +71,71 @@ module.exports = async function() {
             const id = linksBuf.readBigUInt64LE(i).toString();
             if (products.has(id)) {
                 const item = products.get(id);
-                item.affCode = linksBuf.toString('utf8', i + 16, i + 30).replace(/\0/g, '').trim();
+                item.productAffCode = linksBuf.toString('utf8', i + 16, i + 30).replace(/\0/g, '').trim();
                 item.storeAffCode = linksBuf.toString('utf8', i + 30, i + 44).replace(/\0/g, '').trim();
                 item.storeName = linksBuf.toString('utf8', i + 44, i + 100).replace(/\0/g, '').trim();
+            }
+        }
+
+        for (let i = 0; i < skuBuf.length; i += 6428) {
+            const id = skuBuf.readBigUInt64LE(i).toString();
+            if (products.has(id)) {
+                const item = products.get(id);
+                for (let s = 0; s < 30; s++) {
+                    const offset = i + 8 + (s * 214);
+                    const pDisc = skuBuf.readUInt32LE(offset + 4) / 100;
+                    if (pDisc === 0) continue;
+                    
+                    const imgSlug = skuBuf.toString('utf8', offset + 14, offset + 54).replace(/\0/g, '').trim();
+                    const rawProps = skuBuf.toString('utf8', offset + 54, offset + 214).replace(/\0/g, '').trim();
+                    const props = rawProps ? rawProps.replace(/\|/g, " - ").trim() : "_";
+                    const image = "https://ae-pic-a1.aliexpress-media.com/kf/" + imgSlug + (imgSlug.includes('.') ? "" : ".jpg");
+
+                    item.skus.push({
+                        skuIdx: s,
+                        priceOriginal: skuBuf.readUInt32LE(offset) / 100,
+                        priceDiscounted: pDisc,
+                        shippingFee: skuBuf.readUInt32LE(offset + 8) / 100,
+                        minDelivery: skuBuf.readUInt8(offset + 12),
+                        maxDelivery: skuBuf.readUInt8(offset + 13),
+                        image: image,
+                        props: props
+                    });
+                }
+            }
+        }
+
+        for (let i = 0; i < promoBuf.length; i += 32) {
+            const id = promoBuf.readBigUInt64LE(i).toString();
+            if (products.has(id)) {
+                const item = products.get(id);
+                item.promo = {
+                    expiry: promoBuf.readUInt32LE(i + 8),
+                    quantity: promoBuf.readUInt16LE(i + 12),
+                    code: promoBuf.toString('utf8', i + 14, i + 32).replace(/\0/g, '').trim()
+                };
+            }
+        }
+
+        for (let i = 0; i < chartBuf.length; i += 2932) {
+            const id = chartBuf.readBigUInt64LE(i).toString();
+            if (products.has(id)) {
+                const item = products.get(id);
+                const recordCount = chartBuf.readUInt32LE(i + 8);
+                for (let c = 0; c < recordCount; c++) {
+                    const offset = i + 12 + (c * 8);
+                    if (offset + 8 > i + 2932) break;
+                    const timeInMinutes = chartBuf.readUInt32LE(offset);
+                    const priceRaw = chartBuf.readInt32LE(offset + 4);
+                    if (timeInMinutes > 0 && priceRaw > 0) {
+                        const pDate = new Date(Date.UTC(2025, 0, 1) + (timeInMinutes * 60 * 1000));
+                        item.chart.push({
+                            date: pDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }),
+                            price: +(priceRaw / 100).toFixed(2),
+                            rawTime: timeInMinutes
+                        });
+                    }
+                }
             }
         }
 
