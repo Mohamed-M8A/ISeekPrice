@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جلب بيانات منتج</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+
+        /* المربع اللي فيه العرض */
+        #product-container {
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            border: 3px solid #007bff; /* الحواف */
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            min-height: 200px;
+            position: relative;
+        }
+
+        .loading {
+            color: #666;
+            text-align: center;
+        }
+
+        /* تنسيق الصور اللي هتيجي عشان متخرجش بره المربع */
+        #product-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="product-container">
+        <div class="loading">جاري تحميل بيانات المنتج من الموقع...</div>
+    </div>
+
+    <script>
+        async function fetchProduct() {
+            const targetUrl = 'https://www.iseekprice.com/product/2026/05/08/mixi-travel-bag-fc94/?country=SA';
+            // استخدام بروكسي لتخطي حماية CORS
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+            const container = document.getElementById('product-container');
+
+            try {
+                const response = await fetch(proxyUrl);
+                if (!response.ok) throw new Error('فشل في الاتصال بالخادم');
+                
+                const data = await response.json();
+                const htmlString = data.contents;
+
+                // تحويل النص لـ HTML
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlString, 'text/html');
+
+                // --- تحديد الجزء اللي عايزين نعرضه ---
+                // هنا بنحاول نجيب عنوان المنتج وصورته مثلاً
+                // ملاحظة:selectors بتعتمد على تصميم الموقع الأصلي
+                const productTitle = doc.querySelector('h1') ? doc.querySelector('h1').innerText : 'اسم المنتج غير متاح';
+                const mainImage = doc.querySelector('img'); // بياخد أول صورة في الصفحة
+                
+                // بناء المحتوى الجديد جوه المربع بتاعنا
+                container.innerHTML = `
+                    <h2 style="color: #333;">${productTitle}</h2>
+                    <hr>
+                    <div id="content-area">
+                        ${mainImage ? mainImage.outerHTML : ''}
+                        <p>تم جلب هذا الجزء برمجياً من الموقع الأصلي.</p>
+                        <a href="${targetUrl}" target="_blank" style="color: blue; text-decoration: underline;">رابط المنتج الأصلي</a>
+                    </div>
+                `;
+
+            } catch (error) {
+                container.innerHTML = `<div class="error">حدث خطأ: ${error.message}<br>تأكد من اتصالك بالإنترنت.</div>`;
+                console.error('Error details:', error);
+            }
+        }
+
+        // تشغيل الدالة عند تحميل الصفحة
+        fetchProduct();
+    </script>
+
+</body>
+</html>
