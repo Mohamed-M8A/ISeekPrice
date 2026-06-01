@@ -118,7 +118,6 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
                 <span>التوصيل: ${item.minDelivery}-${item.maxDelivery} يوم</span>
                 </div>
                 <div class="meta-row" style="color: ${item.shippingFee <= 0 ? '#10b981' : 'inherit'}">
-                <!-- الأيقونة الجديدة الدقيقة والاحترافية هنا -->
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; fill: none;"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
                 <span>${item.shippingFee <= 0 ? 'شحن مجاني بالكامل' : 'رسوم الشحن: ' + item.shippingFee.toFixed(2)}</span>
             </div>
@@ -140,98 +139,6 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
             this.toggle(false);
         }
     };
-
-    const UILayout = {
-        injectEmptyShelf() {
-            const root = document.getElementById('dynamic-shelf');
-            if (!root || root.innerHTML.trim() !== "") return;
-            root.innerHTML = `
-                <div class="rating-strip">
-                    <div class="stars-group" id="stars"></div>
-                    <span class="rating-value" id="ratingValue"></span>
-                    <span class="divider">|</span>
-                    <a class="rating-count" href="#tab5" onclick="showTab('tab5', document.querySelector('[onclick*=\\\'tab5\\\']'))" id="goToReviews"></a>
-                </div>
-                <hr class="clean-divider">
-                <div class="price-box">
-                    <div class="top-row">
-                        <div class="price-info">
-                            <span class="price-discounted"></span>
-                            <span class="discount-percentage"></span>
-                        </div>
-                        <span class="price-saving"></span>
-                    </div>
-                    <span class="price-original"></span>
-                </div>
-                <div class="sku-trigger-wrap">
-                    <button id="skuHubBtn" class="sku-btn-minimal" onclick="window.SKU_HUB.toggle(true)" style="display:none">خيارات الموديلات والأسعار</button>
-                </div>
-                <div class="info-boxes-wrapper">
-                    <div class="info-box product-variant"><span class="label">الموديل</span><span class="value variant-value">_</span></div>
-                    <div class="info-box orders-count-box"><span class="label">الطلبات آخر 6 شهور</span><span class="value orders-count">_</span></div>
-                    <div class="info-box shipping-time"><span class="label">مدة التوصيل</span><span class="value time-value">_</span></div>
-                    <div class="info-box shipping-fee"><span class="label">رسوم التوصيل</span><span class="value fee-value">_</span></div>
-                </div>
-                <hr class="clean-divider">
-                <div class="button-container">
-                <a href="#" class="buy-button" target="_blank" rel="nofollow">اطلب الآن</a>
-                <div id="telegram-alert-wrapper" style="flex:1"></div>
-                <button class="add-to-cart" title="المفضلة">&#9825;</button>
-                </div>
-                <div id="store-bar-wrapper"></div>
-            `;
-        },
-
-        drawStars(container, rating) {
-            if (!container) return;
-            const fullStars = Math.floor(rating);
-            const hasHalf = rating % 1 >= 0.5 ? 1 : 0;
-            let starsHTML = "";
-            for (let i = 0; i < fullStars; i++) starsHTML += `<span class="star">★</span>`;
-            if (hasHalf) starsHTML += `<span class="star half">★</span>`;
-            for (let i = 0; i < (5 - fullStars - hasHalf); i++) starsHTML += `<span class="star empty">★</span>`;
-            container.innerHTML = starsHTML;
-        },
-
-        renderReviewSection() {
-            const tab5 = document.getElementById('tab5');
-            if (tab5 && !tab5.querySelector('.more-reviews-link')) {
-                tab5.insertAdjacentHTML('beforeend', `
-                    <div class="more-reviews-link">
-                        <a href="#" rel="noopener" target="_blank">شاهد المزيد من المراجعات في المتجر الرسمي ←</a>
-                    </div>
-                `);
-            }
-            const reviewGroups = document.querySelectorAll('.Customer-Reviews .stars-group');
-            reviewGroups.forEach(group => {
-                const rating = parseFloat(group.getAttribute('data-rating')) || 5;
-                this.drawStars(group, rating);
-            });
-        }
-    };
-
-    const init = () => {
-        UILayout.injectEmptyShelf();
-        UILayout.renderReviewSection();
-    };
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-
-    const countryInfo = {
-        "SA": { name: "السعودية", symbol: "ر.س", rate: 1 },
-        "AE": { name: "الإمارات", symbol: "د.إ", rate: 0.98 },
-        "OM": { name: "عُمان", symbol: "ر.ع", rate: 0.10 },
-        "MA": { name: "المغرب", symbol: "د.م", rate: 2.70 },
-        "DZ": { name: "الجزائر", symbol: "د.ج", rate: 36.00 },
-        "TN": { name: "تونس", symbol: "د.ت", rate: 0.83 },
-    };
-
-    const activeCountry = localStorage.getItem("Cntry") || "SA";
-    const formatPrice = num => parseFloat(num).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
     window.renderSKUs = function(skuList) {
         const skuWrapper = document.getElementById('sku-images-wrapper') || Object.assign(document.createElement('div'), {id: 'sku-images-wrapper'});
@@ -264,22 +171,36 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
         }
     };
 
-    window.injectData = function(data) {
-        const root = document.getElementById('dynamic-shelf');
-        if (!root || root.innerHTML.trim() === "") {
-            UILayout.injectEmptyShelf();
-        }
+        window.injectData = function(data) {
+        const hostMatch = window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
+        const activeCountry = hostMatch ? hostMatch[1].toUpperCase() : "SA";
+        
+        const countryInfo = {
+            "SA": { symbol: "ر.س", rate: 1 },
+            "AE": { symbol: "د.إ", rate: 0.98 },
+            "OM": { symbol: "ر.ع", rate: 0.10 },
+            "MA": { symbol: "د.م", rate: 2.70 },
+            "DZ": { symbol: "د.ج", rate: 36.00 },
+            "TN": { symbol: "د.ت", rate: 0.83 }
+        };
+        
         const config = countryInfo[activeCountry] || countryInfo["SA"];
-        const weight = config.rate || 1; 
         const symbol = config.symbol;
+        const weight = config.rate || 1;
+        
+        const formatPrice = num => parseFloat(num).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
         const pOriginal = data.priceOriginal;
         const pDiscounted = data.priceDiscounted;
         const diff = pOriginal - pDiscounted;
         const hasDiscount = diff > 0.01;
+
         document.querySelectorAll(".price-discounted").forEach(el => el.textContent = `${formatPrice(pDiscounted)} ${symbol}`);
+        
         const savingEl = document.querySelector(".price-saving");
         const discountEl = document.querySelector(".discount-percentage");
         const originalPriceEls = document.querySelectorAll(".price-original");
+
         if (hasDiscount) {
             originalPriceEls.forEach(el => {
                 el.textContent = `${formatPrice(pOriginal)} ${symbol}`;
@@ -292,6 +213,7 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
             if (savingEl) {
                 savingEl.style.display = "block";
                 savingEl.innerHTML = `<span class="save-label">وفر:</span> <span class="save-amount">${formatPrice(diff)} ${symbol}</span>`;
+                
                 const weightedDiff = diff / weight; 
                 let color = "#7f8c8d";
                 if (weightedDiff < 100) color = "#16a085";
@@ -303,8 +225,10 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
                 else if (weightedDiff < 2000) color = "#f5008b";
                 else if (weightedDiff < 3000) color = "#8e44ad";
                 else color = "#FFD700";
+                
                 savingEl.style.color = color;
                 savingEl.style.fontWeight = "bold";
+
                 if (weightedDiff >= 500) {
                     const saveAmount = savingEl.querySelector(".save-amount");
                     if (saveAmount && !saveAmount.querySelector(".fire-gif")) {
@@ -322,48 +246,18 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
             if (discountEl) discountEl.style.display = "none";
             if (savingEl) savingEl.style.display = "none";
         }
+
         document.querySelectorAll(".fee-value").forEach(el => {
             const isFree = data.shippingFee <= 0;
             el.textContent = isFree ? "شحن مجاني" : `${formatPrice(data.shippingFee)} ${symbol}`;
-            if (isFree) {
-                el.style.color = "#00b894";
-                el.style.fontWeight = "bold";
-            }
+            if (isFree) { el.style.color = "#00b894"; el.style.fontWeight = "bold"; }
         });
+
         document.querySelectorAll(".time-value").forEach(el => {
             const min = data.minDelivery;
             const max = data.maxDelivery;
             el.textContent = (min === max || !max) ? `${min} أيام` : `${max}-${min} أيام`;
         });
-        const ordersEl = document.querySelector(".orders-count");
-        if (ordersEl) ordersEl.textContent = data.orders.toLocaleString();
-        const ratingValueEl = document.getElementById("ratingValue");
-        if (ratingValueEl) ratingValueEl.textContent = data.score.toFixed(1);
-        const ratingCountEl = document.getElementById("goToReviews");
-        if (ratingCountEl) ratingCountEl.textContent = `${(data.reviews || 0).toLocaleString()} تقييمات`;
-        UILayout.drawStars(document.getElementById("stars"), parseFloat(data.score) || 0);
-        const affLink = data.productAffCode ? `https://s.click.aliexpress.com/${data.productAffCode}` : null;
-        const buyBtn = document.querySelector(".buy-button");
-        if (buyBtn && affLink) buyBtn.href = affLink;
-        const moreRev = document.querySelector(".more-reviews-link a");
-        if (moreRev && affLink) moreRev.href = affLink;
-        const storeWrapper = document.getElementById('store-bar-wrapper');
-        if (storeWrapper && data.storeName) {
-            const storeKey = `store_${data.storeId}`;
-            const storeData = { name: data.storeName, aff: data.storeAffCode || "" };
-            localStorage.setItem(storeKey, JSON.stringify(storeData));
-            const storeLink = `/page/store?store=${data.storeId}`;
-            const defaultImg = "/public/assets/static/store.webp";
-            storeWrapper.innerHTML = `
-                <div class="bar">
-                    <img src="${defaultImg}" class="profile-image" alt="Store">
-                    <div class="text">${data.storeName}</div>
-                    <div class="buttons">
-                        <a href="${storeLink}" class="button">زيارة المتجر</a>
-                        <a href="https://s.click.aliexpress.com/${data.storeAffCode}" target="_blank" rel="nofollow" class="button">متابعة</a>
-                    </div>
-                </div>`;
-        }
     };
 })();
 
@@ -390,10 +284,16 @@ window.injectPromo = function(promoData) {
     const theme = colors[Math.floor(Math.random() * colors.length)];
     container.style.setProperty('--theme-color', theme);
 
-    const expiryTimestamp = Date.UTC(2025, 0, 1) + (promoData.expiry * 60 * 1000);
+    let expiryTimestamp;
+    if (typeof promoData.expiry === 'number' && promoData.expiry < 10000000000) {
+        expiryTimestamp = Date.UTC(2025, 0, 1) + (promoData.expiry * 60 * 1000);
+    } else {
+        expiryTimestamp = new Date(promoData.expiry).getTime();
+    }
 
-    const updateTimer = () => {
+        const updateTimer = () => {
         const diffMs = expiryTimestamp - Date.now();
+          
         if (diffMs <= 0) {
             container.style.display = 'none';
             clearInterval(window.promoTimer);
@@ -454,29 +354,17 @@ window.copyCoupon = function(code) {
 // =================== Chart ===================
 
 
-window.renderBinaryChart = function(buffer) {
+window.renderJSONChart = function(finalData) {
     try {
-        const view = new DataView(buffer);
-        const priceCount = view.getUint32(8, true);
-        const finalData = [];
-        const currency = (typeof getCurrencySymbol === "function") ? getCurrencySymbol() : "";
-
-        for (let i = 0; i < priceCount; i++) {
-            const offset = 12 + (i * 8);
-            if (offset + 8 > buffer.byteLength) break;
-            const timeInMinutes = view.getUint32(offset, true);
-            const priceRaw = view.getInt32(offset + 4, true);
-            if (timeInMinutes > 0 && priceRaw > 0) {
-                const pDate = new Date(Date.UTC(2025, 0, 1) + (timeInMinutes * 60 * 1000));
-                finalData.push({
-                    date: pDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }),
-                    price: +(priceRaw / 100).toFixed(2),
-                    rawTime: timeInMinutes
-                });
-            }
-        }
+        if (!finalData || !finalData.length) return;
+        
+        const hostMatch = window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
+        const country = hostMatch ? hostMatch[1].toUpperCase() : "SA";
+        const currencyMap = {"SA":"ر.س","AE":"د.إ","OM":"ر.ع","MA":"د.م","DZ":"د.ج","TN":"د.ت"};
+        const currency = currencyMap[country] || "ر.س";
 
         finalData.sort((a, b) => a.rawTime - b.rawTime);
+          
 
         const tab4 = document.getElementById("tab4");
         const chartCanvas = document.getElementById("priceChart");
@@ -640,7 +528,8 @@ window.renderBinaryChart = function(buffer) {
         ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
 
         const productName = document.querySelector("h1")?.innerText || "تقرير الأسعار";
-        const countryCode = localStorage.getItem("Cntry") || "SA";
+        const hostMatch = window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
+        const countryCode = hostMatch ? hostMatch[1].toUpperCase() : "SA";
         const countryData = {
                "SA": "السعودية 🇸🇦",
                "AE": "الإمارات 🇦🇪",
@@ -649,7 +538,7 @@ window.renderBinaryChart = function(buffer) {
                "DZ": "الجزائر 🇩🇿",
                "TN": "تونس 🇹🇳"
                };
-        const countryName = countryData[countryCode] || "السعودية";
+        const countryName = countryData[countryCode] || "السعودية 🇸🇦";
 
         ctx.direction = "rtl";
         ctx.textAlign = "right";
@@ -739,7 +628,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const uid = uidEl.innerText.trim();
     const bot = 'ISeekPrice_bot';
-    const rawCountry = localStorage.getItem('Cntry') || 'SA'; 
+    const hostMatch = window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
+    const rawCountry = hostMatch ? hostMatch[1].toUpperCase() : "SA";
     const workerUrl = 'https://iseek-telegram.m7md20051968.workers.dev/submit-alert';
 
     const countriesMap = {
