@@ -3,99 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جلب بيانات منتج</title>
+    <title>مستعرض المنتجات التلقائي</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f4f4f4;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
             margin: 0;
-        }
-
-        /* المربع اللي فيه العرض */
-        #product-container {
-            width: 90%;
-            max-width: 600px;
-            background: white;
-            border: 3px solid #007bff; /* الحواف */
-            border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            min-height: 200px;
-            position: relative;
+        }
+        h1 { text-align: center; color: #2c3e50; }
+
+        /* شبكة العرض */
+        #products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
         }
 
-        .loading {
-            color: #666;
+        /* كارت المنتج */
+        .product-card {
+            background: white;
+            border: 2px solid #ddd; /* الحواف اللي طلبتها */
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
             text-align: center;
         }
 
-        /* تنسيق الصور اللي هتيجي عشان متخرجش بره المربع */
-        #product-container img {
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: #007bff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .product-card img {
             max-width: 100%;
-            height: auto;
-            border-radius: 8px;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
         }
 
-        .error {
-            color: red;
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            height: 50px;
+            overflow: hidden;
+        }
+
+        .product-link {
+            text-decoration: none;
+            background: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        #status {
             text-align: center;
+            font-weight: bold;
+            color: #555;
+            margin: 20px;
         }
     </style>
 </head>
 <body>
 
-    <div id="product-container">
-        <div class="loading">جاري تحميل بيانات المنتج من الموقع...</div>
+    <h1>منتجات الموقع من السايت ماب</h1>
+    <div id="status">جاري فحص السايت ماب...</div>
+    
+    <div id="products-grid">
+        <!-- المنتجات هتنزل هنا آلياً -->
     </div>
 
     <script>
-        async function fetchProduct() {
-            const targetUrl = 'https://www.iseekprice.com/product/2026/05/08/mixi-travel-bag-fc94/?country=SA';
-            // استخدام بروكسي لتخطي حماية CORS
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
-            const container = document.getElementById('product-container');
+        async function startMining() {
+            const status = document.getElementById('status');
+            const grid = document.getElementById('products-grid');
 
             try {
-                const response = await fetch(proxyUrl);
-                if (!response.ok) throw new Error('فشل في الاتصال بالخادم');
-                
-                const data = await response.json();
-                const htmlString = data.contents;
+                // 1. قراءة السايت ماب
+                status.innerText = "جاري تحميل الـ Sitemap...";
+                const response = await fetch('/sitemap.xml');
+                const xmlText = await response.text();
+                const xmlDoc = new DOMParser().parseFromString(xmlText, "text/xml");
 
-                // تحويل النص لـ HTML
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(htmlString, 'text/html');
+                // 2. استخراج الروابط اللي فيها product أو post
+                const locs = Array.from(xmlDoc.getElementsByTagName("loc"));
+                const productUrls = locs
+                    .map(l => l.textContent)
+                    .filter(url => url.includes('/product/') || url.includes('/post/'))
+                    .slice(0, 10); // هنسحب أول 10 عشان التجربة.. شيل slice عشان تسحب كلو
 
-                // --- تحديد الجزء اللي عايزين نعرضه ---
-                // هنا بنحاول نجيب عنوان المنتج وصورته مثلاً
-                // ملاحظة:selectors بتعتمد على تصميم الموقع الأصلي
-                const productTitle = doc.querySelector('h1') ? doc.querySelector('h1').innerText : 'اسم المنتج غير متاح';
-                const mainImage = doc.querySelector('img'); // بياخد أول صورة في الصفحة
-                
-                // بناء المحتوى الجديد جوه المربع بتاعنا
-                container.innerHTML = `
-                    <h2 style="color: #333;">${productTitle}</h2>
-                    <hr>
-                    <div id="content-area">
-                        ${mainImage ? mainImage.outerHTML : ''}
-                        <p>تم جلب هذا الجزء برمجياً من الموقع الأصلي.</p>
-                        <a href="${targetUrl}" target="_blank" style="color: blue; text-decoration: underline;">رابط المنتج الأصلي</a>
-                    </div>
-                `;
+                if (productUrls.length === 0) {
+                    status.innerText = "لم يتم العثور على روابط مطابقة.";
+                    return;
+                }
+
+                status.innerText = `تم العثور على ${productUrls.length} صفحة. جاري سحب البيانات...`;
+
+                // 3. لفة على كل رابط وسحب محتواه
+                for (const url of productUrls) {
+                    try {
+                        const res = await fetch(url);
+                        const html = await res.text();
+                        const doc = new DOMParser().parseFromString(html, "text/html");
+
+                        // استخراج البيانات (عدل الـ Selectors حسب موقعك)
+                        const title = doc.querySelector('h1')?.innerText || "عنوان غير متاح";
+                        const img = doc.querySelector('img')?.src || "https://via.placeholder.com/150";
+
+                        // 4. إنشاء الكارت وعرضه فوراً
+                        const card = document.createElement('div');
+                        card.className = 'product-card';
+                        card.innerHTML = `
+                            <img src="${img}" alt="${title}">
+                            <div class="product-title">${title}</div>
+                            <a href="${url}" class="product-link">عرض التفاصيل</a>
+                        `;
+                        grid.appendChild(card);
+                    } catch (e) {
+                        console.error("خطأ في سحب صفحة:", url);
+                    }
+                }
+
+                status.innerText = "تم تحميل جميع البيانات بنجاح! ✅";
 
             } catch (error) {
-                container.innerHTML = `<div class="error">حدث خطأ: ${error.message}<br>تأكد من اتصالك بالإنترنت.</div>`;
-                console.error('Error details:', error);
+                status.innerText = "حدث خطأ أثناء قراءة السايت ماب.";
+                console.error(error);
             }
         }
 
-        // تشغيل الدالة عند تحميل الصفحة
-        fetchProduct();
+        // ابدأ المهمة
+        startMining();
     </script>
-
 </body>
 </html>
