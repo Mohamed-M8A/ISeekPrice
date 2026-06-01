@@ -101,7 +101,7 @@
                 const productUrls = locs
                     .map(l => l.textContent)
                     .filter(url => url.includes('/product/') || url.includes('/post/'))
-                    .slice(0, 10); // هنسحب أول 10 عشان التجربة.. شيل slice عشان تسحب كلو
+                    .slice(0, 3); // هنسحب أول 10 عشان التجربة.. شيل slice عشان تسحب كلو
 
                 if (productUrls.length === 0) {
                     status.innerText = "لم يتم العثور على روابط مطابقة.";
