@@ -11,9 +11,10 @@ Disallow: /*&*
 
 # General Disallows
 Disallow: /page/info/
-Disallow: /page/cart.html
-Disallow: /page/404.html
-Disallow: /page/store.html
+Disallow: /page/cart/
+Disallow: /page/404/
+Disallow: /page/store/
+Disallow: /page/test/
 Disallow: /package.json
 Disallow: /.eleventy.js
 Disallow: /_includes/
