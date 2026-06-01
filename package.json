@@ -3,8 +3,17 @@
   "version": "1.0.0",
   "description": "ISeekPrice Industrial Build",
   "scripts": {
+    "start": "npx @11ty/eleventy --serve",
     "build": "npx @11ty/eleventy",
-    "start": "npx @11ty/eleventy --serve"
+    "build:sa": "COUNTRY=SA npx @11ty/eleventy --output=dist/sa",
+    "build:ae": "COUNTRY=AE npx @11ty/eleventy --output=dist/ae",
+    "build:om": "COUNTRY=OM npx @11ty/eleventy --output=dist/om",
+    "build:ma": "COUNTRY=MA npx @11ty/eleventy --output=dist/ma",
+    "build:dz": "COUNTRY=DZ npx @11ty/eleventy --output=dist/dz",
+    "build:tn": "COUNTRY=TN npx @11ty/eleventy --output=dist/tn"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0"
