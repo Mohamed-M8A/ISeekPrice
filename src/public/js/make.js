@@ -175,7 +175,7 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
                 <hr class="clean-divider">
                 <div class="button-container">
                     <a href="#" class="buy-button" target="_blank" rel="nofollow">اطلب الآن</a>
-                    <button class="add-to-cart">اضف للسلة</button>
+                    <button class="add-to-cart" title="أضف للمفضلة">&#9825;</button>
                     <div id="telegram-alert-wrapper"></div>
                 </div>
                 <div id="store-bar-wrapper"></div>
