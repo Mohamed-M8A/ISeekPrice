@@ -1,3 +1,44 @@
+{% assign currentProduct = products | where: "slug", page.fileSlug | first %}
+
+{% capture shelf_html %}
+<div id="dynamic-shelf">
+    <span class="UID" style="display:none">{{ currentProduct.id }}</span>
+    <div class="rating-strip">
+        <div class="stars-group" id="stars"></div>
+        <span class="rating-value" id="ratingValue"></span>
+        <span class="divider">|</span>
+        <a class="rating-count" href="#tab5" id="goToReviews"></a>
+    </div>
+    <hr class="clean-divider">
+    <div class="price-box">
+        <div class="top-row">
+            <div class="price-info">
+                <span class="price-discounted"></span>
+                <span class="discount-percentage"></span>
+            </div>
+            <span class="price-saving"></span>
+        </div>
+        <span class="price-original"></span>
+    </div>
+    <div class="sku-trigger-wrap">
+        <button id="skuHubBtn" class="sku-btn-minimal" onclick="window.SKU_HUB.toggle(true)" style="display:none">خيارات الموديلات والأسعار</button>
+    </div>
+    <div class="info-boxes-wrapper">
+        <div class="info-box product-variant"><span class="label">الموديل</span><span class="value variant-value">_</span></div>
+        <div class="info-box orders-count-box"><span class="label">الطلبات آخر 6 شهور</span><span class="value orders-count">_</span></div>
+        <div class="info-box shipping-time"><span class="label">مدة التوصيل</span><span class="value time-value">_</span></div>
+        <div class="info-box shipping-fee"><span class="label">رسوم التوصيل</span><span class="value fee-value">_</span></div>
+    </div>
+    <hr class="clean-divider">
+    <div class="button-container">
+        <a href="#" class="buy-button" target="_blank" rel="nofollow">اطلب الآن</a>
+        <div id="telegram-alert-wrapper" style="flex:1"></div>
+        <button class="add-to-cart" title="المفضلة">&#9825;</button>
+    </div>
+    <div id="store-bar-wrapper"></div>
+</div>
+{% endcapture %}
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -16,6 +57,26 @@
   <link rel="icon" type="image/x-icon" href="/public/assets/static/favicon.ico">
   <link rel="stylesheet" href="/public/css/style.min.css">
   
+  <script>
+    window.PRODUCT_DATA = {
+        priceOriginal: {{ currentProduct.priceOriginal | default: 0 }},
+        priceDiscounted: {{ currentProduct.priceDiscounted | default: 0 }},
+        shippingFee: {{ currentProduct.shippingFee | default: 0 }},
+        minDelivery: {{ currentProduct.minDelivery | default: 0 }},
+        maxDelivery: {{ currentProduct.maxDelivery | default: 0 }},
+        orders: {{ currentProduct.orders | default: 0 }},
+        score: {{ currentProduct.score | default: 0 }},
+        reviews: {{ currentProduct.reviews | default: 0 }},
+        storeId: "{{ currentProduct.storeId }}",
+        storeName: "{{ currentProduct.storeName }}",
+        storeAffCode: "{{ currentProduct.storeAffCode }}",
+        productAffCode: "{{ currentProduct.productAffCode }}"
+    };
+    window.PRODUCT_SKUS = {{ currentProduct.skus | json }};
+    window.PRODUCT_PROMO = {{ currentProduct.promo | json }};
+    window.PRODUCT_CHART = {{ currentProduct.chart | json }};
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <script src="/public/js/make.js" defer></script>
   <script src="/public/js/worker.js" defer></script>
@@ -23,7 +84,6 @@
   <script src="/public/js/corepress.js" defer></script>
   <script src="/public/js/search.js" defer></script>
   
-  <!-- Google tag (gtag.js) -->
   <script async src='https://www.googletagmanager.com/gtag/js?id=G-FRWKEMXVYT'></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -40,8 +100,8 @@
     "offers": {
       "@type": "Offer",
       "priceCurrency": "{{ currency.code }}",
-      "availability": "https://schema.org/InStock",
-      "price": "{{ productData.price }}"
+      "availability": "{% if currentProduct.inStock %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+      "price": "{{ currentProduct.priceDiscounted | default: 0 }}"
     }
   }
   </script>
@@ -66,7 +126,7 @@
       <article id="single-content">
           <div id="post-body">
               <hr class="clean-divider">
-              {{ content }}
+              {{ content | replace: '<div id="dynamic-shelf"></div>', shelf_html }}
           </div>
           <hr class="clean-divider">
           <div class="share-box-wrap">
