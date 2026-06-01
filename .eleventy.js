@@ -1,4 +1,18 @@
 module.exports = function(eleventyConfig) {
+  const countryCode = process.env.COUNTRY || "SA";
+  
+  const countriesData = {
+    "SA": { code: "SAR", symbol: "ر.س", name: "السعودية" },
+    "AE": { code: "AED", symbol: "د.إ", name: "الإمارات" },
+    "OM": { code: "OMR", symbol: "ر.ع", name: "عُمان" },
+    "MA": { code: "MAD", symbol: "د.م", name: "المغرب" },
+    "DZ": { code: "DZD", symbol: "د.ج", name: "الجزائر" },
+    "TN": { code: "TND", symbol: "د.ت", name: "تونس" }
+  };
+
+  eleventyConfig.addGlobalData("activeCountry", countryCode);
+  eleventyConfig.addGlobalData("currency", countriesData[countryCode]);
+
   eleventyConfig.addFilter("safe", (content) => content);
 
   eleventyConfig.addFilter("dateArabic", function(date) {
