@@ -3,7 +3,7 @@
 (function() {
     const WIDGET_CONFIG = {
         ROOT_ID: 'souq-widget-root',
-        DOMAIN: "https://www.iseekprice.com/",
+        DOMAIN: window.location.origin + "/",
         BASE_URL: "https://data.iseekprice.com/",
         IMG_BASE_URL: "https://media.iseekprice.com/",
         ALI_IMG_BASE: "https://ae-pic-a1.aliexpress-media.com/kf/",
@@ -35,9 +35,7 @@
         isInitializing: false
     };
 
-    let initialFullData = null;
-
-// --- 2. Utilities ---
+    // --- 2. Utilities ---
     
     const cleanProps = (str) => {
         if (!str) return "_";
