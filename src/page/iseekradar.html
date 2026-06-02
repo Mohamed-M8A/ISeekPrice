@@ -18,14 +18,14 @@
     </div>
     
 <script>
-        
 async function startRadar() {
     const params = new URLSearchParams(window.location.search);
     const idx = params.get('idx');
     const startTime = Date.now();
+    const currentOrigin = window.location.origin;
     
     if (!idx) {
-        window.location.href = "https://www.iseekprice.com/";
+        window.location.href = currentOrigin + "/";
         return;
     }
 
@@ -58,7 +58,7 @@ async function startRadar() {
             const slug = decoder.decode(new Uint8Array(buffer, 16, 64)).replace(/\0/g, '').trim();
             
             const datePath = getDatePath(urlDateOffset);
-            const finalUrl = `https://www.iseekprice.com/product/${datePath}/${slug}/`;
+            const finalUrl = `${currentOrigin}/product/${datePath}/${slug}/`;
 
             const elapsed = Date.now() - startTime;
             const remaining = Math.max(0, 600 - elapsed);
@@ -70,11 +70,10 @@ async function startRadar() {
             throw new Error();
         }
     } catch (e) {
-        window.location.href = "https://www.iseekprice.com/";
+        window.location.href = currentOrigin + "/";
     }
 }
 startRadar();
-        
 </script>
 </body>
 </html>
