@@ -49,7 +49,6 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
 
 // =================== Product UI Layout & Data Injection ===================
 
-
 (function() {
 
     function drawStars(container, rating) {
@@ -171,11 +170,11 @@ if(savingEl){savingEl.style.display="block";savingEl.innerHTML=`<span class="sav
             const max = data.maxDelivery;
             el.textContent = (min === max || !max) ? `${min} أيام` : `${max}-${min} أيام`;
         });
-    };
 
         drawStars(document.getElementById("stars"), parseFloat(data.score) || 0);
         const rv = document.getElementById("ratingValue"); if(rv) rv.textContent = data.score.toFixed(1);
         const rc = document.getElementById("goToReviews"); if(rc) rc.textContent = (data.reviews || 0).toLocaleString() + " تقييمات";      
+    };
 
 
         document.querySelectorAll('.Customer-Reviews .stars-group').forEach(group => {
