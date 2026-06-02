@@ -138,7 +138,7 @@
 
             const feedMap = new Map();
             for (let i = 0; i < feedBuf.byteLength; i += 32) {
-                feedMap.set(feedView.getBigUint64(i, true), {
+                    feedMap.set(feedView.getBigUint64(i, true).toString(), {
                     price: feedView.getUint32(i + 16, true) / 100,
                     original: feedView.getUint32(i + 12, true) / 100,
                     shipping: feedView.getUint32(i + 20, true) / 100,
@@ -146,9 +146,9 @@
                 });
             }
 
-            for (let i = 0; i < coreBuf.byteLength; i += 280) {
-                const id = coreView.getBigUint64(i, true);
-                if (cartIds.has(id)) {
+                    for (let i = 0; i < coreBuf.byteLength; i += 280) {
+                    const id = coreView.getBigUint64(i, true).toString();
+                    if (cartIds.has(BigInt(id))) {
                     const f = feedMap.get(id) || { price: 0, original: 0, shipping: 0, delivery: "قريباً" };
                     
                     const imgDateOffset = coreView.getUint32(i + 8, true);
