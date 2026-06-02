@@ -77,7 +77,7 @@
         storeAffCode: "{{ currentProduct.storeAffCode }}",
         productAffCode: "{{ currentProduct.productAffCode }}"
     };
-                
+    window.currentRecordIndex = {{ currentProduct.recordIndex | default: 0 }};            
     window.PRODUCT_PROMO = {{ currentProduct.promo | json }};           
     window.PRODUCT_SKUS = {{ currentProduct.skus | json }};
     window.PRODUCT_CHART = {{ currentProduct.chart | json }};
