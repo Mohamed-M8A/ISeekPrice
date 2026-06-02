@@ -96,7 +96,7 @@ self.onmessage = async (e) => {
             isFilteredSearch = true;
             if (!cachedLexicon) await buildLexicon(baseUrl, searchPath);
             
-            console.log("%c🚀 SEARCH STARTED: [" + tokens.join(", ") + "]", "color: #3498db; font-weight: bold;");
+            console.log("%c SEARCH STARTED: [" + tokens.join(", ") + "]", "color: #3498db; font-weight: bold;");
             
             const view = new DataView(cachedSearchBuffer);
             for (let t of tokens) {
