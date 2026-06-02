@@ -19,15 +19,17 @@
             <div class='search-history-dropdown' id='searchHistoryDropdown'></div>`;
     }
 
-    const actionsWrap = document.getElementById('actions-wrap');
+const actionsWrap = document.getElementById('actions-wrap');
     if (actionsWrap) {
+        const countryNamesAr = {"SA":"السعودية","AE":"الإمارات","OM":"عُمان","MA":"المغرب","DZ":"الجزائر","TN":"تونس"};
+        const currentNameAr = countryNamesAr[currentCountry] || "السعودية";
         actionsWrap.innerHTML = `
             <div class='custom-dropdown' id='countryDropdown'>
-                <div class='selected'><img alt='flag' height='16' src='/public/assets/flags/${currentCountry.toLowerCase()}.png' width='16'/> ${currentCountry}</div>
+                <div class='selected'><img alt='flag' height='16' src='/public/assets/flags/${currentCountry.toLowerCase()}.png' width='16'/> ${currentNameAr}</div>
                 <ul class='options'>
-                    <li data-value='sa'><img alt='SA' height='16' src='/public/assets/flags/sa.png' width='16'/> السعودية</li>
-                    <li data-value='ae'><img alt='AE' height='16' src='/public/assets/flags/ae.png' width='16'/> الإمارات</li>
-                    <li data-value='om'><img alt='OM' height='16' src='/public/assets/flags/om.png' width='16'/> عُمان</li>
+                    <li data-value='SA'><img alt='SA' height='16' src='/public/assets/flags/sa.png' width='16'/> السعودية</li>
+                    <li data-value='AE'><img alt='AE' height='16' src='/public/assets/flags/ae.png' width='16'/> الإمارات</li>
+                    <li data-value='OM'><img alt='OM' height='16' src='/public/assets/flags/om.png' width='16'/> عُمان</li>
                     <li data-value='MA'><img alt='MA' height='16' src='/public/assets/flags/ma.png' width='16'/> المغرب</li>
                     <li data-value='DZ'><img alt='DZ' height='16' src='/public/assets/flags/dz.png' width='16'/> الجزائر</li>
                     <li data-value='TN'><img alt='TN' height='16' src='/public/assets/flags/tn.png' width='16'/> تونس</li>
