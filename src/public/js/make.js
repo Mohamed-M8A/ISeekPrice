@@ -173,7 +173,13 @@ if(savingEl){savingEl.style.display="block";savingEl.innerHTML=`<span class="sav
 
         drawStars(document.getElementById("stars"), parseFloat(data.score) || 0);
         const rv = document.getElementById("ratingValue"); if(rv) rv.textContent = data.score.toFixed(1);
-        const rc = document.getElementById("goToReviews"); if(rc) rc.textContent = (data.reviews || 0).toLocaleString() + " تقييمات";      
+        const rc = document.getElementById("goToReviews"); if(rc) rc.textContent = (data.reviews || 0).toLocaleString() + " تقييمات";    
+                                 
+        const moreRev = document.querySelector(".more-reviews-link a");
+        if (moreRev && data.productAffCode) {
+            moreRev.href = `https://s.click.aliexpress.com/${data.productAffCode}`;
+            moreRev.parentElement.style.display = "block";
+        }                         
 
         const affLink = data.productAffCode ? `https://s.click.aliexpress.com/${data.productAffCode}` : null;
         const buyBtn = document.querySelector(".buy-button");
@@ -204,8 +210,19 @@ if(savingEl){savingEl.style.display="block";savingEl.innerHTML=`<span class="sav
         drawStars(group, rating);
         });
 
+        function injectReviewLink() {
+        const tab5 = document.getElementById('tab5');
+        if (tab5 && !tab5.querySelector('.more-reviews-link')) {
+        tab5.insertAdjacentHTML('beforeend', `
+            <div class="more-reviews-link" style="text-align:center; margin-top:20px;">
+                <a href="#" rel="noopener" target="_blank" style="color:#ff6000; font-weight:bold; text-decoration:none;">شاهد المزيد من المراجعات في المتجر الرسمي ←</a>
+            </div>
+        `);
+    }
+}
       
 })();
+
 
 // =================== Promo ===================
 
