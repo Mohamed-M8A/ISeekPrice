@@ -174,8 +174,6 @@ if(savingEl){savingEl.style.display="block";savingEl.innerHTML=`<span class="sav
         drawStars(document.getElementById("stars"), parseFloat(data.score) || 0);
         const rv = document.getElementById("ratingValue"); if(rv) rv.textContent = data.score.toFixed(1);
         const rc = document.getElementById("goToReviews"); if(rc) rc.textContent = (data.reviews || 0).toLocaleString() + " تقييمات";      
-        };
-
 
         const affLink = data.productAffCode ? `https://s.click.aliexpress.com/${data.productAffCode}` : null;
         const buyBtn = document.querySelector(".buy-button");
@@ -186,9 +184,7 @@ if(savingEl){savingEl.style.display="block";savingEl.innerHTML=`<span class="sav
         const ordersEl = document.querySelector(".orders-count");
         if (ordersEl) ordersEl.textContent = (data.orders || 0).toLocaleString();
 
-
-
-      const storeWrapper = document.getElementById('store-bar-wrapper');
+        const storeWrapper = document.getElementById('store-bar-wrapper');
         if (storeWrapper && data.storeName) {
             const storeLink = `/page/store?store=${data.storeId}`;
             storeWrapper.innerHTML = `
@@ -201,6 +197,7 @@ if(savingEl){savingEl.style.display="block";savingEl.innerHTML=`<span class="sav
                     </div>
                 </div>`;
         }
+    };
 
         document.querySelectorAll('.Customer-Reviews .stars-group').forEach(group => {
         const rating = parseFloat(group.getAttribute('data-rating')) || 5;
