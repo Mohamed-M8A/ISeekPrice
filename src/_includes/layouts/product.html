@@ -1,6 +1,6 @@
 {%- assign currentProduct = products | where: "slug", page.fileSlug | first -%}
 
-{% capture shelf_html %}
+{%- capture shelf_html -%}
 <div id="dynamic-shelf">
     <span class="UID" style="display:none">{{ currentProduct.id }}</span>
     <div class="rating-strip">
@@ -37,7 +37,7 @@
     </div>
     <div id="store-bar-wrapper"></div>
 </div>
-{% endcapture %}
+{%- endcapture -%}
 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
