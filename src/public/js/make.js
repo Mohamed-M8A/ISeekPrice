@@ -1,5 +1,4 @@
 // =================== IMGs ===================
-
 const thumbContainer=document.querySelector('.thumbnail-container');const thumbSlider=document.querySelector('.thumbnails-slider');const mainImg=document.getElementById('mainImage');let currentIndex=0;const scrollAmount=240;function getThumbnails(){return[...document.querySelectorAll('.thumbnail-container img')]}
 function applyImageStyle(img){if(!img)return;Object.assign(img.style,{objectFit:'contain',backgroundColor:'black',width:'100%',height:'100%'})}
 function changeImage(index){const thumbnails=getThumbnails();const selectedThumb=thumbnails[index];if(!selectedThumb)return;currentIndex=index;mainImg.src=selectedThumb.src;applyImageStyle(mainImg);if(selectedThumb._skuData){if(typeof window.updateSKUPrice==="function"){window.updateSKUPrice(selectedThumb._skuData)}}else{if(typeof window.resetToInitialData==="function"){window.resetToInitialData()}}
@@ -8,7 +7,6 @@ function scrollThumbnailIntoView(index){const thumbnails=getThumbnails();const t
 document.getElementById('thumbsRight')?.addEventListener('click',()=>thumbContainer.scrollLeft+=scrollAmount);document.getElementById('thumbsLeft')?.addEventListener('click',()=>thumbContainer.scrollLeft-=scrollAmount);document.getElementById('mainImageRightArrow')?.addEventListener('click',()=>{const thumbnails=getThumbnails();if(thumbnails.length>0){changeImage((currentIndex-1+thumbnails.length)%thumbnails.length)}});document.getElementById('mainImageLeftArrow')?.addEventListener('click',()=>{const thumbnails=getThumbnails();if(thumbnails.length>0){changeImage((currentIndex+1)%thumbnails.length)}});thumbSlider?.addEventListener('click',(e)=>{if(e.target.tagName==='IMG'){const thumbnails=getThumbnails();const index=thumbnails.indexOf(e.target);if(index!==-1)changeImage(index);}});if(getThumbnails().length>0)changeImage(0)
 
 //  Modal
-
 function createModal(){if(document.getElementById("imageModal"))return;document.body.insertAdjacentHTML("beforeend",`
       <div id="imageModal" class="modal">
         <span class="close" onclick="closeModal()">&times;</span>
@@ -20,7 +18,6 @@ function createModal(){if(document.getElementById("imageModal"))return;document.
 createModal();const modal=document.getElementById("imageModal");const modalImage=document.getElementById("modalImage");window.openModal=function(index){const thumbnails=getThumbnails();const targetIndex=(typeof index==='number')?index:currentIndex;if(!thumbnails[targetIndex])return;modal.style.display="flex";modalImage.src=thumbnails[targetIndex].src;applyImageStyle(modalImage);currentIndex=targetIndex};window.closeModal=function(){modal.style.display="none"};window.navigateModal=function(direction){const thumbnails=getThumbnails();if(thumbnails.length===0)return;currentIndex=direction==="next"?(currentIndex+1)%thumbnails.length:(currentIndex-1+thumbnails.length)%thumbnails.length;modalImage.src=thumbnails[currentIndex].src;applyImageStyle(modalImage)}
 
 //  Customer IMG 
-
 const avatarURL="/public/assets/static/client.png";document.querySelectorAll(".avatar-placeholder").forEach(placeholder=>{const img=document.createElement("img");img.src=avatarURL;img.alt="أفاتار";img.className="reviewer-img";placeholder.appendChild(img)})
 
 
@@ -47,14 +44,27 @@ document.querySelectorAll(".tab-buttons button").forEach(btn => {
 
 
 // Tab (5)
-
 const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){goToReviewsBtn.addEventListener("click",function(e){e.preventDefault();const tabButtons=document.querySelectorAll('.tab-buttons button');const targetButton=Array.from(tabButtons).find(btn=>btn.getAttribute('onclick')?.includes("'tab5'"));if(targetButton){showTab('tab5',targetButton,!0);setTimeout(()=>{const reviewsSection=document.getElementById('tab5');if(reviewsSection){reviewsSection.scrollIntoView({behavior:'smooth'})}},300)}})}
 
 
 // =================== Product UI Layout & Data Injection ===================
 
+
 (function() {
+
+    function drawStars(container, rating) {
+    if (!container) return;
+    const fullStars = Math.floor(rating);
+    const hasHalf = rating % 1 >= 0.5 ? 1 : 0;
+    let starsHTML = "";
+    for (let i = 0; i < fullStars; i++) starsHTML += `<span class="star">★</span>`;
+    if (hasHalf) starsHTML += `<span class="star half">★</span>`;
+    for (let i = 0; i < (5 - fullStars - hasHalf); i++) starsHTML += `<span class="star empty">★</span>`;
+    container.innerHTML = starsHTML;
+}
+      
     const markup = `
+    
         <div id="skuHubOverlay">
             <div class="sku-modal-content">
                 <div class="sku-modal-header">
@@ -127,7 +137,9 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
             }).join('');
             const btn = document.getElementById('skuHubBtn');
             if (btn) btn.style.display = 'block';
+            drawStars(document.getElementById("stars"), parseFloat(data.score) || 0);  
         },
+          
         select: function(enc) {
             const item = JSON.parse(decodeURIComponent(enc));
             if (window.updateSKUPrice) window.updateSKUPrice(item);
@@ -161,6 +173,14 @@ if(savingEl){savingEl.style.display="block";savingEl.innerHTML=`<span class="sav
             el.textContent = (min === max || !max) ? `${min} أيام` : `${max}-${min} أيام`;
         });
     };
+
+
+document.querySelectorAll('.Customer-Reviews .stars-group').forEach(group => {
+    const rating = parseFloat(group.getAttribute('data-rating')) || 5;
+    drawStars(group, rating);
+});
+
+      
 })();
 
 // =================== Promo ===================
