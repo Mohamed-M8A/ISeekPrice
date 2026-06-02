@@ -33,10 +33,11 @@ module.exports = async function() {
 
         const products = new Map();
 
-        for (let i = 0; i < coreBuf.length; i += 280) {
+            for (let i = 0; i < coreBuf.length; i += 280) {
             const id = coreBuf.readBigUInt64LE(i).toString();
             products.set(id, {
                 id: id,
+                recordIndex: i / 280,
                 slug: coreBuf.toString('utf8', i + 16, i + 80).replace(/\0/g, '').trim(),
                 title: coreBuf.toString('utf8', i + 80, i + 280).replace(/\0/g, '').trim(),
                 skus: [],
