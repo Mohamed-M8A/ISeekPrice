@@ -1,4 +1,4 @@
-{% assign currentProduct = products | where: "slug", page.fileSlug | first %}
+{%- assign currentProduct = products | where: "slug", page.fileSlug | first -%}
 
 {% capture shelf_html %}
 <div id="dynamic-shelf">
