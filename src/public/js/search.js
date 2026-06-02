@@ -1,5 +1,5 @@
 // =================== ✅ Search ===================
-const searchPageURL = "https://www.iseekprice.com/page/search/";
+const searchPageURL = "/page/search/";
 let searches = JSON.parse(localStorage.getItem('searches')) || [];
 
 function generateLink(queryTerm, parentName = null) {
@@ -44,7 +44,7 @@ function startSearch(queryTerm) {
     if (queryTerm) {
         const cleanQuery = queryTerm.trim();
         
-        const ownDomainPattern = /^(https?:\/\/)?((www|media)\.)?iseekprice\.com/i;
+        const ownDomainPattern = /^(https?:\/\/)?((www|sa|ae|om|ma|dz|tn|media)\.)?iseekprice\.com/i;
         
         const socialPatterns = [
             { regex: /^(https?:\/\/)?(www\.)?youtube\.com\/@ISeekPrice/i, fullUrl: "https://www.youtube.com/@ISeekPrice" },
