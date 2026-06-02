@@ -15,6 +15,14 @@ module.exports = function(eleventyConfig) {
 
   eleventyConfig.addFilter("safe", (content) => content);
 
+  eleventyConfig.addFilter("date", function(date, format) {
+    const d = date === "now" ? new Date() : new Date(date);
+    if (format === "Y-m-d") {
+      return d.toISOString().split('T')[0];
+    }
+    return d.toISOString();
+  });
+
   eleventyConfig.addFilter("dateArabic", function(date) {
     if (!date) return "";
     const months = [
