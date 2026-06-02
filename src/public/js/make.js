@@ -137,7 +137,6 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
             }).join('');
             const btn = document.getElementById('skuHubBtn');
             if (btn) btn.style.display = 'block';
-            drawStars(document.getElementById("stars"), parseFloat(data.score) || 0);  
         },
           
         select: function(enc) {
@@ -174,11 +173,15 @@ if(savingEl){savingEl.style.display="block";savingEl.innerHTML=`<span class="sav
         });
     };
 
+        drawStars(document.getElementById("stars"), parseFloat(data.score) || 0);
+        const rv = document.getElementById("ratingValue"); if(rv) rv.textContent = data.score.toFixed(1);
+        const rc = document.getElementById("goToReviews"); if(rc) rc.textContent = (data.reviews || 0).toLocaleString() + " تقييمات";      
 
-document.querySelectorAll('.Customer-Reviews .stars-group').forEach(group => {
-    const rating = parseFloat(group.getAttribute('data-rating')) || 5;
-    drawStars(group, rating);
-});
+
+        document.querySelectorAll('.Customer-Reviews .stars-group').forEach(group => {
+        const rating = parseFloat(group.getAttribute('data-rating')) || 5;
+        drawStars(group, rating);
+        });
 
       
 })();
