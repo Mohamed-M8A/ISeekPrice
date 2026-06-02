@@ -194,7 +194,7 @@ class Renderer {
     }
 }
 
-// --- 5. Global Actions (SKU Updates) ---
+// --- 4. Global Actions (SKU Updates) ---
     
     window.updateSKUPrice = function(item) {
         window.selectedSkuIndex = item.skuIdx;
@@ -222,7 +222,7 @@ class Renderer {
         }
     };
     
-// --- 6. Search Grid Engine ---
+// --- 5. Search Grid Engine ---
     
     async function initSearchWidget() {
         const root = document.getElementById(WIDGET_CONFIG.ROOT_ID);
@@ -319,7 +319,7 @@ class Renderer {
         window.triggerWorkerSearch();
     }
     
-// --- 7. Bootstrapper ---
+// --- 6. Bootstrapper ---
     
 async function runGlobalBoot() {
         const root = document.getElementById(WIDGET_CONFIG.ROOT_ID);
