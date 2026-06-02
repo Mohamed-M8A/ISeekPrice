@@ -49,6 +49,7 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
 
 // =================== Product UI Layout & Data Injection ===================
 
+
 (function() {
 
     function drawStars(container, rating) {
@@ -136,7 +137,6 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
             const btn = document.getElementById('skuHubBtn');
             if (btn) btn.style.display = 'block';
         },
-          
         select: function(enc) {
             const item = JSON.parse(decodeURIComponent(enc));
             if (window.updateSKUPrice) window.updateSKUPrice(item);
@@ -149,92 +149,103 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
         }
     };
 
-    window.renderSKUs=function(skuList){
-        const skuWrapper=document.getElementById('sku-images-wrapper')||Object.assign(document.createElement('div'),{id:'sku-images-wrapper'});
-        skuWrapper.style.display='contents';
-        skuWrapper.innerHTML="";
-        const thumbSlider=document.querySelector('.thumbnails-slider');
-        if(thumbSlider)thumbSlider.appendChild(skuWrapper);
-        skuList.forEach(item=>{
-            const img=document.createElement("img");
-            img.src=item.image;
-            img.alt=item.props;
-            img.title=item.props;
-            img.loading="lazy";
-            img._skuData=item;
-            img.addEventListener('click',()=>{if(typeof window.updateSKUPrice==="function")window.updateSKUPrice(item);});
-            skuWrapper.appendChild(img)
+    window.renderSKUs = function(skuList) {
+        const skuWrapper = document.getElementById('sku-images-wrapper') || Object.assign(document.createElement('div'), {id:'sku-images-wrapper'});
+        skuWrapper.style.display = 'contents';
+        skuWrapper.innerHTML = "";
+        const thumbSlider = document.querySelector('.thumbnails-slider');
+        if (thumbSlider) thumbSlider.appendChild(skuWrapper);
+        skuList.forEach(item => {
+            const img = document.createElement("img");
+            img.src = item.image;
+            img.alt = item.props;
+            img.title = item.props;
+            img.loading = "lazy";
+            img._skuData = item;
+            img.addEventListener('click', () => {
+                if (typeof window.updateSKUPrice === "function") window.updateSKUPrice(item);
+            });
+            skuWrapper.appendChild(img);
         });
-        if(window.SKU_HUB)window.SKU_HUB.render(skuList);
-        const skuParam=new URLSearchParams(window.location.search).get('sku');
-        if(skuParam&&skuParam!=='255'){
-            setTimeout(()=>{
-                const allImgs=Array.from(document.querySelectorAll('.thumbnails-slider img'));
-                const targetImg=allImgs.find(i=>i._skuData&&i._skuData.skuIdx==skuParam);
-                if(targetImg&&typeof window.changeImage==='function'){window.changeImage(allImgs.indexOf(targetImg))}
-            },250)
+        if (window.SKU_HUB) window.SKU_HUB.render(skuList);
+        const skuParam = new URLSearchParams(window.location.search).get('sku');
+        if (skuParam && skuParam !== '255') {
+            setTimeout(() => {
+                const allImgs = Array.from(document.querySelectorAll('.thumbnails-slider img'));
+                const targetImg = allImgs.find(i => i._skuData && i._skuData.skuIdx == skuParam);
+                if (targetImg && typeof window.changeImage === 'function') {
+                    window.changeImage(allImgs.indexOf(targetImg));
+                }
+            }, 250);
         }
     };
 
-    window.injectData=function(data){
-        const hostMatch=window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
-        const activeCountry=hostMatch?hostMatch[1].toUpperCase():"SA";
-        const countryInfo={"SA":{symbol:"ر.س",rate:1},"AE":{symbol:"د.إ",rate:0.98},"OM":{symbol:"ر.ع",rate:0.10},"MA":{symbol:"د.م",rate:2.70},"DZ":{symbol:"د.ج",rate:36.00},"TN":{symbol:"د.ت",rate:0.83}};
-        const config=countryInfo[activeCountry]||countryInfo.SA;
-        const symbol=config.symbol;
-        const weight=config.rate||1;
-        const formatPrice=num=>parseFloat(num).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
-        const pOriginal=data.priceOriginal;
-        const pDiscounted=data.priceDiscounted;
-        const diff=pOriginal-pDiscounted;
-        const hasDiscount=diff>0.01;
+    window.injectData = function(data) {
+        const hostMatch = window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
+        const activeCountry = hostMatch ? hostMatch[1].toUpperCase() : "SA";
+        const countryInfo = {
+            "SA": {symbol:"ر.س", rate:1},
+            "AE": {symbol:"د.إ", rate:0.98},
+            "OM": {symbol:"ر.ع", rate:0.10},
+            "MA": {symbol:"د.م", rate:2.70},
+            "DZ": {symbol:"د.ج", rate:36.00},
+            "TN": {symbol:"د.ت", rate:0.83}
+        };
+        const config = countryInfo[activeCountry] || countryInfo.SA;
+        const symbol = config.symbol;
+        const weight = config.rate || 1;
+        const formatPrice = num => parseFloat(num).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2});
+        const pOriginal = data.priceOriginal;
+        const pDiscounted = data.priceDiscounted;
+        const diff = pOriginal - pDiscounted;
+        const hasDiscount = diff > 0.01;
         
-        document.querySelectorAll(".price-discounted").forEach(el=>el.textContent=`${formatPrice(pDiscounted)} ${symbol}`);
-        const savingEl=document.querySelector(".price-saving");
-        const discountEl=document.querySelector(".discount-percentage");
-        const originalPriceEls=document.querySelectorAll(".price-original");
+        document.querySelectorAll(".price-discounted").forEach(el => el.textContent = `${formatPrice(pDiscounted)} ${symbol}`);
+        const savingEl = document.querySelector(".price-saving");
+        const discountEl = document.querySelector(".discount-percentage");
+        const originalPriceEls = document.querySelectorAll(".price-original");
         
-        if(hasDiscount){
-            originalPriceEls.forEach(el=>{
-                el.textContent=`${formatPrice(pOriginal)} ${symbol}`;
-                el.style.display="inline-block"
+        if (hasDiscount) {
+            originalPriceEls.forEach(el => {
+                el.textContent = `${formatPrice(pOriginal)} ${symbol}`;
+                el.style.display = "inline-block";
             });
-            if(discountEl){
-                discountEl.textContent=`-${Math.round((diff / pOriginal) * 100)}%`;
-                discountEl.style.display="inline-block"
+            if (discountEl) {
+                discountEl.textContent = `-${Math.round((diff / pOriginal) * 100)}%`;
+                discountEl.style.display = "inline-block";
             }
-            if(savingEl){
-                savingEl.style.display="block";
-                savingEl.innerHTML=`<span class="save-label">وفر:</span> <span class="save-amount">${formatPrice(diff)} ${symbol}</span>`;
-                const weightedDiff=diff/weight;
-                let color="#7f8c8d";
-                if(weightedDiff<100)color="#16a085";
-                else if(weightedDiff<400)color="#1abc9c";
-                else if(weightedDiff<600)color="#3498db";
-                else if(weightedDiff<900)color="#2ecc71";
-                else if(weightedDiff<1200)color="#e67e22";
-                else if(weightedDiff<1600)color="#c0392b";
-                else if(weightedDiff<2000)color="#f5008b";
-                else if(weightedDiff<3000)color="#8e44ad";
-                else color="#FFD700";
-                savingEl.style.color=color;
-                savingEl.style.fontWeight="bold";
-                if(weightedDiff>=500){
-                    const saveAmount=savingEl.querySelector(".save-amount");
-                    if(saveAmount&&!saveAmount.querySelector(".fire-gif")){
-                        const fireGif=document.createElement("img");
-                        fireGif.alt="سعر مميز";
-                        fireGif.src="/public/assets/static/fire.gif";
-                        fireGif.style.cssText="width:20px; vertical-align:middle; margin-left:5px;";
+            if (savingEl) {
+                savingEl.style.display = "block";
+                savingEl.innerHTML = `<span class="save-label">وفر:</span> <span class="save-amount">${formatPrice(diff)} ${symbol}</span>`;
+                const weightedDiff = diff / weight;
+                let color = "#7f8c8d";
+                if (weightedDiff < 100) color = "#16a085";
+                else if (weightedDiff < 400) color = "#1abc9c";
+                else if (weightedDiff < 600) color = "#3498db";
+                else if (weightedDiff < 900) color = "#2ecc71";
+                else if (weightedDiff < 1200) color = "#e67e22";
+                else if (weightedDiff < 1600) color = "#c0392b";
+                else if (weightedDiff < 2000) color = "#f5008b";
+                else if (weightedDiff < 3000) color = "#8e44ad";
+                else color = "#FFD700";
+                savingEl.style.color = color;
+                savingEl.style.fontWeight = "bold";
+                if (weightedDiff >= 500) {
+                    const saveAmount = savingEl.querySelector(".save-amount");
+                    if (saveAmount && !saveAmount.querySelector(".fire-gif")) {
+                        const fireGif = document.createElement("img");
+                        fireGif.alt = "سعر مميز";
+                        fireGif.src = "/public/assets/static/fire.gif";
+                        fireGif.style.cssText = "width:20px; vertical-align:middle; margin-left:5px;";
                         fireGif.classList.add("fire-gif");
-                        saveAmount.appendChild(fireGif)
+                        saveAmount.appendChild(fireGif);
                     }
                 }
             }
-        }else{
-            originalPriceEls.forEach(el=>el.style.display="none");
-            if(discountEl)discountEl.style.display="none";
-            if(savingEl)savingEl.style.display="none"
+        } else {
+            originalPriceEls.forEach(el => el.style.display = "none");
+            if (discountEl) discountEl.style.display = "none";
+            if (savingEl) savingEl.style.display = "none";
         }
 
         document.querySelectorAll(".fee-value").forEach(el => {
@@ -250,8 +261,8 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
         });
 
         drawStars(document.getElementById("stars"), parseFloat(data.score) || 0);
-        const rv = document.getElementById("ratingValue"); if(rv) rv.textContent = data.score.toFixed(1);
-        const rc = document.getElementById("goToReviews"); if(rc) rc.textContent = (data.reviews || 0).toLocaleString() + " تقييمات";    
+        const rv = document.getElementById("ratingValue"); if (rv) rv.textContent = data.score.toFixed(1);
+        const rc = document.getElementById("goToReviews"); if (rc) rc.textContent = (data.reviews || 0).toLocaleString() + " تقييمات";    
                                              
         const moreRev = document.querySelector(".more-reviews-link a");
         if (moreRev && data.productAffCode) {
@@ -296,10 +307,11 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
                 </div>
             `);
         }
-    } 
+    }
+
+    injectReviewLink();
 
 })();
-
 
 
 // =================== Promo ===================
