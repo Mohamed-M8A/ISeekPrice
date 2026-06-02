@@ -7,8 +7,8 @@ eleventyExcludeFromCollections: true
 {% for item in collections.all %}
   {% if "/product/" in item.url or "/post/" in item.url %}
   <url>
-    <loc>https://www.iseekprice.com{{ item.url }}</loc>
-    <lastmod>{{ item.date.toISOString().split('T')[0] }}</lastmod>
+    <loc>https://{{ activeCountry | lower }}.iseekprice.com{{ item.url }}</loc>
+    <lastmod>{{ item.date | date: "%Y-%m-%d" }}</lastmod>
   </url>
   {% endif %}
 {% endfor %}
