@@ -10,7 +10,7 @@ class BinaryParser {
         if (offset + 32 > buffer.byteLength) return null;
         const status = view.getUint8(offset + 31);
         return {
-            id: view.getBigUint64(offset, true),
+            id: view.getBigUint64(offset, true).toString(),
             storeId: view.getUint32(offset + 8, true),
             original: view.getUint32(offset + 12, true) / 100,
             price: view.getUint32(offset + 16, true) / 100,
@@ -24,7 +24,7 @@ class BinaryParser {
     static parseCoreRecord(buffer, decoder) {
         const view = new DataView(buffer);
         return {
-            id: view.getBigUint64(0, true),
+            id: view.getBigUint64(0, true).toString(),
             imgDateOffset: view.getUint32(8, true),
             urlDateOffset: view.getUint32(12, true),
             slug: decoder.decode(new Uint8Array(buffer, 16, 64)).replace(/\0/g, '').trim(),
