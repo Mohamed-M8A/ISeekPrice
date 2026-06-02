@@ -25,12 +25,12 @@
             <div class='custom-dropdown' id='countryDropdown'>
                 <div class='selected'><img alt='flag' height='16' src='/public/assets/flags/${currentCountry.toLowerCase()}.png' width='16'/> ${currentCountry}</div>
                 <ul class='options'>
-                    <li data-value='السعودية'><img alt='SA' height='16' src='/public/assets/flags/sa.png' width='16'/> السعودية</li>
-                    <li data-value='الإمارات'><img alt='AE' height='16' src='/public/assets/flags/ae.png' width='16'/> الإمارات</li>
-                    <li data-value='عُمان'><img alt='OM' height='16' src='/public/assets/flags/om.png' width='16'/> عُمان</li>
-                    <li data-value='المغرب'><img alt='MA' height='16' src='/public/assets/flags/ma.png' width='16'/> المغرب</li>
-                    <li data-value='الجزائر'><img alt='DZ' height='16' src='/public/assets/flags/dz.png' width='16'/> الجزائر</li>
-                    <li data-value='تونس'><img alt='TN' height='16' src='/public/assets/flags/tn.png' width='16'/> تونس</li>
+                    <li data-value='sa'><img alt='SA' height='16' src='/public/assets/flags/sa.png' width='16'/> السعودية</li>
+                    <li data-value='ae'><img alt='AE' height='16' src='/public/assets/flags/ae.png' width='16'/> الإمارات</li>
+                    <li data-value='om'><img alt='OM' height='16' src='/public/assets/flags/om.png' width='16'/> عُمان</li>
+                    <li data-value='MA'><img alt='MA' height='16' src='/public/assets/flags/ma.png' width='16'/> المغرب</li>
+                    <li data-value='DZ'><img alt='DZ' height='16' src='/public/assets/flags/dz.png' width='16'/> الجزائر</li>
+                    <li data-value='TN'><img alt='TN' height='16' src='/public/assets/flags/tn.png' width='16'/> تونس</li>
                 </ul>
             </div>
             <div class='dark-mode-toggle'>
