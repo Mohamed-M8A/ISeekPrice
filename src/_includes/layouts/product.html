@@ -58,23 +58,40 @@
   <link rel="stylesheet" href="/public/css/style.min.css">
   
   <script>
+      
     window.PRODUCT_DATA = {
+        
         priceOriginal: {{ currentProduct.priceOriginal | default: 0 }},
+                        
         priceDiscounted: {{ currentProduct.priceDiscounted | default: 0 }},
+                        
         shippingFee: {{ currentProduct.shippingFee | default: 0 }},
+                      
         minDelivery: {{ currentProduct.minDelivery | default: 0 }},
+                      
         maxDelivery: {{ currentProduct.maxDelivery | default: 0 }},
+                      
         orders: {{ currentProduct.orders | default: 0 }},
+                      
         score: {{ currentProduct.score | default: 0 }},
+                
         reviews: {{ currentProduct.reviews | default: 0 }},
+                
         storeId: "{{ currentProduct.storeId }}",
+                
         storeName: "{{ currentProduct.storeName }}",
+                
         storeAffCode: "{{ currentProduct.storeAffCode }}",
+                
         productAffCode: "{{ currentProduct.productAffCode }}"
     };
+                
     window.PRODUCT_SKUS = {{ currentProduct.skus | json }};
+                
     window.PRODUCT_PROMO = {{ currentProduct.promo | json }};
+                      
     window.PRODUCT_CHART = {{ currentProduct.chart | json }};
+      
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
