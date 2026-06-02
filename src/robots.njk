@@ -1,3 +1,6 @@
+---
+permalink: /robots.txt
+---
 User-agent: *
 
 Allow: /
@@ -32,4 +35,4 @@ Disallow: /*.config
 Disallow: /appsettings.json
 Disallow: /appsettings.*.json
 
-Sitemap: https://www.iseekprice.com/sitemap.xml
+Sitemap: https://{{ activeCountry | lower }}.iseekprice.com/sitemap.xml
