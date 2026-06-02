@@ -298,16 +298,16 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
         drawStars(group, rating);
     });
 
-    function injectReviewLink() {
-        const tab5 = document.getElementById('tab5');
-        if (tab5 && !tab5.querySelector('.more-reviews-link')) {
-            tab5.insertAdjacentHTML('beforeend', `
-                <div class="more-reviews-link" style="text-align:center; margin-top:20px;">
-                    <a href="#" rel="noopener" target="_blank" style="color:#ff6000; font-weight:bold; text-decoration:none;">شاهد المزيد من المراجعات في المتجر الرسمي ←</a>
-                </div>
-            `);
-        }
+function injectReviewLink() {
+    const tab5 = document.getElementById('tab5');
+    if (tab5 && !tab5.querySelector('.more-reviews-link')) {
+        tab5.insertAdjacentHTML('beforeend', `
+            <div class="more-reviews-link" style="text-align:center; margin-top:20px;">
+                <a href="#" rel="noopener" target="_blank" style="color:#ffffff !important; background-color:#ff6000; padding:10px 20px; display:inline-block; border-radius:5px; font-weight:bold; text-decoration:none;">شاهد المزيد من المراجعات في المتجر الرسمي ←</a>
+            </div>
+        `);
     }
+}
 
     injectReviewLink();
 
