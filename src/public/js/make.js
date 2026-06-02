@@ -52,18 +52,17 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
 (function() {
 
     function drawStars(container, rating) {
-    if (!container) return;
-    const fullStars = Math.floor(rating);
-    const hasHalf = rating % 1 >= 0.5 ? 1 : 0;
-    let starsHTML = "";
-    for (let i = 0; i < fullStars; i++) starsHTML += `<span class="star">★</span>`;
-    if (hasHalf) starsHTML += `<span class="star half">★</span>`;
-    for (let i = 0; i < (5 - fullStars - hasHalf); i++) starsHTML += `<span class="star empty">★</span>`;
-    container.innerHTML = starsHTML;
-}
+        if (!container) return;
+        const fullStars = Math.floor(rating);
+        const hasHalf = rating % 1 >= 0.5 ? 1 : 0;
+        let starsHTML = "";
+        for (let i = 0; i < fullStars; i++) starsHTML += `<span class="star">★</span>`;
+        if (hasHalf) starsHTML += `<span class="star half">★</span>`;
+        for (let i = 0; i < (5 - fullStars - hasHalf); i++) starsHTML += `<span class="star empty">★</span>`;
+        container.innerHTML = starsHTML;
+    }
       
     const markup = `
-    
         <div id="skuHubOverlay">
             <div class="sku-modal-content">
                 <div class="sku-modal-header">
@@ -129,10 +128,10 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
                 <div class="meta-row" style="color: ${item.shippingFee <= 0 ? '#10b981' : 'inherit'}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; fill: none;"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
                 <span>${item.shippingFee <= 0 ? 'شحن مجاني بالكامل' : 'رسوم الشحن: ' + item.shippingFee.toFixed(2)}</span>
-            </div>
-            </div>
-            </div>
-            </div>`;
+                </div>
+                </div>
+                </div>
+                </div>`;
             }).join('');
             const btn = document.getElementById('skuHubBtn');
             if (btn) btn.style.display = 'block';
@@ -150,14 +149,93 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
         }
     };
 
-      
-window.renderSKUs=function(skuList){const skuWrapper=document.getElementById('sku-images-wrapper')||Object.assign(document.createElement('div'),{id:'sku-images-wrapper'});skuWrapper.style.display='contents';skuWrapper.innerHTML="";const thumbSlider=document.querySelector('.thumbnails-slider');if(thumbSlider)thumbSlider.appendChild(skuWrapper);skuList.forEach(item=>{const img=document.createElement("img");img.src=item.image;img.alt=item.props;img.title=item.props;img.loading="lazy";img._skuData=item;img.addEventListener('click',()=>{if(typeof window.updateSKUPrice==="function")window.updateSKUPrice(item);});skuWrapper.appendChild(img)});if(window.SKU_HUB)window.SKU_HUB.render(skuList);const skuParam=new URLSearchParams(window.location.search).get('sku');if(skuParam&&skuParam!=='255'){setTimeout(()=>{const allImgs=Array.from(document.querySelectorAll('.thumbnails-slider img'));const targetImg=allImgs.find(i=>i._skuData&&i._skuData.skuIdx==skuParam);if(targetImg&&typeof window.changeImage==='function'){window.changeImage(allImgs.indexOf(targetImg))}},250)}}
+    window.renderSKUs=function(skuList){
+        const skuWrapper=document.getElementById('sku-images-wrapper')||Object.assign(document.createElement('div'),{id:'sku-images-wrapper'});
+        skuWrapper.style.display='contents';
+        skuWrapper.innerHTML="";
+        const thumbSlider=document.querySelector('.thumbnails-slider');
+        if(thumbSlider)thumbSlider.appendChild(skuWrapper);
+        skuList.forEach(item=>{
+            const img=document.createElement("img");
+            img.src=item.image;
+            img.alt=item.props;
+            img.title=item.props;
+            img.loading="lazy";
+            img._skuData=item;
+            img.addEventListener('click',()=>{if(typeof window.updateSKUPrice==="function")window.updateSKUPrice(item);});
+            skuWrapper.appendChild(img)
+        });
+        if(window.SKU_HUB)window.SKU_HUB.render(skuList);
+        const skuParam=new URLSearchParams(window.location.search).get('sku');
+        if(skuParam&&skuParam!=='255'){
+            setTimeout(()=>{
+                const allImgs=Array.from(document.querySelectorAll('.thumbnails-slider img'));
+                const targetImg=allImgs.find(i=>i._skuData&&i._skuData.skuIdx==skuParam);
+                if(targetImg&&typeof window.changeImage==='function'){window.changeImage(allImgs.indexOf(targetImg))}
+            },250)
+        }
+    };
 
-
-      
-window.injectData=function(data){const hostMatch=window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);const activeCountry=hostMatch?hostMatch[1].toUpperCase():"SA";const countryInfo={"SA":{symbol:"ر.س",rate:1},"AE":{symbol:"د.إ",rate:0.98},"OM":{symbol:"ر.ع",rate:0.10},"MA":{symbol:"د.م",rate:2.70},"DZ":{symbol:"د.ج",rate:36.00},"TN":{symbol:"د.ت",rate:0.83}};const config=countryInfo[activeCountry]||countryInfo.SA;const symbol=config.symbol;const weight=config.rate||1;const formatPrice=num=>parseFloat(num).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});const pOriginal=data.priceOriginal;const pDiscounted=data.priceDiscounted;const diff=pOriginal-pDiscounted;const hasDiscount=diff>0.01;document.querySelectorAll(".price-discounted").forEach(el=>el.textContent=`${formatPrice(pDiscounted)} ${symbol}`);const savingEl=document.querySelector(".price-saving");const discountEl=document.querySelector(".discount-percentage");const originalPriceEls=document.querySelectorAll(".price-original");if(hasDiscount){originalPriceEls.forEach(el=>{el.textContent=`${formatPrice(pOriginal)} ${symbol}`;el.style.display="inline-block"});if(discountEl){discountEl.textContent=`-${Math.round((diff / pOriginal) * 100)}%`;discountEl.style.display="inline-block"}
-if(savingEl){savingEl.style.display="block";savingEl.innerHTML=`<span class="save-label">وفر:</span> <span class="save-amount">${formatPrice(diff)} ${symbol}</span>`;const weightedDiff=diff/weight;let color="#7f8c8d";if(weightedDiff<100)color="#16a085";else if(weightedDiff<400)color="#1abc9c";else if(weightedDiff<600)color="#3498db";else if(weightedDiff<900)color="#2ecc71";else if(weightedDiff<1200)color="#e67e22";else if(weightedDiff<1600)color="#c0392b";else if(weightedDiff<2000)color="#f5008b";else if(weightedDiff<3000)color="#8e44ad";else color="#FFD700";savingEl.style.color=color;savingEl.style.fontWeight="bold";if(weightedDiff>=500){const saveAmount=savingEl.querySelector(".save-amount");if(saveAmount&&!saveAmount.querySelector(".fire-gif")){const fireGif=document.createElement("img");fireGif.alt="سعر مميز";fireGif.src="/public/assets/static/fire.gif";fireGif.style.cssText="width:20px; vertical-align:middle; margin-left:5px;";fireGif.classList.add("fire-gif");saveAmount.appendChild(fireGif)}}}}else{originalPriceEls.forEach(el=>el.style.display="none");if(discountEl)discountEl.style.display="none";if(savingEl)savingEl.style.display="none"}
-
+    window.injectData=function(data){
+        const hostMatch=window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
+        const activeCountry=hostMatch?hostMatch[1].toUpperCase():"SA";
+        const countryInfo={"SA":{symbol:"ر.س",rate:1},"AE":{symbol:"د.إ",rate:0.98},"OM":{symbol:"ر.ع",rate:0.10},"MA":{symbol:"د.م",rate:2.70},"DZ":{symbol:"د.ج",rate:36.00},"TN":{symbol:"د.ت",rate:0.83}};
+        const config=countryInfo[activeCountry]||countryInfo.SA;
+        const symbol=config.symbol;
+        const weight=config.rate||1;
+        const formatPrice=num=>parseFloat(num).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+        const pOriginal=data.priceOriginal;
+        const pDiscounted=data.priceDiscounted;
+        const diff=pOriginal-pDiscounted;
+        const hasDiscount=diff>0.01;
+        
+        document.querySelectorAll(".price-discounted").forEach(el=>el.textContent=`${formatPrice(pDiscounted)} ${symbol}`);
+        const savingEl=document.querySelector(".price-saving");
+        const discountEl=document.querySelector(".discount-percentage");
+        const originalPriceEls=document.querySelectorAll(".price-original");
+        
+        if(hasDiscount){
+            originalPriceEls.forEach(el=>{
+                el.textContent=`${formatPrice(pOriginal)} ${symbol}`;
+                el.style.display="inline-block"
+            });
+            if(discountEl){
+                discountEl.textContent=`-${Math.round((diff / pOriginal) * 100)}%`;
+                discountEl.style.display="inline-block"
+            }
+            if(savingEl){
+                savingEl.style.display="block";
+                savingEl.innerHTML=`<span class="save-label">وفر:</span> <span class="save-amount">${formatPrice(diff)} ${symbol}</span>`;
+                const weightedDiff=diff/weight;
+                let color="#7f8c8d";
+                if(weightedDiff<100)color="#16a085";
+                else if(weightedDiff<400)color="#1abc9c";
+                else if(weightedDiff<600)color="#3498db";
+                else if(weightedDiff<900)color="#2ecc71";
+                else if(weightedDiff<1200)color="#e67e22";
+                else if(weightedDiff<1600)color="#c0392b";
+                else if(weightedDiff<2000)color="#f5008b";
+                else if(weightedDiff<3000)color="#8e44ad";
+                else color="#FFD700";
+                savingEl.style.color=color;
+                savingEl.style.fontWeight="bold";
+                if(weightedDiff>=500){
+                    const saveAmount=savingEl.querySelector(".save-amount");
+                    if(saveAmount&&!saveAmount.querySelector(".fire-gif")){
+                        const fireGif=document.createElement("img");
+                        fireGif.alt="سعر مميز";
+                        fireGif.src="/public/assets/static/fire.gif";
+                        fireGif.style.cssText="width:20px; vertical-align:middle; margin-left:5px;";
+                        fireGif.classList.add("fire-gif");
+                        saveAmount.appendChild(fireGif)
+                    }
+                }
+            }
+        }else{
+            originalPriceEls.forEach(el=>el.style.display="none");
+            if(discountEl)discountEl.style.display="none";
+            if(savingEl)savingEl.style.display="none"
+        }
 
         document.querySelectorAll(".fee-value").forEach(el => {
             const isFree = data.shippingFee <= 0;
@@ -174,7 +252,7 @@ if(savingEl){savingEl.style.display="block";savingEl.innerHTML=`<span class="sav
         drawStars(document.getElementById("stars"), parseFloat(data.score) || 0);
         const rv = document.getElementById("ratingValue"); if(rv) rv.textContent = data.score.toFixed(1);
         const rc = document.getElementById("goToReviews"); if(rc) rc.textContent = (data.reviews || 0).toLocaleString() + " تقييمات";    
-                                 
+                                             
         const moreRev = document.querySelector(".more-reviews-link a");
         if (moreRev && data.productAffCode) {
             moreRev.href = `https://s.click.aliexpress.com/${data.productAffCode}`;
@@ -184,7 +262,6 @@ if(savingEl){savingEl.style.display="block";savingEl.innerHTML=`<span class="sav
         const affLink = data.productAffCode ? `https://s.click.aliexpress.com/${data.productAffCode}` : null;
         const buyBtn = document.querySelector(".buy-button");
         if (buyBtn && affLink) buyBtn.href = affLink;
-        const moreRev = document.querySelector(".more-reviews-link a");
         if (moreRev && affLink) moreRev.href = affLink;
 
         const ordersEl = document.querySelector(".orders-count");
@@ -205,23 +282,24 @@ if(savingEl){savingEl.style.display="block";savingEl.innerHTML=`<span class="sav
         }
     };
 
-        document.querySelectorAll('.Customer-Reviews .stars-group').forEach(group => {
+    document.querySelectorAll('.Customer-Reviews .stars-group').forEach(group => {
         const rating = parseFloat(group.getAttribute('data-rating')) || 5;
         drawStars(group, rating);
-        });
+    });
 
-        function injectReviewLink() {
+    function injectReviewLink() {
         const tab5 = document.getElementById('tab5');
         if (tab5 && !tab5.querySelector('.more-reviews-link')) {
-        tab5.insertAdjacentHTML('beforeend', `
-            <div class="more-reviews-link" style="text-align:center; margin-top:20px;">
-                <a href="#" rel="noopener" target="_blank" style="color:#ff6000; font-weight:bold; text-decoration:none;">شاهد المزيد من المراجعات في المتجر الرسمي ←</a>
-            </div>
-        `);
-    }
-}
-      
+            tab5.insertAdjacentHTML('beforeend', `
+                <div class="more-reviews-link" style="text-align:center; margin-top:20px;">
+                    <a href="#" rel="noopener" target="_blank" style="color:#ff6000; font-weight:bold; text-decoration:none;">شاهد المزيد من المراجعات في المتجر الرسمي ←</a>
+                </div>
+            `);
+        }
+    } 
+
 })();
+
 
 
 // =================== Promo ===================
