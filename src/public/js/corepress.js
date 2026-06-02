@@ -1,4 +1,5 @@
 // ===================  Header  ===================
+
 (function injectAndInitializeHeader() {
     const host = window.location.hostname;
     const isMainDomain = host === "iseekprice.com" || host === "www.iseekprice.com";
@@ -49,58 +50,25 @@
         sideBar.innerHTML = `<div id='widget-header-bar'><span id='widget-sidebar-title'>التصنيفات</span><button id='widget-close-btn'>&#10006;</button></div><div id='widget-side-list'></div>`;
     }
 
-    const htmlEl = document.documentElement;
-    const darkBtn = document.getElementById("dark-toggler");
-    function applyTheme(theme, persist) {
-        const iconUse = darkBtn ? darkBtn.querySelector("use") : null;
-        const iconPath = "/public/assets/static/icons.svg";
-        if (theme === "dark") {
-            htmlEl.classList.add("dark-mode");
-            htmlEl.setAttribute("data-theme", "dark");
-            if (iconUse) iconUse.setAttribute("href", iconPath + "#i-sun");
-        } else {
-            htmlEl.classList.remove("dark-mode");
-            htmlEl.setAttribute("data-theme", "light");
-            if (iconUse) iconUse.setAttribute("href", iconPath + "#i-moon");
-        }
-        if (persist) localStorage.setItem("theme", theme);
-    }
-    let savedTheme = localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    applyTheme(savedTheme, false);
-    if (darkBtn) {
-        darkBtn.addEventListener("click", e => {
-            e.preventDefault();
-            applyTheme(htmlEl.classList.contains("dark-mode") ? "light" : "dark", true)
-        })
-    }
 
-    function updateCartWidget() {
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const countEl = document.getElementById("cart-count");
-        if (countEl) {
-            countEl.textContent = cart.length;
-            cart.length > 0 ? countEl.classList.add("active") : countEl.classList.remove("active")
-        }
-    }
-    updateCartWidget();
-    window.addEventListener("cartUpdated", updateCartWidget);
-    const cartBtn = document.getElementById("cart-widget-header");
-    if (cartBtn) cartBtn.onclick = () => window.location.href = "/page/cart/";
+const htmlEl=document.documentElement;const darkBtn=document.getElementById("dark-toggler");function applyTheme(theme,persist){const iconUse=darkBtn?darkBtn.querySelector("use"):null;const iconPath="/public/assets/static/icons.svg";if(theme==="dark"){htmlEl.classList.add("dark-mode");htmlEl.setAttribute("data-theme","dark");if(iconUse)iconUse.setAttribute("href",iconPath+"#i-sun");}else{htmlEl.classList.remove("dark-mode");htmlEl.setAttribute("data-theme","light");if(iconUse)iconUse.setAttribute("href",iconPath+"#i-moon");}
+if(persist)localStorage.setItem("theme",theme);}
+let savedTheme=localStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");applyTheme(savedTheme,!1);if(darkBtn){darkBtn.addEventListener("click",e=>{e.preventDefault();applyTheme(htmlEl.classList.contains("dark-mode")?"light":"dark",!0)})}
+    
 
-    const dropdown = document.getElementById("countryDropdown"),
-          selected = dropdown ? dropdown.querySelector(".selected") : null,
-          options = dropdown ? dropdown.querySelector(".options") : null;
+function updateCartWidget(){const cart=JSON.parse(localStorage.getItem("cart"))||[];const countEl=document.getElementById("cart-count");if(countEl){countEl.textContent=cart.length;cart.length>0?countEl.classList.add("active"):countEl.classList.remove("active")}}
+updateCartWidget();window.addEventListener("cartUpdated",updateCartWidget);const cartBtn=document.getElementById("cart-widget-header");if(cartBtn)cartBtn.onclick=()=>window.location.href="/page/cart/";const dropdown=document.getElementById("countryDropdown"),selected=dropdown?dropdown.querySelector(".selected"):null,options=dropdown?dropdown.querySelector(".options"):null
+    
 
     if (isMainDomain) {
         fetch("/cdn-cgi/trace").then(e => e.text()).then(e => {
             const t = e.match(/loc=([A-Z]+)/);
-            if (t && t[1]) {
-                const loc = t[1];
-                if (["SA", "AE", "OM", "MA", "DZ", "TN"].includes(loc) && loc !== "SA") {
-                    window.location.replace(`https://${loc.toLowerCase()}.iseekprice.com${window.location.pathname}${window.location.search}`);
-                }
-            }
-        }).catch(() => { })
+            const loc = (t && t[1]) ? t[1].toLowerCase() : "sa";
+            const target = ["sa", "ae", "om", "ma", "dz", "tn"].includes(loc) ? loc : "sa";
+            window.location.replace(`https://${target}.iseekprice.com${window.location.pathname}${window.location.search}`);
+        }).catch(() => {
+            window.location.replace(`https://sa.iseekprice.com${window.location.pathname}${window.location.search}`);
+        });
     }
 
     if (selected && options) {
@@ -120,6 +88,7 @@
 })();
 
 // =================== Footer ===================
+
 const footerInjector = document.getElementById('footer');
 if (footerInjector) {
     const sections = [
@@ -139,88 +108,23 @@ if (footerInjector) {
     footerInjector.innerHTML = `<div class='footer-container'><div class='footer-row'>${sectionsHtml}${socialHtml}</div></div><div class='footer-bottom'><p>&#169; 2024-${new Date().getFullYear()} جميع الحقوق محفوظة لموقع iseekprice.com</p></div>`;
 }
 
+
 // =================== Cart + Back To Top + Share ===================
-function showCartToast(m, t = "success") {
-    const h = document.createElement("div");
-    document.body.prepend(h);
-    const s = h.attachShadow({ mode: "open" }), d = document.createElement("div");
-    d.textContent = m;
-    s.appendChild(d);
-    const st = document.createElement("style");
-    st.textContent = `div{position:fixed;top:20px;right:20px;min-width:220px;max-width:320px;background:${t === "error" ? "#e74c3c" : "#2ecc71"};color:white;font-family:sans-serif;font-size:14px;padding:12px 18px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.2);opacity:0;transform:translateX(120%);transition:all 0.4s ease;z-index:1000000;}div.show{opacity:1;transform:translateX(0);}`;
-    s.appendChild(st);
-    setTimeout(() => d.classList.add("show"), 50);
-    setTimeout(() => { d.classList.remove("show"); setTimeout(() => h.remove(), 400) }, 3000);
-}
-function addToCart(id) {
-    if (!id) { showCartToast("عذراً، لم يتم العثور على معرف المنتج!", "error"); return }
-    let c = JSON.parse(localStorage.getItem("cart")) || [];
-    if (c.some(i => i.id === id)) { showCartToast("المنتج موجود بالفعل في المفضلة! ❤️", "error"); return }
-    c.push({ id: id, timestamp: new Date().getTime() });
-    localStorage.setItem("cart", JSON.stringify(c));
-    window.dispatchEvent(new Event("cartUpdated"));
-    showCartToast("تمت الإضافة للمفضلة ❤️", "success");
-}
-document.addEventListener("click", function (e) {
-    const b = e.target.closest(".external-cart-button");
-    if (b) {
-        e.preventDefault(); e.stopPropagation();
-        const p = e.target.closest(".post-card");
-        const id = p ? p.querySelector(".UID")?.textContent.trim() : null;
-        addToCart(id);
-    }
-    const a = e.target.closest(".add-to-cart");
-    if (a) {
-        e.preventDefault(); e.stopPropagation();
-        const u = document.querySelector(".UID");
-        addToCart(u ? u.textContent.trim() : null);
-    }
-});
-(function () {
-    const b = document.createElement('div');
-    b.id = 'back-to-top';
-    b.innerHTML = `<a aria-label='Back to Top' href='#top'><svg class='icon'><use xlink:href='/public/assets/static/icons.svg#i-arrow-t'/></svg></a>`;
-    document.body.appendChild(b);
-    window.addEventListener('scroll', () => { b.classList.toggle('show', window.scrollY > 800) }, { passive: true });
-    b.addEventListener('click', (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
-})();
+
+function showCartToast(m,t="success"){const h=document.createElement("div");document.body.prepend(h);const s=h.attachShadow({mode:"open"}),d=document.createElement("div");d.textContent=m;s.appendChild(d);const st=document.createElement("style");st.textContent=`div{position:fixed;top:20px;right:20px;min-width:220px;max-width:320px;background:${t==="error" ? "#e74c3c":"#2ecc71"};color:#fff;font-family:sans-serif;font-size:14px;padding:12px 18px;border-radius:10px;box-shadow:0 4px 12px rgb(0 0 0 / .2);opacity:0;transform:translateX(120%);transition:all 0.4s ease;z-index:1000000}div.show{opacity:1;transform:translateX(0)}`;s.appendChild(st);setTimeout(()=>d.classList.add("show"),50);setTimeout(()=>{d.classList.remove("show");setTimeout(()=>h.remove(),400)},3000)}function addToCart(id){if (!id){showCartToast("عذراً، لم يتم العثور على معرف المنتج!","error");return}let c=JSON.parse(localStorage.getItem("cart")) || [];if (c.some(i=>i.id===id)){showCartToast("المنتج موجود بالفعل في المفضلة! ❤️","error");return}c.push({id:id,timestamp:new Date().getTime()});localStorage.setItem("cart",JSON.stringify(c));window.dispatchEvent(new Event("cartUpdated"));showCartToast("تمت الإضافة للمفضلة ❤️","success")}document.addEventListener("click",function (e){const b=e.target.closest(".external-cart-button");if (b){e.preventDefault();e.stopPropagation();const p=e.target.closest(".post-card");const id=p ? p.querySelector(".UID")?.textContent.trim():null;addToCart(id)}const a=e.target.closest(".add-to-cart");if (a){e.preventDefault();e.stopPropagation();const u=document.querySelector(".UID");addToCart(u ? u.textContent.trim():null)}});
+
+
+(function (){const b=document.createElement('div');b.id='back-to-top';b.innerHTML=`<a aria-label='Back to Top' href='#top'><svg class='icon'><use xlink:href='/public/assets/static/icons.svg#i-arrow-t'/></svg></a>`;document.body.appendChild(b);window.addEventListener('scroll',()=>{b.classList.toggle('show',window.scrollY>800)},{passive:true});b.addEventListener('click',(e)=>{e.preventDefault();window.scrollTo({top:0,behavior:'smooth'})})})();
+
+
 document.addEventListener('DOMContentLoaded', function () {
     const pageUrl = encodeURIComponent(window.location.href);
     const pageTitle = encodeURIComponent(document.title);
-    const modalHTML = `<div class='share-modal' id='shareModal' style="display:none;"><div class='modal-content'><span class='modal-close-btn' id='shareCloseBtn'>&times;</span><h3 class='modal-title'>مشاركة مع الاصدقاء</h3><div class='share-links'><a class='share-btn s-fb' href="https://www.facebook.com/sharer/sharer.php?u=${pageUrl}" target='_blank'><svg class="icon"><use href='/public/assets/static/icons.svg#i-facebook'/></svg><span>فيسبوك</span></a><a class='share-btn s-x' href="https://twitter.com/intent/tweet?text=${pageTitle}&url=${pageUrl}" target='_blank'><svg class="icon"><use href='/public/assets/static/icons.svg#i-x'/></svg><span>إكس</span></a><a class='share-btn s-wa' href="https://api.whatsapp.com/send?text=${pageTitle}%20${pageUrl}" target='_blank'><svg class="icon"><use href='/public/assets/static/icons.svg#i-whatsapp'/></svg><span>واتساب</span></a><a class='share-btn s-tg' href="https://t.me/share/url?url=${pageUrl}&text=${pageTitle}" target='_blank'><svg class="icon"><use href='/public/assets/static/icons.svg#i-telegram'/></svg><span>تليجرام</span></a><a class='share-btn s-pin' href="https://pinterest.com/pin/create/button/?url=${pageUrl}&description=${pageTitle}" target='_blank'><svg class="icon"><use href='/public/assets/static/icons.svg#i-pinterest'/></svg><span>بينترست</span></a><a class='share-btn s-rd' href="https://reddit.com/submit?url=${pageUrl}&title=${pageTitle}" target='_blank'><svg class="icon"><use href='/public/assets/static/icons.svg#i-reddit'/></svg><span>ريديت</span></a><a class='share-btn s-em' href="mailto:?subject=${pageTitle}&body=${pageUrl}"><svg class="icon"><use href='/public/assets/static/icons.svg#i-email'/></svg><span>بريد إلكتروني</span></a><a class='share-btn s-copy' id='copyLinkBtn' href="javascript:void(0);"><svg class="icon"><use href='/public/assets/static/icons.svg#i-copy'/></svg><span>نسخ الرابط</span></a></div></div></div>`;
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-    const m = document.getElementById('shareModal'), o = document.getElementById('shareOpenBtn'), c = document.getElementById('shareCloseBtn'), cp = document.getElementById('copyLinkBtn'), cl = () => { m.style.display = 'none', document.body.style.overflow = 'auto' };
-    if (o) o.onclick = () => { m.style.display = 'block', document.body.style.overflow = 'hidden' };
-    if (c) c.onclick = cl;
-    window.onclick = e => { if (e.target == m) cl() };
-    if (cp) cp.onclick = () => { navigator.clipboard.writeText(window.location.href).then(() => { alert('تم نسخ الرابط بنجاح!') }).catch(e => console.error(e)) };
-    document.querySelectorAll('.share-btn').forEach(b => { if (!b.classList.contains('s-em') && !b.classList.contains('s-wa') && b.id !== 'copyLinkBtn') { b.onclick = function (e) { e.preventDefault(); window.open(this.href, 'share-dialog', 'width=600,height=400') } } });
-});
+    const modalHTML = `<div class='share-modal' id='shareModal' style="display:none;"><div class='modal-content'><span class='modal-close-btn' id='shareCloseBtn'>&times;</span><h3 class='modal-title'>مشاركة مع الاصدقاء</h3><div class='share-links'><a class='share-btn s-fb' href="https://www.facebook.com/sharer/sharer.php?u=${pageUrl}" target='_blank'><svg class="icon"><use href='/public/assets/static/icons.svg#i-facebook'/></svg><span>فيسبوك</span></a><a class='share-btn s-x' href="https://twitter.com/intent/tweet?text=${pageTitle}&url=${pageUrl}" target='_blank'><svg class="icon"><use href='/public/assets/static/icons.svg#i-x'/></svg><span>إكس</span></a><a class='share-btn s-wa' href="https://api.whatsapp.com/send?text=${pageTitle}%20${pageUrl}" target='_blank'><svg class="icon"><use href='/public/assets/static/icons.svg#i-whatsapp'/></svg><span>واتساب</span></a><a class='share-btn s-tg' href="https://t.me/share/url?url=${pageUrl}&text=${pageTitle}" target='_blank'><svg class="icon"><use href='/public/assets/static/icons.svg#i-telegram'/></svg><span>تليجرام</span></a><a class='share-btn s-pin' href="https://pinterest.com/pin/create/button/?url=${pageUrl}&description=${pageTitle}" target='_blank'><svg class="icon"><use href='/public/assets/static/icons.svg#i-pinterest'/></svg><span>بينترست</span></a><a class='share-btn s-rd' href="https://reddit.com/submit?url=${pageUrl}&title=${pageTitle}" target='_blank'><svg class="icon"><use href='/public/assets/static/icons.svg#i-reddit'/></svg><span>ريديت</span></a><a class='share-btn s-em' href="mailto:?subject=${pageTitle}&body=${pageUrl}"><svg class="icon"><use href='/public/assets/static/icons.svg#i-email'/></svg><span>بريد إلكتروني</span></a><a class='share-btn s-copy' id='copyLinkBtn' href="javascript:void(0);"><svg class="icon"><use href='/public/assets/static/icons.svg#i-copy'/></svg><span>نسخ الرابط</span></a></div></div></div>`;document.body.insertAdjacentHTML('beforeend',modalHTML);const m=document.getElementById('shareModal'),o=document.getElementById('shareOpenBtn'),c=document.getElementById('shareCloseBtn'),cp=document.getElementById('copyLinkBtn'),cl=()=>{m.style.display='none',document.body.style.overflow='auto'};if(o)o.onclick=()=>{m.style.display='block',document.body.style.overflow='hidden'};if(c)c.onclick=cl;window.onclick=e=>{if(e.target==m)cl()};if(cp)cp.onclick=()=>{navigator.clipboard.writeText(window.location.href).then(()=>{alert('تم نسخ الرابط بنجاح!')}).catch(e=>console.error(e))};document.querySelectorAll('.share-btn').forEach(b=>{if(!b.classList.contains('s-em')&&!b.classList.contains('s-wa')&&b.id!=='copyLinkBtn'){b.onclick=function(e){e.preventDefault();window.open(this.href,'share-dialog','width=600,height=400')}}})})
+
 
 // =================== Track ===================
+
 const UIDManager = { generate() { const n = new Date(); return `ID-${n.getFullYear()}${(n.getMonth() + 1).toString().padStart(2, '0')}${n.getDate().toString().padStart(2, '0')}${n.getHours().toString().padStart(2, '0')}${n.getMinutes().toString().padStart(2, '0')}-${Math.random().toString(36).substring(2, 9).toUpperCase()}` }, getPersistentId() { let i = localStorage.getItem("user_fingerprint"); return i || (i = this.generate(), localStorage.setItem("user_fingerprint", i)), i } };
-(function () {
-    const w = "https://script.google.com/macros/s/AKfycbx_5eoaSzdQR7BkWfYLIOGpoLjn_xZTb_NVRCASlu7ITSBC0pff2UunBUoG660AYriLug/exec";
-    let a = ["Entry"], sent = false;
-    const gV = () => UIDManager.getPersistentId(),
-          gP = () => document.querySelector('.UID')?.innerText.trim() || "None",
-          gC = () => { const m = window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i); return m ? m[1].toUpperCase() : "SA"; },
-          gO = () => { const n = navigator.userAgent; return /Android/i.test(n) ? "Android" : /iPhone|iPad|iPod/i.test(n) ? "iOS" : /Win/i.test(n) ? "Windows" : /Mac/i.test(n) ? "MacOS" : "Other" },
-          gB = () => { const n = navigator.userAgent.toLowerCase(); return n.includes("edg") ? "Edge" : n.includes("opr") ? "Opera" : n.includes("chrome") ? "Chrome" : n.includes("firefox") ? "Firefox" : "Safari" };
-    const send = () => {
-        if (sent) return;
-        const d = JSON.stringify({ entryTime: new Date().toLocaleString('sv-SE'), visitorId: gV(), productId: gP(), action: a.join(" -> "), pageUrl: location.pathname, referrer: document.referrer || "Direct", exitDestination: "Closed", os: gO(), browser: gB(), screenRes: `${screen.width}x${screen.height} [${gC()}]` });
-        navigator.sendBeacon ? navigator.sendBeacon(w, d) : fetch(w, { method: 'POST', body: d, keepalive: true });
-        sent = true;
-    };
-    document.addEventListener("click", t => {
-        const c = t.target.closest("a, button, .iseek-btn, .copy-button, .tab-buttons button");
-        if (c) {
-            let l = "";
-            if (c.tagName === "A" && c.href && !c.href.includes(location.hostname)) l = "Exit";
-            if (c.classList.contains("add-to-cart")) l = "Cart";
-            if (l && a[a.length - 1] !== l) { a.push(l); sent = false; }
-        }
-    });
-    window.addEventListener("pagehide", send);
-})();
+
+(function(){const w="https://script.google.com/macros/s/AKfycbx_5eoaSzdQR7BkWfYLIOGpoLjn_xZTb_NVRCASlu7ITSBC0pff2UunBUoG660AYriLug/exec";let a=["Entry"],sent=!1;const gV=()=>UIDManager.getPersistentId(),gP=()=>document.querySelector('.UID')?.innerText.trim()||"None",gC=()=>{const m=window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);return m?m[1].toUpperCase():"SA"},gO=()=>{const n=navigator.userAgent;return/Android/i.test(n)?"Android":/iPhone|iPad|iPod/i.test(n)?"iOS":/Win/i.test(n)?"Windows":/Mac/i.test(n)?"MacOS":"Other"},gB=()=>{const n=navigator.userAgent.toLowerCase();return n.includes("edg")?"Edge":n.includes("opr")?"Opera":n.includes("chrome")?"Chrome":n.includes("firefox")?"Firefox":"Safari"};const send=()=>{if(sent)return;const d=JSON.stringify({entryTime:new Date().toLocaleString('sv-SE'),visitorId:gV(),productId:gP(),action:a.join(" -> "),pageUrl:location.pathname,referrer:document.referrer||"Direct",exitDestination:"Closed",os:gO(),browser:gB(),screenRes:`${screen.width}x${screen.height} [${gC()}]`});navigator.sendBeacon?navigator.sendBeacon(w,d):fetch(w,{method:'POST',body:d,keepalive:!0});sent=!0};document.addEventListener("click",t=>{const c=t.target.closest("a, button, .iseek-btn, .copy-button, .tab-buttons button");if(c){let l="";if(c.tagName==="A"&&c.href&&!c.href.includes(location.hostname))l="Exit";if(c.classList.contains("add-to-cart"))l="Cart";if(l&&a[a.length-1]!==l){a.push(l);sent=!1}}});window.addEventListener("pagehide",send)})()
