@@ -140,112 +140,14 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
         }
     };
 
-    window.renderSKUs = function(skuList) {
-        const skuWrapper = document.getElementById('sku-images-wrapper') || Object.assign(document.createElement('div'), {id: 'sku-images-wrapper'});
-        skuWrapper.style.display = 'contents';
-        skuWrapper.innerHTML = "";
-        const thumbSlider = document.querySelector('.thumbnails-slider');
-        if (thumbSlider) thumbSlider.appendChild(skuWrapper);
-        skuList.forEach(item => {
-            const img = document.createElement("img");
-            img.src = item.image;
-            img.alt = item.props;
-            img.title = item.props;
-            img.loading = "lazy";
-            img._skuData = item; 
-            img.addEventListener('click', () => {
-                if (typeof window.updateSKUPrice === "function") window.updateSKUPrice(item);
-            });
-            skuWrapper.appendChild(img);
-        });
-        if (window.SKU_HUB) window.SKU_HUB.render(skuList);
-        const skuParam = new URLSearchParams(window.location.search).get('sku');
-        if (skuParam && skuParam !== '255') {
-            setTimeout(() => {
-                const allImgs = Array.from(document.querySelectorAll('.thumbnails-slider img'));
-                const targetImg = allImgs.find(i => i._skuData && i._skuData.skuIdx == skuParam);
-                if (targetImg && typeof window.changeImage === 'function') {
-                    window.changeImage(allImgs.indexOf(targetImg));
-                }
-            }, 250);
-        }
-    };
+      
+window.renderSKUs=function(skuList){const skuWrapper=document.getElementById('sku-images-wrapper')||Object.assign(document.createElement('div'),{id:'sku-images-wrapper'});skuWrapper.style.display='contents';skuWrapper.innerHTML="";const thumbSlider=document.querySelector('.thumbnails-slider');if(thumbSlider)thumbSlider.appendChild(skuWrapper);skuList.forEach(item=>{const img=document.createElement("img");img.src=item.image;img.alt=item.props;img.title=item.props;img.loading="lazy";img._skuData=item;img.addEventListener('click',()=>{if(typeof window.updateSKUPrice==="function")window.updateSKUPrice(item);});skuWrapper.appendChild(img)});if(window.SKU_HUB)window.SKU_HUB.render(skuList);const skuParam=new URLSearchParams(window.location.search).get('sku');if(skuParam&&skuParam!=='255'){setTimeout(()=>{const allImgs=Array.from(document.querySelectorAll('.thumbnails-slider img'));const targetImg=allImgs.find(i=>i._skuData&&i._skuData.skuIdx==skuParam);if(targetImg&&typeof window.changeImage==='function'){window.changeImage(allImgs.indexOf(targetImg))}},250)}}
 
-        window.injectData = function(data) {
-        const hostMatch = window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
-        const activeCountry = hostMatch ? hostMatch[1].toUpperCase() : "SA";
-        
-        const countryInfo = {
-            "SA": { symbol: "ر.س", rate: 1 },
-            "AE": { symbol: "د.إ", rate: 0.98 },
-            "OM": { symbol: "ر.ع", rate: 0.10 },
-            "MA": { symbol: "د.م", rate: 2.70 },
-            "DZ": { symbol: "د.ج", rate: 36.00 },
-            "TN": { symbol: "د.ت", rate: 0.83 }
-        };
-        
-        const config = countryInfo[activeCountry] || countryInfo["SA"];
-        const symbol = config.symbol;
-        const weight = config.rate || 1;
-        
-        const formatPrice = num => parseFloat(num).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-        const pOriginal = data.priceOriginal;
-        const pDiscounted = data.priceDiscounted;
-        const diff = pOriginal - pDiscounted;
-        const hasDiscount = diff > 0.01;
+      
+window.injectData=function(data){const hostMatch=window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);const activeCountry=hostMatch?hostMatch[1].toUpperCase():"SA";const countryInfo={"SA":{symbol:"ر.س",rate:1},"AE":{symbol:"د.إ",rate:0.98},"OM":{symbol:"ر.ع",rate:0.10},"MA":{symbol:"د.م",rate:2.70},"DZ":{symbol:"د.ج",rate:36.00},"TN":{symbol:"د.ت",rate:0.83}};const config=countryInfo[activeCountry]||countryInfo.SA;const symbol=config.symbol;const weight=config.rate||1;const formatPrice=num=>parseFloat(num).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});const pOriginal=data.priceOriginal;const pDiscounted=data.priceDiscounted;const diff=pOriginal-pDiscounted;const hasDiscount=diff>0.01;document.querySelectorAll(".price-discounted").forEach(el=>el.textContent=`${formatPrice(pDiscounted)} ${symbol}`);const savingEl=document.querySelector(".price-saving");const discountEl=document.querySelector(".discount-percentage");const originalPriceEls=document.querySelectorAll(".price-original");if(hasDiscount){originalPriceEls.forEach(el=>{el.textContent=`${formatPrice(pOriginal)} ${symbol}`;el.style.display="inline-block"});if(discountEl){discountEl.textContent=`-${Math.round((diff / pOriginal) * 100)}%`;discountEl.style.display="inline-block"}
+if(savingEl){savingEl.style.display="block";savingEl.innerHTML=`<span class="save-label">وفر:</span> <span class="save-amount">${formatPrice(diff)} ${symbol}</span>`;const weightedDiff=diff/weight;let color="#7f8c8d";if(weightedDiff<100)color="#16a085";else if(weightedDiff<400)color="#1abc9c";else if(weightedDiff<600)color="#3498db";else if(weightedDiff<900)color="#2ecc71";else if(weightedDiff<1200)color="#e67e22";else if(weightedDiff<1600)color="#c0392b";else if(weightedDiff<2000)color="#f5008b";else if(weightedDiff<3000)color="#8e44ad";else color="#FFD700";savingEl.style.color=color;savingEl.style.fontWeight="bold";if(weightedDiff>=500){const saveAmount=savingEl.querySelector(".save-amount");if(saveAmount&&!saveAmount.querySelector(".fire-gif")){const fireGif=document.createElement("img");fireGif.alt="سعر مميز";fireGif.src="/public/assets/static/fire.gif";fireGif.style.cssText="width:20px; vertical-align:middle; margin-left:5px;";fireGif.classList.add("fire-gif");saveAmount.appendChild(fireGif)}}}}else{originalPriceEls.forEach(el=>el.style.display="none");if(discountEl)discountEl.style.display="none";if(savingEl)savingEl.style.display="none"}
 
-        document.querySelectorAll(".price-discounted").forEach(el => el.textContent = `${formatPrice(pDiscounted)} ${symbol}`);
-        
-        const savingEl = document.querySelector(".price-saving");
-        const discountEl = document.querySelector(".discount-percentage");
-        const originalPriceEls = document.querySelectorAll(".price-original");
-
-        if (hasDiscount) {
-            originalPriceEls.forEach(el => {
-                el.textContent = `${formatPrice(pOriginal)} ${symbol}`;
-                el.style.display = "inline-block";
-            });
-            if (discountEl) {
-                discountEl.textContent = `-${Math.round((diff / pOriginal) * 100)}%`;
-                discountEl.style.display = "inline-block";
-            }
-            if (savingEl) {
-                savingEl.style.display = "block";
-                savingEl.innerHTML = `<span class="save-label">وفر:</span> <span class="save-amount">${formatPrice(diff)} ${symbol}</span>`;
-                
-                const weightedDiff = diff / weight; 
-                let color = "#7f8c8d";
-                if (weightedDiff < 100) color = "#16a085";
-                else if (weightedDiff < 400) color = "#1abc9c";
-                else if (weightedDiff < 600) color = "#3498db";
-                else if (weightedDiff < 900) color = "#2ecc71";
-                else if (weightedDiff < 1200) color = "#e67e22";
-                else if (weightedDiff < 1600) color = "#c0392b";
-                else if (weightedDiff < 2000) color = "#f5008b";
-                else if (weightedDiff < 3000) color = "#8e44ad";
-                else color = "#FFD700";
-                
-                savingEl.style.color = color;
-                savingEl.style.fontWeight = "bold";
-
-                if (weightedDiff >= 500) {
-                    const saveAmount = savingEl.querySelector(".save-amount");
-                    if (saveAmount && !saveAmount.querySelector(".fire-gif")) {
-                        const fireGif = document.createElement("img");
-                        fireGif.alt = "سعر مميز";
-                        fireGif.src = "/public/assets/static/fire.gif";
-                        fireGif.style.cssText = "width:20px; vertical-align:middle; margin-left:5px;";
-                        fireGif.classList.add("fire-gif");
-                        saveAmount.appendChild(fireGif);
-                    }
-                }
-            }
-        } else {
-            originalPriceEls.forEach(el => el.style.display = "none");
-            if (discountEl) discountEl.style.display = "none";
-            if (savingEl) savingEl.style.display = "none";
-        }
 
         document.querySelectorAll(".fee-value").forEach(el => {
             const isFree = data.shippingFee <= 0;
@@ -263,58 +165,11 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
 
 // =================== Promo ===================
 
-window.injectPromo = function(promoData) {
-    let container = document.querySelector('.coupon-container');
-    const shelf = document.getElementById('dynamic-shelf');
-
-    if (!promoData || !promoData.code || !promoData.code.trim()) {
-        if (container) container.style.display = 'none';
-        return;
-    }
-
-    if (!container && shelf) {
-        container = document.createElement('div');
-        container.className = 'coupon-container';
-        shelf.parentNode.insertBefore(container, shelf.nextSibling);
-    }
-
-    if (!container) return;
-
-    const colors = ['#ff4757', '#e91e63', '#ff6b81', '#ff5722'];
-    const theme = colors[Math.floor(Math.random() * colors.length)];
-    container.style.setProperty('--theme-color', theme);
-
-    let expiryTimestamp;
-    if (typeof promoData.expiry === 'number' && promoData.expiry < 10000000000) {
-        expiryTimestamp = Date.UTC(2025, 0, 1) + (promoData.expiry * 60 * 1000);
-    } else {
-        expiryTimestamp = new Date(promoData.expiry).getTime();
-    }
-
-        const updateTimer = () => {
-        const diffMs = expiryTimestamp - Date.now();
-          
-        if (diffMs <= 0) {
-            container.style.display = 'none';
-            clearInterval(window.promoTimer);
-            return;
-        }
-
-        const d = Math.floor(diffMs / 86400000);
-        const h = Math.floor((diffMs % 86400000) / 3600000);
-        const m = Math.floor((diffMs % 3600000) / 60000);
-        const s = Math.floor((diffMs % 60000) / 1000);
-
-        const timerEl = document.getElementById('promo-timer-text');
-        if (timerEl) {
-            timerEl.textContent = d > 0 ? `⏳ ينتهي خلال ${d} يوم` : `⏳ ينتهي خلال ${h}:${m}:${s}`;
-        }
-    };
-
-    container.style.display = 'flex';
-    container.style.flexDirection = 'column';
-
-    container.innerHTML = `
+window.injectPromo=function(promoData){let container=document.querySelector('.coupon-container');const shelf=document.getElementById('dynamic-shelf');if(!promoData||!promoData.code||!promoData.code.trim()){if(container)container.style.display='none';return}
+if(!container&&shelf){container=document.createElement('div');container.className='coupon-container';shelf.parentNode.insertBefore(container,shelf.nextSibling)}
+if(!container)return;const colors=['#ff4757','#e91e63','#ff6b81','#ff5722'];const theme=colors[Math.floor(Math.random()*colors.length)];container.style.setProperty('--theme-color',theme);let expiryTimestamp;if(typeof promoData.expiry==='number'&&promoData.expiry<10000000000){expiryTimestamp=Date.UTC(2025,0,1)+(promoData.expiry*60*1000)}else{expiryTimestamp=new Date(promoData.expiry).getTime()}
+const updateTimer=()=>{const diffMs=expiryTimestamp-Date.now();if(diffMs<=0){container.style.display='none';clearInterval(window.promoTimer);return}
+const d=Math.floor(diffMs/86400000);const h=Math.floor((diffMs%86400000)/3600000);const m=Math.floor((diffMs%3600000)/60000);const s=Math.floor((diffMs%60000)/1000);const timerEl=document.getElementById('promo-timer-text');if(timerEl){timerEl.textContent=d>0?`⏳ ينتهي خلال ${d} يوم`:`⏳ ينتهي خلال ${h}:${m}:${s}`}};container.style.display='flex';container.style.flexDirection='column';container.innerHTML=`
         <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px;">
             <div class="coupon-code" id="couponCode">${promoData.code}</div>
             <button class="copy-button" onclick="copyCoupon('${promoData.code}')">نسخ الكوبون</button>
@@ -323,322 +178,12 @@ window.injectPromo = function(promoData) {
             <span class="qty-badge">🔥 متبقي: ${promoData.quantity} قطعة</span>
             <span id="promo-timer-text" class="timer-nari" style="color: #0048ff; font-weight: 800; font-size: 14px;">⏳ جاري الحساب...</span>
         </div>
-    `;
-
-    if (window.promoTimer) clearInterval(window.promoTimer);
-    window.promoTimer = setInterval(updateTimer, 1000);
-    updateTimer();
-};
-
-window.copyCoupon = function(code) {
-    const target = code || document.getElementById('couponCode').textContent;
-    const btn = document.querySelector('.copy-button');
-    const done = () => {
-        if (btn) {
-            const old = btn.textContent;
-            btn.textContent = "تم! ✅";
-            setTimeout(() => btn.textContent = old, 2000);
-        }
-    };
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(target).then(done);
-    } else {
-        const el = document.createElement("textarea");
-        el.value = target; document.body.appendChild(el);
-        el.select(); document.execCommand('copy');
-        document.body.removeChild(el); done();
-    }
-};
-
-
-// =================== Chart ===================
-
-
-window.renderJSONChart = function(finalData) {
-    try {
-        if (!finalData || !finalData.length) return;
-        
-        const hostMatch = window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
-        const country = hostMatch ? hostMatch[1].toUpperCase() : "SA";
-        const currencyMap = {"SA":"ر.س","AE":"د.إ","OM":"ر.ع","MA":"د.م","DZ":"د.ج","TN":"د.ت"};
-        const currency = currencyMap[country] || "ر.س";
-
-        finalData.sort((a, b) => a.rawTime - b.rawTime);
-          
-
-        const tab4 = document.getElementById("tab4");
-        const chartCanvas = document.getElementById("priceChart");
-        if (!finalData.length || !chartCanvas || !tab4) return;
-
-        if (!chartCanvas.parentNode.id.includes("scroll-wrapper")) {
-            const scrollContainer = document.createElement("div");
-            scrollContainer.id = "chart-scroll-wrapper";
-            
-            const innerWrapper = document.createElement("div");
-            innerWrapper.id = "chart-inner-resizer";
-            
-            chartCanvas.parentNode.insertBefore(scrollContainer, chartCanvas);
-            innerWrapper.appendChild(chartCanvas);
-            scrollContainer.appendChild(innerWrapper);
-        }
-
-        const resizer = document.getElementById("chart-inner-resizer");
-        const scrollContainer = document.getElementById("chart-scroll-wrapper");
-        
-        const isMobile = window.innerWidth < 768;
-
-        const prices = finalData.map(x => x.price);
-        const dates = finalData.map(x => x.date);
-        const min = Math.min(...prices), max = Math.max(...prices);
-        const avg = +(prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(2);
-        const current = prices[prices.length - 1], prev = prices[prices.length - 2] || current;
-
-        const getArrow = (v, c) => v > c ? `<span style="color:#ef4444;">▲</span>` : v < c ? `<span style="color:#10b981;">▼</span>` : "";
-
-        const diffTotal = (current - prev).toFixed(2);
-        const statsHtml = `
-            <div class="price-stats">
-                <div class="stat-item current">
-                    <strong>السعر الحالي</strong>
-                    <span style="display:flex; align-items:center; gap:5px;">${current} ${currency} ${getArrow(current, prev)}</span>
-                    <small style="font-size:11px;color:#666;">(${diffTotal} ${currency})</small>
-                </div>
-                <div class="stat-item"><strong>المتوسط</strong><span>${avg} ${currency}</span></div>
-                <div class="stat-item"><strong>أقل سعر</strong><span>${min} ${currency}</span></div>
-                <div class="stat-item"><strong>أعلى سعر</strong><span>${max} ${currency}</span></div>
-            </div>`;
-
-        const oldStats = tab4.querySelector(".price-stats");
-        if (oldStats) oldStats.remove();
-        scrollContainer.insertAdjacentHTML("afterend", statsHtml);
-
-        let tooltipEl = document.getElementById("chart-tooltip") || Object.assign(document.createElement("div"), {id: "chart-tooltip"});
-        if (!tooltipEl.parentElement) document.body.appendChild(tooltipEl);
-
-        const externalTooltipHandler = (context) => {
-            const { chart, tooltip } = context;
-            if (tooltip.opacity === 0) { tooltipEl.style.opacity = 0; setTimeout(() => { if(tooltipEl.style.opacity == 0) tooltipEl.style.display = "none"; }, 200); return; }
-            
-            tooltipEl.style.display = "block"; 
-            setTimeout(() => { tooltipEl.style.opacity = 1; }, 10);
-            
-            const idx = tooltip.dataPoints[0].dataIndex;
-            const val = tooltip.dataPoints[0].raw;
-            const pVal = idx > 0 ? prices[idx - 1] : val;
-            const diff = +(val - pVal).toFixed(2);
-            const perc = pVal !== 0 ? ((diff / pVal) * 100).toFixed(1) : 0;
-            const arr = diff > 0 ? `<span style="color:#ef4444;">▲</span>` : diff < 0 ? `<span style="color:#10b981;">▼</span>` : "-";
-            
-            tooltipEl.innerHTML = `
-                <div style="font-weight:bold;margin-bottom:4px;border-bottom:1px solid #555;padding-bottom:4px;">${dates[idx]}</div>
-                <div>السعر: ${val} ${currency}</div>
-                <div style="font-size:12px;">التغير: ${arr} ${diff} (${perc}%)</div>
-            `;
-
-            const pos = chart.canvas.getBoundingClientRect();
-            const tooltipWidth = tooltipEl.offsetWidth;
-            const screenWidth = window.innerWidth;
-            
-            let leftPos = pos.left + window.pageXOffset + tooltip.caretX + 10;
-            if (leftPos + tooltipWidth > screenWidth) {
-                leftPos = pos.left + window.pageXOffset + tooltip.caretX - tooltipWidth - 10;
-            }
-            if (leftPos < 0) leftPos = 10;
-
-            tooltipEl.style.left = leftPos + 'px';
-            tooltipEl.style.top = (pos.top + window.pageYOffset + tooltip.caretY - 60) + 'px';
-        };
-
-        const ctx = chartCanvas.getContext("2d");
-        if (window.myPriceChart) window.myPriceChart.destroy();
-
-        window.myPriceChart = new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: dates,
-                datasets: [{
-                    data: prices,
-                    borderColor: "#ff6000",
-                    backgroundColor: (c) => {
-                        const a = c.chart.chartArea; if (!a) return null;
-                        const g = c.chart.ctx.createLinearGradient(0, a.top, 0, a.bottom);
-                        g.addColorStop(0, 'rgba(255, 96, 0, 0.15)'); g.addColorStop(1, 'rgba(255, 96, 0, 0)');
-                        return g;
-                    },
-                    borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 6, pointHitRadius: 20, fill: true, stepped: 'before'
-                }]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false, 
-                layout: { padding: { top: 10, bottom: 10 } },
-                animation: { duration: 400, easing: 'easeOutQuart' },
-                interaction: { mode: 'index', intersect: false },
-                plugins: { legend: { display: false }, tooltip: { enabled: false, external: externalTooltipHandler } },
-                scales: {
-                    x: { ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: isMobile ? 5 : 10 }, grid: { display: false } },
-                    y: { position: 'right', grace: '15%', ticks: { precision: 2 }, grid: { color: '#f0f0f0', drawBorder: false } }
-                }
-            }
-        });
-
-        if (isMobile) scrollContainer.scrollLeft = scrollContainer.scrollWidth;
-
-    } catch (e) { console.error(e); }
-};
-
-
-// =================== Download Chart ===================
-
-
-(function() {
-    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-        const words = text.split(' ');
-        let line = '';
-        let currentY = y;
-        for (let n = 0; n < words.length; n++) {
-            let testLine = line + words[n] + ' ';
-            let metrics = ctx.measureText(testLine);
-            if (metrics.width > maxWidth && n > 0) {
-                ctx.fillText(line, x, currentY);
-                line = words[n] + ' ';
-                currentY += lineHeight;
-            } else {
-                line = testLine;
-            }
-        }
-        ctx.fillText(line, x, currentY);
-        return currentY;
-    }
-
-    window.downloadChartAsImage = async function(action = 'download') {
-        const chartInstance = window.myPriceChart;
-        if (!chartInstance) return;
-
-        const canvas = document.getElementById("priceChart");
-        const tempCanvas = document.createElement("canvas");
-        const ctx = tempCanvas.getContext("2d");
-        
-        const padding = 40;
-        const headerHeight = 160; 
-        tempCanvas.width = canvas.width + (padding * 2);
-        tempCanvas.height = canvas.height + headerHeight + padding + 20;
-
-        const isDarkMode = document.body.classList.contains('dark-mode');
-        ctx.fillStyle = isDarkMode ? "#121212" : "#ffffff";
-        ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-
-        const productName = document.querySelector("h1")?.innerText || "تقرير الأسعار";
-        const hostMatch = window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
-        const countryCode = hostMatch ? hostMatch[1].toUpperCase() : "SA";
-        const countryData = {
-               "SA": "السعودية 🇸🇦",
-               "AE": "الإمارات 🇦🇪",
-               "OM": "عُمان 🇴🇲",
-               "MA": "المغرب 🇲🇦",
-               "DZ": "الجزائر 🇩🇿",
-               "TN": "تونس 🇹🇳"
-               };
-        const countryName = countryData[countryCode] || "السعودية 🇸🇦";
-
-        ctx.direction = "rtl";
-        ctx.textAlign = "right";
-        
-        ctx.fillStyle = "#e74c3c";
-        ctx.font = "bold 28px Arial";
-        ctx.fillText("بـورصـة الأسـعـار", tempCanvas.width - padding, 50);
-
-        ctx.fillStyle = isDarkMode ? "#eeeeee" : "#2c3e50";
-        ctx.font = "bold 20px Arial";
-        const lastTextY = wrapText(ctx, productName, tempCanvas.width - padding, 90, tempCanvas.width - (padding * 2), 28);
-
-        ctx.fillStyle = "#3498db";
-        ctx.font = "bold 16px Arial";
-        ctx.fillText("الدولة: " + countryName, tempCanvas.width - padding, lastTextY + 35);
-
-        ctx.fillStyle = "#7f8c8d";
-        ctx.font = "13px Arial";
-        const dateStr = new Date().toLocaleDateString('ar-EG', {year:'numeric', month:'long', day:'numeric'});
-        ctx.fillText(window.location.hostname + " | تحديث " + dateStr, tempCanvas.width - padding, lastTextY + 60);
-
-        ctx.shadowColor = "rgba(0,0,0,0.2)";
-        ctx.shadowBlur = 25;
-        ctx.shadowOffsetY = 12;
-        ctx.drawImage(canvas, padding, headerHeight);
-        
-        ctx.shadowBlur = 0;
-        ctx.strokeStyle = isDarkMode ? "#333" : "#f0f0f0";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(5, 5, tempCanvas.width - 10, tempCanvas.height - 10);
-
-        const imageBase64 = tempCanvas.toDataURL("image/png", 1.0);
-
-        if (action === 'share' && navigator.share) {
-            const response = await fetch(imageBase64);
-            const blob = await response.blob();
-            const file = new File([blob], `Price-Report.png`, { type: "image/png" });
-            try {
-                await navigator.share({
-                    files: [file],
-                    title: productName,
-                    text: `تقرير أسعار ${productName}\nالمصدر:`,
-                    url: window.location.href
-                });
-            } catch (err) {}
-        } else {
-            const downloadLink = document.createElement("a");
-            downloadLink.href = imageBase64;
-            downloadLink.download = `Price-Report-${countryCode}-${new Date().getTime()}.png`;
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
-        }
-    };
-
-    const observer = new MutationObserver(() => {
-        const stats = document.querySelector(".price-stats");
-        if (stats && !document.getElementById("btn-download-container")) {
-            const containerHtml = `
-                <div id="btn-download-container">
-                    <button id="btn-download-chart" onclick="downloadChartAsImage('download')">
-                        <span>📊</span> حفظ الرسم البياني
-                    </button>
-                    <button id="btn-share-chart" onclick="downloadChartAsImage('share')">
-                        <span>🔗</span> مشاركة التقرير
-                    </button>
-                </div>`;
-            stats.insertAdjacentHTML("afterend", containerHtml);
-            
-            if (!navigator.share) {
-                document.getElementById("btn-share-chart").style.display = "none";
-            }
-        }
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
-})();
+    `;if(window.promoTimer)clearInterval(window.promoTimer);window.promoTimer=setInterval(updateTimer,1000);updateTimer()};window.copyCoupon=function(code){const target=code||document.getElementById('couponCode').textContent;const btn=document.querySelector('.copy-button');const done=()=>{if(btn){const old=btn.textContent;btn.textContent="تم! ✅";setTimeout(()=>btn.textContent=old,2000)}};if(navigator.clipboard){navigator.clipboard.writeText(target).then(done)}else{const el=document.createElement("textarea");el.value=target;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);done()}}
 
 
 // =================== Telegram Alerts ===================
 
-document.addEventListener('DOMContentLoaded', function() {
-    const uidEl = document.querySelector('.UID');
-    const box = document.getElementById('telegram-alert-wrapper');
-    
-    if (!uidEl || !box) return;
-
-    const uid = uidEl.innerText.trim();
-    const bot = 'ISeekPrice_bot';
-    const hostMatch = window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
-    const rawCountry = hostMatch ? hostMatch[1].toUpperCase() : "SA";
-    const workerUrl = 'https://iseek-telegram.m7md20051968.workers.dev/submit-alert';
-
-    const countriesMap = {
-        'SA': 'السعودية 🇸🇦', 'AE': 'الإمارات 🇦🇪', 'OM': 'عُمان 🇴🇲', 
-        'MA': 'المغرب 🇦🇪', 'DZ': 'الجزائر 🇩🇿', 'TN': 'تونس 🇹🇳'
-    };
-    const countryName = countriesMap[rawCountry] || rawCountry;
-
-    const modalHtml = `
+document.addEventListener('DOMContentLoaded',function(){const uidEl=document.querySelector('.UID');const box=document.getElementById('telegram-alert-wrapper');if(!uidEl||!box)return;const uid=uidEl.innerText.trim();const bot='ISeekPrice_bot';const hostMatch=window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);const rawCountry=hostMatch?hostMatch[1].toUpperCase():"SA";const workerUrl='https://iseek-telegram.m7md20051968.workers.dev/submit-alert';const countriesMap={'SA':'السعودية 🇸🇦','AE':'الإمارات 🇦🇪','OM':'عُمان 🇴🇲','MA':'المغرب 🇦🇪','DZ':'الجزائر 🇩🇿','TN':'تونس 🇹🇳'};const countryName=countriesMap[rawCountry]||rawCountry;const modalHtml=`
         <div class="is-overlay" id="isOverlay">
             <div class="is-modal">
                 <h3>🔔 تتبع السعر الذكي</h3>
@@ -659,84 +204,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <span class="is-info">سنرسل لك تنبيهاً فور انخفاض السعر لهذا المستوى.</span>
             </div>
-        </div>`;
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
+        </div>`;document.body.insertAdjacentHTML('beforeend',modalHtml);const btn=document.createElement('button');btn.className='iseek-btn';btn.innerHTML=`<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg> <span>تتبع السعر الآن</span>`;btn.onclick=()=>document.getElementById('isOverlay').style.display='flex';document.getElementById('isClose').onclick=()=>document.getElementById('isOverlay').style.display='none';function getCurrentPrice(){const priceEl=document.querySelector('.price-discounted');if(!priceEl)return 0;const rawText=priceEl.innerText.replace(/,/g,'');const match=rawText.match(/\d+(\.\d+)?/);return match?parseFloat(match[0]):0}
+document.querySelectorAll('.is-chip').forEach(chip=>{chip.onclick=function(){const currentPrice=getCurrentPrice();if(currentPrice>0){const pct=parseInt(this.getAttribute('data-pct'));const target=(currentPrice*(1-pct/100)).toFixed(2);document.getElementById('isPrice').value=target;document.querySelectorAll('.is-chip').forEach(c=>c.classList.remove('active'));this.classList.add('active')}}});document.getElementById('isGo').onclick=async function(){const goBtn=this;let targetP=parseFloat(document.getElementById('isPrice').value)||0;if(!targetP||targetP<=0){alert("⚠️ من فضلك أدخل سعر صحيح");return}
+goBtn.disabled=!0;goBtn.innerText="جاري التحضير...";const payload={uid:uid,targetPrice:targetP,currentPrice:getCurrentPrice(),country:rawCountry,email:document.getElementById('isMail').value||'none',fingerprint:localStorage.getItem('user_fingerprint')||'ID-GUEST',recordIdx:window.currentRecordIndex,skuIdx:(window.selectedSkuIndex!==undefined)?window.selectedSkuIndex:255};try{const response=await fetch(workerUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const result=await response.json();if(result.token){window.open(`https://t.me/${bot}?start=${result.token}`,'_blank');document.getElementById('isOverlay').style.display='none'}else{throw new Error()}}catch(err){alert("⚠️ عذراً، حدث خطأ أثناء الاتصال. حاول مرة أخرى.")}finally{goBtn.disabled=!1;goBtn.innerText="تفعيل في تليجرام"}};box.appendChild(btn)})
 
-    const btn = document.createElement('button');
-    btn.className = 'iseek-btn';
-    btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg> <span>تتبع السعر الآن</span>`;
 
-    btn.onclick = () => document.getElementById('isOverlay').style.display = 'flex';
-    document.getElementById('isClose').onclick = () => document.getElementById('isOverlay').style.display = 'none';
+// =================== Chart ===================
 
-        function getCurrentPrice() {
-        const priceEl = document.querySelector('.price-discounted');
-        if (!priceEl) return 0;
+window.renderJSONChart=function(finalData){try{if (!finalData || !finalData.length) return;const hostMatch=window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);const country=hostMatch ? hostMatch[1].toUpperCase() :"SA";const currencyMap={"SA":"ر.س","AE":"د.إ","OM":"ر.ع","MA":"د.م","DZ":"د.ج","TN":"د.ت"};const currency=currencyMap[country] || "ر.س";finalData.sort((a,b)=>a.rawTime - b.rawTime);const tab4=document.getElementById("tab4");const chartCanvas=document.getElementById("priceChart");if (!finalData.length || !chartCanvas || !tab4) return;if (!chartCanvas.parentNode.id.includes("scroll-wrapper")){const scrollContainer=document.createElement("div");scrollContainer.id="chart-scroll-wrapper";const innerWrapper=document.createElement("div");innerWrapper.id="chart-inner-resizer";chartCanvas.parentNode.insertBefore(scrollContainer,chartCanvas);innerWrapper.appendChild(chartCanvas);scrollContainer.appendChild(innerWrapper)}const resizer=document.getElementById("chart-inner-resizer");const scrollContainer=document.getElementById("chart-scroll-wrapper");const isMobile=window.innerWidth < 768;const prices=finalData.map(x=>x.price);const dates=finalData.map(x=>x.date);const min=Math.min(...prices),max=Math.max(...prices);const avg=+(prices.reduce((a,b)=>a+b,0) / prices.length).toFixed(2);const current=prices[prices.length - 1],prev=prices[prices.length - 2] || current;const getArrow=(v,c)=>v>c ? `<span style="color:#ef4444;">▲</span>` :v < c ? `<span style="color:#10b981;">▼</span>` :"";const diffTotal=(current - prev).toFixed(2);const statsHtml=` <div class="price-stats"><div class="stat-item current"><strong>السعر الحالي</strong><span style="display:flex; align-items:center; gap:5px;">${current}${currency}${getArrow(current,prev)}</span><small style="font-size:11px;color:#666;">(${diffTotal}${currency})</small></div><div class="stat-item"><strong>المتوسط</strong><span>${avg}${currency}</span></div><div class="stat-item"><strong>أقل سعر</strong><span>${min}${currency}</span></div><div class="stat-item"><strong>أعلى سعر</strong><span>${max}${currency}</span></div></div>`;const oldStats=tab4.querySelector(".price-stats");if (oldStats) oldStats.remove();scrollContainer.insertAdjacentHTML("afterend",statsHtml);let tooltipEl=document.getElementById("chart-tooltip") || Object.assign(document.createElement("div"),{id:"chart-tooltip"});if (!tooltipEl.parentElement) document.body.appendChild(tooltipEl);const externalTooltipHandler=(context)=>{const{chart,tooltip}=context;if (tooltip.opacity===0){tooltipEl.style.opacity=0;setTimeout(()=>{if(tooltipEl.style.opacity==0) tooltipEl.style.display="none"},200);return}tooltipEl.style.display="block";setTimeout(()=>{tooltipEl.style.opacity=1},10);const idx=tooltip.dataPoints[0].dataIndex;const val=tooltip.dataPoints[0].raw;const pVal=idx>0 ? prices[idx - 1] :val;const diff=+(val - pVal).toFixed(2);const perc=pVal !==0 ? ((diff / pVal) * 100).toFixed(1) :0;const arr=diff>0 ? `<span style="color:#ef4444;">▲</span>` :diff < 0 ? `<span style="color:#10b981;">▼</span>` :"-";tooltipEl.innerHTML=` <div style="font-weight:bold;margin-bottom:4px;border-bottom:1px solid #555;padding-bottom:4px;">${dates[idx]}</div><div>السعر:${val}${currency}</div><div style="font-size:12px;">التغير:${arr}${diff}(${perc}%)</div>`;const pos=chart.canvas.getBoundingClientRect();const tooltipWidth=tooltipEl.offsetWidth;const screenWidth=window.innerWidth;let leftPos=pos.left+window.pageXOffset+tooltip.caretX+10;if (leftPos+tooltipWidth>screenWidth){leftPos=pos.left+window.pageXOffset+tooltip.caretX - tooltipWidth - 10}if (leftPos < 0) leftPos=10;tooltipEl.style.left=leftPos+'px';tooltipEl.style.top=(pos.top+window.pageYOffset+tooltip.caretY - 60)+'px'};const ctx=chartCanvas.getContext("2d");if (window.myPriceChart) window.myPriceChart.destroy();window.myPriceChart=new Chart(ctx,{type:"line",data:{labels:dates,datasets:[{data:prices,borderColor:"#ff6000",backgroundColor:(c)=>{const a=c.chart.chartArea;if (!a) return null;const g=c.chart.ctx.createLinearGradient(0,a.top,0,a.bottom);g.addColorStop(0,'rgba(255, 96, 0, 0.15)');g.addColorStop(1,'rgba(255, 96, 0, 0)');return g},borderWidth:2.5,pointRadius:0,pointHoverRadius:6,pointHitRadius:20,fill:true,stepped:'before'}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:10,bottom:10}},animation:{duration:400,easing:'easeOutQuart'},interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{enabled:false,external:externalTooltipHandler}},scales:{x:{ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:isMobile ? 5:10},grid:{display:false}},y:{position:'right',grace:'15%',ticks:{precision:2},grid:{color:'#f0f0f0',drawBorder:false}}}}});if (isMobile) scrollContainer.scrollLeft=scrollContainer.scrollWidth}catch (e){console.error(e)}};
 
-        const rawText = priceEl.innerText.replace(/,/g, '');
-        const match = rawText.match(/\d+(\.\d+)?/); 
-        
-        return match ? parseFloat(match[0]) : 0;
-    }
 
-    document.querySelectorAll('.is-chip').forEach(chip => {
-        chip.onclick = function() {
-            const currentPrice = getCurrentPrice();
-            if (currentPrice > 0) {
-                const pct = parseInt(this.getAttribute('data-pct'));
-                const target = (currentPrice * (1 - pct/100)).toFixed(2);
-                document.getElementById('isPrice').value = target;
-                document.querySelectorAll('.is-chip').forEach(c => c.classList.remove('active'));
-                this.classList.add('active');
-            }
-        };
-    });
+// =================== Download Chart ===================
 
-    document.getElementById('isGo').onclick = async function() {
-        const goBtn = this;
-        let targetP = parseFloat(document.getElementById('isPrice').value) || 0;
-        
-        if (!targetP || targetP <= 0) {
-            alert("⚠️ من فضلك أدخل سعر صحيح");
-            return;
-        }
-
-        goBtn.disabled = true;
-        goBtn.innerText = "جاري التحضير...";
-
-        const payload = {
-            uid: uid,
-            targetPrice: targetP,
-            currentPrice: getCurrentPrice(),
-            country: rawCountry,
-            email: document.getElementById('isMail').value || 'none',
-            fingerprint: localStorage.getItem('user_fingerprint') || 'ID-GUEST',
-            recordIdx: window.currentRecordIndex,
-            skuIdx: (window.selectedSkuIndex !== undefined) ? window.selectedSkuIndex : 255
-        };
-
-        try {
-            const response = await fetch(workerUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const result = await response.json();
-
-            if (result.token) {
-                window.open(`https://t.me/${bot}?start=${result.token}`, '_blank');
-                document.getElementById('isOverlay').style.display = 'none';
-            } else {
-                throw new Error();
-            }
-        } catch (err) {
-            alert("⚠️ عذراً، حدث خطأ أثناء الاتصال. حاول مرة أخرى.");
-        } finally {
-            goBtn.disabled = false;
-            goBtn.innerText = "تفعيل في تليجرام";
-        }
-    };
-
-    box.appendChild(btn);
-});
+(function(){function wrapText(ctx,text,x,y,maxWidth,lineHeight){const words=text.split(' ');let line='';let currentY=y;for(let n=0;n<words.length;n++){let testLine=line+words[n]+' ';let metrics=ctx.measureText(testLine);if(metrics.width>maxWidth&&n>0){ctx.fillText(line,x,currentY);line=words[n]+' ';currentY+=lineHeight}else{line=testLine}}
+ctx.fillText(line,x,currentY);return currentY}
+window.downloadChartAsImage=async function(action='download'){const chartInstance=window.myPriceChart;if(!chartInstance)return;const canvas=document.getElementById("priceChart");const tempCanvas=document.createElement("canvas");const ctx=tempCanvas.getContext("2d");const padding=40;const headerHeight=160;tempCanvas.width=canvas.width+(padding*2);tempCanvas.height=canvas.height+headerHeight+padding+20;const isDarkMode=document.body.classList.contains('dark-mode');ctx.fillStyle=isDarkMode?"#121212":"#ffffff";ctx.fillRect(0,0,tempCanvas.width,tempCanvas.height);const productName=document.querySelector("h1")?.innerText||"تقرير الأسعار";const hostMatch=window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);const countryCode=hostMatch?hostMatch[1].toUpperCase():"SA";const countryData={"SA":"السعودية 🇸🇦","AE":"الإمارات 🇦🇪","OM":"عُمان 🇴🇲","MA":"المغرب 🇲🇦","DZ":"الجزائر 🇩🇿","TN":"تونس 🇹🇳"};const countryName=countryData[countryCode]||"السعودية 🇸🇦";ctx.direction="rtl";ctx.textAlign="right";ctx.fillStyle="#e74c3c";ctx.font="bold 28px Arial";ctx.fillText("بـورصـة الأسـعـار",tempCanvas.width-padding,50);ctx.fillStyle=isDarkMode?"#eeeeee":"#2c3e50";ctx.font="bold 20px Arial";const lastTextY=wrapText(ctx,productName,tempCanvas.width-padding,90,tempCanvas.width-(padding*2),28);ctx.fillStyle="#3498db";ctx.font="bold 16px Arial";ctx.fillText("الدولة: "+countryName,tempCanvas.width-padding,lastTextY+35);ctx.fillStyle="#7f8c8d";ctx.font="13px Arial";const dateStr=new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});ctx.fillText(window.location.hostname+" | تحديث "+dateStr,tempCanvas.width-padding,lastTextY+60);ctx.shadowColor="rgba(0,0,0,0.2)";ctx.shadowBlur=25;ctx.shadowOffsetY=12;ctx.drawImage(canvas,padding,headerHeight);ctx.shadowBlur=0;ctx.strokeStyle=isDarkMode?"#333":"#f0f0f0";ctx.lineWidth=2;ctx.strokeRect(5,5,tempCanvas.width-10,tempCanvas.height-10);const imageBase64=tempCanvas.toDataURL("image/png",1.0);if(action==='share'&&navigator.share){const response=await fetch(imageBase64);const blob=await response.blob();const file=new File([blob],`Price-Report.png`,{type:"image/png"});try{await navigator.share({files:[file],title:productName,text:`تقرير أسعار ${productName}\nالمصدر:`,url:window.location.href})}catch(err){}}else{const downloadLink=document.createElement("a");downloadLink.href=imageBase64;downloadLink.download=`Price-Report-${countryCode}-${new Date().getTime()}.png`;document.body.appendChild(downloadLink);downloadLink.click();document.body.removeChild(downloadLink)}};const observer=new MutationObserver(()=>{const stats=document.querySelector(".price-stats");if(stats&&!document.getElementById("btn-download-container")){const containerHtml=`
+                <div id="btn-download-container">
+                    <button id="btn-download-chart" onclick="downloadChartAsImage('download')">
+                        <span>📊</span> حفظ الرسم البياني
+                    </button>
+                    <button id="btn-share-chart" onclick="downloadChartAsImage('share')">
+                        <span>🔗</span> مشاركة التقرير
+                    </button>
+                </div>`;stats.insertAdjacentHTML("afterend",containerHtml);if(!navigator.share){document.getElementById("btn-share-chart").style.display="none"}}});observer.observe(document.body,{childList:!0,subtree:!0})})()
