@@ -174,8 +174,33 @@ if(savingEl){savingEl.style.display="block";savingEl.innerHTML=`<span class="sav
         drawStars(document.getElementById("stars"), parseFloat(data.score) || 0);
         const rv = document.getElementById("ratingValue"); if(rv) rv.textContent = data.score.toFixed(1);
         const rc = document.getElementById("goToReviews"); if(rc) rc.textContent = (data.reviews || 0).toLocaleString() + " تقييمات";      
-    };
+        };
 
+
+        const affLink = data.productAffCode ? `https://s.click.aliexpress.com/${data.productAffCode}` : null;
+        const buyBtn = document.querySelector(".buy-button");
+        if (buyBtn && affLink) buyBtn.href = affLink;
+        const moreRev = document.querySelector(".more-reviews-link a");
+        if (moreRev && affLink) moreRev.href = affLink;
+
+        const ordersEl = document.querySelector(".orders-count");
+        if (ordersEl) ordersEl.textContent = (data.orders || 0).toLocaleString();
+
+
+
+      const storeWrapper = document.getElementById('store-bar-wrapper');
+        if (storeWrapper && data.storeName) {
+            const storeLink = `/page/store?store=${data.storeId}`;
+            storeWrapper.innerHTML = `
+                <div class="bar">
+                    <img src="/public/assets/static/store.webp" class="profile-image" alt="Store">
+                    <div class="text">${data.storeName}</div>
+                    <div class="buttons">
+                        <a href="${storeLink}" class="button">زيارة المتجر</a>
+                        <a href="https://s.click.aliexpress.com/${data.storeAffCode}" target="_blank" rel="nofollow" class="button">متابعة</a>
+                    </div>
+                </div>`;
+        }
 
         document.querySelectorAll('.Customer-Reviews .stars-group').forEach(group => {
         const rating = parseFloat(group.getAttribute('data-rating')) || 5;
