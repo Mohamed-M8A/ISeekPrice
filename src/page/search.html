@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISearch - ابحث عن المنتجات بسرعة الضوء</title>
     <link rel="icon" type="image/x-icon" href="/public/assets/static/favicon.ico">
-    <link href='/public/css/style.min.css' rel='stylesheet'/> 
     <link href='/public/css/search.css' rel='stylesheet'/> 
 </head>
 <body>
@@ -13,28 +12,29 @@
 <header id='header' itemscope='itemscope' itemtype='https://schema.org/WPHeader'>
   <div class='header-main-row'>
     <div class='header-container'>
-      <div class='logo' id='logo-wrap'></div>
-      <div class='search-container' id='search-wrap'></div>
-      <div class='header-actions' id='actions-wrap'></div>
+      <div class='logo' id='logo-wrap'>
+      </div>
+      <div class='search-container' id='search-wrap'>
+      </div>
+      <div class='header-actions' id='actions-wrap'>
+      </div>
     </div>
   </div>
-<nav id='widget-topbar'></nav>
+  <nav id='widget-topbar'>
+  </nav>
 </header>
 
 <div id='widget-sidebar'></div>
 <div id='widget-overlay'></div>
     
-    
-<h2 class="main-headline" id="query-heading" style="text-align:center;margin-top:20px;">جاري البحث...</h2>
 <button id="mobile-filter-trigger" class="mobile-filter-btn">
     <svg style="width:20px;height:20px" viewBox="0 0 24 24"><path fill="currentColor" d="M3,2H21V2H21V4H18L15,10V22H9V10L6,4H3V2M11,11V19H13V11L16,5H8L11,11Z" /></svg>
     تصفية النتائج
 </button>
 
-    
 <div class="search-layout-wrapper">
     <aside id="search-sidebar" class="search-sidebar">
-        <h3 style="font-size:18px;font-weight:800;margin-bottom:20px;border-bottom:2px solid #febd69;padding-bottom:10px">تصفية البحث</h3>
+        <div class="sidebar-header">تصفية البحث</div>
         
         <div class="filter-section">
             <div class="filter-title">الترتيب حسب</div>
@@ -45,6 +45,18 @@
                 <option value="price_desc">السعر: من الأعلى للأقل</option>
                 <option value="rating_desc">الأعلى تقييماً</option>
             </select>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-title">خيارات الشحن</div>
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="filter-free-shipping"> شحن مجاني
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="filter-fast-shipping"> شحن سريع (أقل من 10 أيام)
+                </label>
+            </div>
         </div>
 
         <div class="filter-section">
@@ -84,13 +96,12 @@
         </div>
     </aside>
 
-    
-    <main id="souq-widget-root"></main>
-
-    
+    <main id="souq-widget-root">
+        <h2 id="query-heading" style="padding: 20px; margin: 0; font-size: 20px; font-weight: 900;">جاري البحث عن أفضل النتائج...</h2>
+    </main>
 </div>
 
-<footer id='footer' itemscope='itemscope' itemtype='https://schema.org/WPFooter'></footer>
+<footer id='footer' itemscope='itemscope' itemtype='https://schema.org/WPHeader'></footer>
     
 <script defer src='/public/js/controller.js'></script>  
 <script defer src='/public/js/worker.js'></script>      
