@@ -396,14 +396,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const sortSelect = document.getElementById('sort-select');
         const filterPromo = document.getElementById('filter-promo');
         const filterInstock = document.getElementById('filter-instock');
+        const filterFreeShipping = document.getElementById('filter-free-shipping');
+        const filterFastShipping = document.getElementById('filter-fast-shipping');
         const ratingRadio = document.querySelector('input[name="rating"]:checked');
-               
+        
         window.currentFilters = {
             sortBy: sortSelect ? sortSelect.value : 'relevance',
             minPrice: minPrice ? parseFloat(minPrice) : null,
             maxPrice: maxPrice ? parseFloat(maxPrice) : null,
             hasPromo: filterPromo ? filterPromo.checked : false,
             inStock: filterInstock ? filterInstock.checked : true,
+            freeShipping: filterFreeShipping ? filterFreeShipping.checked : false,
+            fastShipping: filterFastShipping ? filterFastShipping.checked : false,
             minRating: ratingRadio ? parseInt(ratingRadio.value) : 0
         };
 
@@ -422,11 +426,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const applyPrice = document.getElementById('apply-price');
     if (applyPrice) applyPrice.addEventListener('click', gatherFiltersAndSearch);
 
-    const filterPromo = document.getElementById('filter-promo');
-    if (filterPromo) filterPromo.addEventListener('change', gatherFiltersAndSearch);
-
-    const filterInstock = document.getElementById('filter-instock');
-    if (filterInstock) filterInstock.addEventListener('change', gatherFiltersAndSearch);
+    const checkFilters = ['filter-promo', 'filter-instock', 'filter-free-shipping', 'filter-fast-shipping'];
+    checkFilters.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', gatherFiltersAndSearch);
+    });
 
     document.querySelectorAll('input[name="rating"]').forEach(radio => {
         radio.addEventListener('change', gatherFiltersAndSearch);
