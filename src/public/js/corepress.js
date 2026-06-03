@@ -5,8 +5,10 @@
     const isMainDomain = host === "iseekprice.com" || host === "www.iseekprice.com";
     const countryMatch = host.match(/^(sa|ae|om|ma|dz|tn)\./i);
     const currentCountry = countryMatch ? countryMatch[1].toUpperCase() : "SA";
+
     const logoWrap = document.getElementById('logo-wrap');
     if (logoWrap) logoWrap.innerHTML = `<a href='/'><img alt='Logo' src='/public/assets/static/favicon.webp'/></a>`;
+
     const searchWrap = document.getElementById('search-wrap');
     if (searchWrap) {
         searchWrap.innerHTML = `
@@ -51,14 +53,13 @@ const actionsWrap = document.getElementById('actions-wrap');
     }
 
 
-(function(){const h=document.documentElement;const t=document.getElementById("dark-toggler");const p="/public/assets/static/icons.svg";const s=document.createElement('style');s.textContent=`html.dark-mode{filter:invert(1) hue-rotate(180deg)!important;background-color:#f5f7fb!important}html.dark-mode #header,html.dark-mode #footer,html.dark-mode #widget-topbar,html.dark-mode #widget-sidebar,html.dark-mode #widget-overlay,html.dark-mode #seller-bar,html.dark-mode .bar,html.dark-mode #search-wrap,html.dark-mode .search-container,html.dark-mode .search-box-form,html.dark-mode .search-box-button,html.dark-mode .hero-offer-banner,html.dark-mode .offer-button,html.dark-mode img,html.dark-mode picture,html.dark-mode video,html.dark-mode canvas,html.dark-mode svg,html.dark-mode button,html.dark-mode [class*="button"],html.dark-mode [class*="btn"],html.dark-mode [class*="price"],html.dark-mode .emoji-protect{filter:invert(1) hue-rotate(180deg)!important}html.dark-mode .emoji-protect{display:inline-block!important}*{transition:filter 0.2s ease-in-out!important}`;document.head.appendChild(s);function e(){const r=/(\p{Emoji_Presentation}|\p{Emoji}\u200d\p{Emoji})/gu;document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, li, td, button').forEach(el=>{if(r.test(el.innerHTML)&&!el.querySelector('.emoji-protect')){el.innerHTML=el.innerHTML.replace(r,'<span class="emoji-protect">$1</span>')}})}function a(v,m){const u=t?t.querySelector("use"):null;if(v==="dark"){h.classList.add("dark-mode");h.setAttribute("data-theme","dark");if(u)u.setAttribute("href",p+"#i-sun");e()}else{h.classList.remove("dark-mode");h.setAttribute("data-theme","light");if(u)u.setAttribute("href",p+"#i-moon")}if(m)localStorage.setItem("theme",v)}let k=localStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");a(k,false);if(t){t.addEventListener("click",x=>{x.preventDefault();a(h.classList.contains("dark-mode")?"light":"dark",true)})}})();
-    
+const htmlEl=document.documentElement;const darkBtn=document.getElementById("dark-toggler");function applyTheme(theme,persist){const iconUse=darkBtn?darkBtn.querySelector("use"):null;const iconPath="/public/assets/static/icons.svg";if(theme==="dark"){htmlEl.classList.add("dark-mode");htmlEl.setAttribute("data-theme","dark");if(iconUse)iconUse.setAttribute("href",iconPath+"#i-sun");}else{htmlEl.classList.remove("dark-mode");htmlEl.setAttribute("data-theme","light");if(iconUse)iconUse.setAttribute("href",iconPath+"#i-moon");}
+if(persist)localStorage.setItem("theme",theme);}
+let savedTheme=localStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");applyTheme(savedTheme,!1);if(darkBtn){darkBtn.addEventListener("click",e=>{e.preventDefault();applyTheme(htmlEl.classList.contains("dark-mode")?"light":"dark",!0)})}
     
 
 function updateCartWidget(){const cart=JSON.parse(localStorage.getItem("cart"))||[];const countEl=document.getElementById("cart-count");if(countEl){countEl.textContent=cart.length;cart.length>0?countEl.classList.add("active"):countEl.classList.remove("active")}}
 updateCartWidget();window.addEventListener("cartUpdated",updateCartWidget);const cartBtn=document.getElementById("cart-widget-header");if(cartBtn)cartBtn.onclick=()=>window.location.href="/page/cart/";const dropdown=document.getElementById("countryDropdown"),selected=dropdown?dropdown.querySelector(".selected"):null,options=dropdown?dropdown.querySelector(".options"):null
-
-
     
 
     if (isMainDomain) {
