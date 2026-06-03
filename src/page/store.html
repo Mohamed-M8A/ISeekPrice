@@ -52,49 +52,75 @@
             </div>
         </div>
     </div>
-
-<div id="souq-widget-root"></div>
+<main><div id="souq-widget-root"></div></main>
 
 <footer id='footer' itemscope='itemscope' itemtype='https://schema.org/WPFooter'></footer>
     
     
-    <script>
+<script>
 
-        
 async function initStorePage() {
     const params = new URLSearchParams(window.location.search);
     const storeId = params.get('store');
-    
-    if (storeId) {
-        const cached = localStorage.getItem(`store_${storeId}`);
-        if (cached) {
-            const data = JSON.parse(cached);
-            document.getElementById('store-title').innerText = data.name;
-            document.getElementById('store-follow-btn').href = `https://s.click.aliexpress.com/${data.aff}`;
-        } else {
-            document.getElementById('store-title').innerText = `متجر رقم #${storeId}`;
-        }
+    if (!storeId) return;
 
-        window.addEventListener('message', function(e) {
-            if (e.data && e.data.type === 'DONE') {
-                calculateAnalytics(e.data.core, e.data.feed);
+    const cached = localStorage.getItem(`store_${storeId}`);
+    if (cached) {
+        const data = JSON.parse(cached);
+        document.getElementById('store-title').innerText = data.name;
+        document.getElementById('store-follow-btn').href = `https://s.click.aliexpress.com/${data.aff}`;
+        document.title = `منتجات متجر ${data.name} - ISeekPrice`;
+    } else {
+        document.getElementById('store-title').innerText = `جاري تحميل بيانات المتجر...`;
+    }
+
+    window.addEventListener('message', function handler(e) {
+        if (e.data && e.data.type === 'BATCH' && e.data.batch.length > 0) {
+            const firstProduct = e.data.batch[0];
+            if (!localStorage.getItem(`store_${storeId}`) && firstProduct.recordIndex !== undefined) {
+                fetchStoreMetadata(firstProduct.recordIndex, storeId);
+                window.removeEventListener('message', handler);
             }
+        }
+        if (e.data && e.data.type === 'DONE') {
+            calculateAnalytics(e.data.core, e.data.feed);
+        }
+    });
+
+    if (typeof startWidget === "function") {
+        startWidget();
+    }
+}
+
+async function fetchStoreMetadata(idx, storeId) {
+    try {
+        const mapRes = await fetch("https://data.iseekprice.com/General/map.json?v=" + Date.now());
+        const map = await mapRes.json();
+        const startByte = idx * 100;
+        
+        const res = await fetch(`https://data.iseekprice.com/General/links_${map.links}.bin`, {
+            headers: { 'Range': `bytes=${startByte}-${startByte + 99}` }
         });
 
-        if (typeof startWidget === "function") {
-            startWidget();
+        if (res.status === 206) {
+            const buf = await res.arrayBuffer();
+            const decoder = new TextDecoder("utf-8");
+            const storeAff = decoder.decode(new Uint8Array(buf, 30, 14)).replace(/\0/g, '').trim();
+            const storeName = decoder.decode(new Uint8Array(buf, 44, 56)).replace(/\0/g, '').trim();
+
+            document.getElementById('store-title').innerText = storeName;
+            document.getElementById('store-follow-btn').href = `https://s.click.aliexpress.com/${storeAff}`;
+            document.title = `منتجات متجر ${storeName} - ISeekPrice`;
+            
+            localStorage.setItem(`store_${storeId}`, JSON.stringify({ name: storeName, aff: storeAff }));
         }
-    }
+    } catch (e) {}
 }
 
 function calculateAnalytics(core, feedMap) {
     if (!core || !feedMap) return;
-    
     const productsCount = core.length;
-    let totalSales = 0;
-    let totalScore = 0;
-    let ratedItems = 0;
-
+    let totalSales = 0, totalScore = 0, ratedItems = 0;
     core.forEach(p => {
         const feed = feedMap[p.id];
         if (feed) {
@@ -105,19 +131,15 @@ function calculateAnalytics(core, feedMap) {
             }
         }
     });
-
     const avgScore = ratedItems > 0 ? (totalScore / ratedItems).toFixed(1) : "5.0";
-
     document.getElementById('stat-count').innerText = productsCount;
     document.getElementById('stat-rating').innerText = avgScore;
     document.getElementById('stat-sales').innerText = totalSales.toLocaleString();
-    
     document.getElementById('analytic-stats').style.display = 'flex';
 }
 
-window.addEventListener('load', initStorePage);
-
+window.addEventListener('load', initStorePage);  
         
-    </script>
+</script>
 </body>
 </html>
