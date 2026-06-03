@@ -257,22 +257,23 @@ class Renderer {
             WidgetState.activeWorker = new Worker(URL.createObjectURL(blob));
 
             const displayBatch = async () => {
-            const totalToLoad = (currentIndex === 0) ? WIDGET_CONFIG.INITIAL_SIZE : 150;
-            const subBatchSize = 50;
+            const totalToLoad = (currentIndex === 0) ? WIDGET_CONFIG.INITIAL_SIZE : WIDGET_CONFIG.BATCH_SIZE;
             let loadedInRound = 0;
             while (loadedInRound < totalToLoad && currentIndex < storeData.length) {
-                const limit = Math.min(currentIndex + subBatchSize, storeData.length);
-                const batch = storeData.slice(currentIndex, limit);
-                if (batch.length > 0) {
-                    renderer.renderBatch(batch, WIDGET_CONFIG.DOMAIN);
-                    currentIndex = limit;
-                    loadedInRound += batch.length;
-                    await new Promise(r => setTimeout(r, 50));
-                } else break;
+            const stepSize = Math.min(50, totalToLoad - loadedInRound);
+            const limit = Math.min(currentIndex + stepSize, storeData.length);
+            const batch = storeData.slice(currentIndex, limit);
+            if (batch.length > 0) {
+            renderer.renderBatch(batch, WIDGET_CONFIG.DOMAIN);
+            currentIndex = limit;
+            loadedInRound += batch.length;
+            await new Promise(r => setTimeout(r, 50));
+            } else break;
             }
             loadMoreBtn.style.display = (currentIndex < storeData.length) ? 'block' : 'none';
-        };
+            };
 
+        
             WidgetState.activeWorker.onmessage = (e) => {
             if (e.data.searchId !== WidgetState.currentSearchId) return;
             if (e.data.type === 'BATCH') {
