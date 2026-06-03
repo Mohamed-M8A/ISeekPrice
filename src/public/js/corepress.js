@@ -5,10 +5,8 @@
     const isMainDomain = host === "iseekprice.com" || host === "www.iseekprice.com";
     const countryMatch = host.match(/^(sa|ae|om|ma|dz|tn)\./i);
     const currentCountry = countryMatch ? countryMatch[1].toUpperCase() : "SA";
-
     const logoWrap = document.getElementById('logo-wrap');
     if (logoWrap) logoWrap.innerHTML = `<a href='/'><img alt='Logo' src='/public/assets/static/favicon.webp'/></a>`;
-
     const searchWrap = document.getElementById('search-wrap');
     if (searchWrap) {
         searchWrap.innerHTML = `
