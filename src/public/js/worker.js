@@ -156,6 +156,7 @@ self.onmessage = async (e) => {
                                 const record = BinaryParser.parseCoreRecord(recordBuf, decoder);
                                 record.feed = feedData;
                                 record.relevance = relevance;
+                                record.recordIndex = rowIndex;
                                 
                                 if (isFilteredSearch || targetStore || (filters && filters.sortBy)) {
                                     allMatchedRecords.push(record);
