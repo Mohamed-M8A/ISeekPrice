@@ -147,6 +147,8 @@ self.onmessage = async (e) => {
                                 if (filters.maxPrice && feedData.price > filters.maxPrice) passesFilters = false;
                                 if (filters.minRating && feedData.score < filters.minRating) passesFilters = false;
                                 if (filters.hasPromo && feedData.status.promo === 0) passesFilters = false;
+                                if (filters.freeShipping && feedData.original <= feedData.price) passesFilters = false;
+                                if (filters.fastShipping && feedData.delivery.max > 10) passesFilters = false;
                             }
 
                             if (passesFilters) {
