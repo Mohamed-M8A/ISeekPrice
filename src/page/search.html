@@ -12,16 +12,12 @@
 <header id='header' itemscope='itemscope' itemtype='https://schema.org/WPHeader'>
   <div class='header-main-row'>
     <div class='header-container'>
-      <div class='logo' id='logo-wrap'>
-      </div>
-      <div class='search-container' id='search-wrap'>
-      </div>
-      <div class='header-actions' id='actions-wrap'>
-      </div>
+      <div class='logo' id='logo-wrap'></div>
+      <div class='search-container' id='search-wrap'></div>
+      <div class='header-actions' id='actions-wrap'></div>
     </div>
   </div>
-  <nav id='widget-topbar'>
-  </nav>
+  <nav id='widget-topbar'></nav>
 </header>
 
 <div id='widget-sidebar'></div>
@@ -32,90 +28,90 @@
     تصفية النتائج
 </button>
 
-<div class="search-layout-wrapper">
-    <aside id="search-sidebar" class="search-sidebar">
-        <div class="sidebar-header">تصفية البحث</div>
-        
-        <div class="filter-section">
-            <div class="filter-title">الترتيب حسب</div>
-            <select id="sort-select" class="custom-select">
-                <option value="relevance">الأكثر تطابقاً</option>
-                <option value="orders_desc">الأكثر مبيعاً</option>
-                <option value="price_asc">السعر: من الأقل للأعلى</option>
-                <option value="price_desc">السعر: من الأعلى للأقل</option>
-                <option value="rating_desc">الأعلى تقييماً</option>
-            </select>
-        </div>
-
-        <div class="filter-section">
-            <div class="filter-title">خيارات الشحن</div>
-            <div class="checkbox-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="filter-free-shipping"> شحن مجاني
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" id="filter-fast-shipping"> شحن سريع (أقل من 10 أيام)
-                </label>
-            </div>
-        </div>
-
-        <div class="filter-section">
-            <div class="filter-title">نطاق السعر</div>
-            <div class="price-inputs">
-                <input type="number" id="min-price" placeholder="من">
-                <input type="number" id="max-price" placeholder="إلى">
-            </div>
-            <button id="apply-price" class="apply-btn">تطبيق السعر</button>
-        </div>
-
-        <div class="filter-section">
-            <div class="filter-title">حالة المنتج</div>
-            <div class="checkbox-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="filter-promo"> يوجد عروض وخصومات
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" id="filter-instock" checked> متوفر في المخزون
-                </label>
-            </div>
-        </div>
-
-        <div class="filter-section">
-            <div class="filter-title">تقييم العملاء</div>
-            <div class="checkbox-group">
-                <label class="checkbox-label">
-                    <input type="radio" name="rating" value="4"> <span class="rating-stars">★★★★☆</span> وأعلى
-                </label>
-                <label class="checkbox-label">
-                    <input type="radio" name="rating" value="3"> <span class="rating-stars">★★★☆☆</span> وأعلى
-                </label>
-                <label class="checkbox-label">
-                    <input type="radio" name="rating" value="0" checked> جميع التقييمات
-                </label>
-            </div>
-        </div>
-    </aside>
-    
 <div id='primary'>
-    <main id="souq-widget-root">
-        <div class="results-header">
-            <h2 id="query-heading" style="margin: 0; font-size: 20px; font-weight: 900;">جاري البحث عن أفضل النتائج...</h2>
-            <div class="view-toggle">
-                <button id="view-grid" class="active">
-                    <svg style="width:18px;height:18px;vertical-align:middle" viewBox="0 0 24 24"><path fill="currentColor" d="M3,11H11V3H3M3,21H11V13H3M13,21H21V13H13M13,3V11H21V3"/></svg>
-                </button>
-                <button id="view-list">
-                    <svg style="width:18px;height:18px;vertical-align:middle" viewBox="0 0 24 24"><path fill="currentColor" d="M3,4H21V8H3V4M3,10H21V14H3V10M3,16H21V20H3V16Z"/></svg>
-                </button>
+    <div class="search-layout-wrapper">
+        
+        <aside id="search-sidebar" class="search-sidebar">
+            <div class="sidebar-header">تصفية البحث</div>
+            
+            <div class="filter-section">
+                <div class="filter-title">الترتيب حسب</div>
+                <select id="sort-select" class="custom-select">
+                    <option value="relevance">الأكثر تطابقاً</option>
+                    <option value="orders_desc">الأكثر مبيعاً</option>
+                    <option value="price_asc">السعر: من الأقل للأعلى</option>
+                    <option value="price_desc">السعر: من الأعلى للأقل</option>
+                    <option value="rating_desc">الأعلى تقييماً</option>
+                </select>
             </div>
-        </div>
-    </main>
+
+            <div class="filter-section">
+                <div class="filter-title">خيارات الشحن</div>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="filter-free-shipping"> شحن مجاني
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="filter-fast-shipping"> شحن سريع (أقل من 10 أيام)
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">نطاق السعر</div>
+                <div class="price-inputs">
+                    <input type="number" id="min-price" placeholder="من">
+                    <input type="number" id="max-price" placeholder="إلى">
+                </div>
+                <button id="apply-price" class="apply-btn">تطبيق السعر</button>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">حالة المنتج</div>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="filter-promo"> يوجد عروض وخصومات
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="filter-instock" checked> متوفر في المخزون
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">تقييم العملاء</div>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="radio" name="rating" value="4"> <span class="rating-stars">★★★★☆</span> وأعلى
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="radio" name="rating" value="3"> <span class="rating-stars">★★★☆☆</span> وأعلى
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="radio" name="rating" value="0" checked> جميع التقييمات
+                    </label>
+                </div>
+            </div>
+        </aside>
+        
+        <main id="souq-widget-root">
+            <div class="results-header">
+                <h2 id="query-heading" style="margin: 0; font-size: 20px; font-weight: 900;">جاري البحث عن أفضل النتائج...</h2>
+                <div class="view-toggle">
+                    <button id="view-grid" class="active">
+                        <svg style="width:18px;height:18px;vertical-align:middle" viewBox="0 0 24 24"><path fill="currentColor" d="M3,11H11V3H3M3,21H11V13H3M13,21H21V13H13M13,3V11H21V3"/></svg>
+                    </button>
+                    <button id="view-list">
+                        <svg style="width:18px;height:18px;vertical-align:middle" viewBox="0 0 24 24"><path fill="currentColor" d="M3,4H21V8H3V4M3,10H21V14H3V10M3,16H21V20H3V16Z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+    </div>
 </div>
 
-    
-</div>
-
-<footer id='footer' itemscope='itemscope' itemtype='https://schema.org/WPHeader'></footer>
+<footer id='footer' itemscope='itemscope' itemtype='https://schema.org/WPFooter'></footer>
     
 <script defer src='/public/js/controller.js'></script>  
 <script defer src='/public/js/worker.js'></script>      
