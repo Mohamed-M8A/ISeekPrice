@@ -239,24 +239,24 @@ class Renderer {
         }
         root.innerHTML = `<div id="product-posts" class="product-grid"></div><div id="loader" class="loader-container"><div class="spinner"></div></div><button id="load-more" class="load-more-btn" style="display:none;">عرض المزيد</button>`;
         
-        if (!await loadMap()) return;
-        const feedPath = getCloudPath("feed");
-        if (!feedPath) return;
-        const sharedFeedBuffer = await getSharedFeedBuffer(feedPath);
-        if (!sharedFeedBuffer) return;
+             if (!await loadMap()) return;
+             const feedPath = getCloudPath("feed");
+             if (!feedPath) return;
+             const sharedFeedBuffer = await getSharedFeedBuffer(feedPath);
+             if (!sharedFeedBuffer) return;
 
-        const grid = document.getElementById('product-posts');
-        const loader = document.getElementById('loader');
-        const loadMoreBtn = document.getElementById('load-more');
-        const renderer = new Renderer('product-posts');
+            const grid = document.getElementById('product-posts');
+            const loader = document.getElementById('loader');
+            const loadMoreBtn = document.getElementById('load-more');
+            const renderer = new Renderer('product-posts');
         
-        let storeData = [];
-        let currentIndex = 0;
+            let storeData = [];
+            let currentIndex = 0;
 
-        const blob = new Blob([workerCode], { type: 'application/javascript' });
-        WidgetState.activeWorker = new Worker(URL.createObjectURL(blob));
+            const blob = new Blob([workerCode], { type: 'application/javascript' });
+            WidgetState.activeWorker = new Worker(URL.createObjectURL(blob));
 
-        const displayBatch = async () => {
+            const displayBatch = async () => {
             const totalToLoad = (currentIndex === 0) ? WIDGET_CONFIG.INITIAL_SIZE : 150;
             const subBatchSize = 50;
             let loadedInRound = 0;
@@ -273,7 +273,7 @@ class Renderer {
             loadMoreBtn.style.display = (currentIndex < storeData.length) ? 'block' : 'none';
         };
 
-        WidgetState.activeWorker.onmessage = (e) => {
+            WidgetState.activeWorker.onmessage = (e) => {
             if (e.data.searchId !== WidgetState.currentSearchId) return;
             if (e.data.type === 'BATCH') {
                 loader.style.display = 'none';
@@ -287,7 +287,7 @@ class Renderer {
             }
         };
 
-        window.triggerWorkerSearch = async () => {
+            window.triggerWorkerSearch = async () => {
             grid.innerHTML = '';
             loader.style.display = 'flex';
             loadMoreBtn.style.display = 'none';
@@ -322,7 +322,7 @@ class Renderer {
     
 // --- 6. Bootstrapper ---
     
-async function runGlobalBoot() {
+        async function runGlobalBoot() {
         const root = document.getElementById(WIDGET_CONFIG.ROOT_ID);
         if (!root || WidgetState.isInitializing) return;
 
