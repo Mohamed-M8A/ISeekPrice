@@ -70,8 +70,6 @@ async function initStorePage() {
         document.getElementById('store-title').innerText = data.name;
         document.getElementById('store-follow-btn').href = `https://s.click.aliexpress.com/${data.aff}`;
         document.title = `منتجات متجر ${data.name} - ISeekPrice`;
-    } else {
-        document.getElementById('store-title').innerText = `جاري تحميل بيانات المتجر...`;
     }
 
     window.addEventListener('message', function handler(e) {
@@ -87,9 +85,8 @@ async function initStorePage() {
         }
     });
 
-    if (typeof startWidget === "function") {
-        startWidget();
-    }
+    if (typeof startWidget === "function") startWidget();
+  }
 }
 
 async function fetchStoreMetadata(idx, storeId) {
