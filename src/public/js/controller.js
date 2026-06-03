@@ -279,6 +279,7 @@ class Renderer {
                 loader.style.display = 'none';
                 storeData.push(...e.data.batch);
                 if (currentIndex === 0) displayBatch();
+                window.postMessage(e.data, location.origin);
             } else if (e.data.type === 'DONE') {
                 loader.style.display = 'none';
                 if (storeData.length === 0) grid.innerHTML = '<div class="no-results">لا توجد نتائج تطابق بحثك حالياً</div>';
