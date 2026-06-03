@@ -435,4 +435,27 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('input[name="rating"]').forEach(radio => {
         radio.addEventListener('change', gatherFiltersAndSearch);
     });
+
+    const btnGrid = document.getElementById('view-grid');
+    const btnList = document.getElementById('view-list');
+    
+    if (btnGrid && btnList) {
+        btnGrid.addEventListener('click', () => {
+            const grid = document.getElementById('product-posts');
+            if (grid) {
+                grid.classList.remove('list-view');
+                btnGrid.classList.add('active');
+                btnList.classList.remove('active');
+            }
+        });
+
+        btnList.addEventListener('click', () => {
+            const grid = document.getElementById('product-posts');
+            if (grid) {
+                grid.classList.add('list-view');
+                btnList.classList.add('active');
+                btnGrid.classList.remove('active');
+            }
+        });
+    }
 });
