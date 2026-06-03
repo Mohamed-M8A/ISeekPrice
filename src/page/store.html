@@ -85,16 +85,25 @@ async function initStorePage() {
         }
     });
 
-    if (typeof startWidget === "function") startWidget();
-  }
+    if (typeof startWidget === "function") {
+        startWidget();
+    }
+}
 
 async function fetchStoreMetadata(idx, storeId) {
     try {
-        const mapRes = await fetch("https://data.iseekprice.com/General/map.json?v=" + Date.now());
-        const map = await mapRes.json();
-        const startByte = idx * 100;
+        const hostMatch = window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
+        const country = hostMatch ? hostMatch[1].toUpperCase() : "SA";
+        const v = Date.now();
         
-        const res = await fetch(`https://data.iseekprice.com/General/links_${map.links}.bin`, {
+        const mapRes = await fetch(`https://data.iseekprice.com/General/map.json?v=${v}`);
+        const map = await mapRes.json();
+        
+        const region = map.regions[country];
+        if (!region || !region.links) return;
+
+        const startByte = idx * 100;
+        const res = await fetch(`https://data.iseekprice.com/${country}/links_${region.links}.bin?v=${v}`, {
             headers: { 'Range': `bytes=${startByte}-${startByte + 99}` }
         });
 
@@ -134,8 +143,8 @@ function calculateAnalytics(core, feedMap) {
     document.getElementById('analytic-stats').style.display = 'flex';
 }
 
-window.addEventListener('load', initStorePage);  
-        
+window.addEventListener('load', initStorePage);
+  
 </script>
 </body>
 </html>
