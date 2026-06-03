@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISearch - ابحث عن المنتجات بسرعة الضوء</title>
     <link rel="icon" type="image/x-icon" href="/public/assets/static/favicon.ico">
-    
     <link href='/public/css/style.min.css' rel='stylesheet'/> 
     <link href='/public/css/search.css' rel='stylesheet'/> 
 </head>
@@ -30,7 +29,7 @@
     تصفية النتائج
 </button>
 
-<div id='primary'>
+<div id='primary' style="overflow: visible !important;">
     <div class="search-layout-wrapper">
         <aside id="search-sidebar" class="search-sidebar">
             <div class="sidebar-header">تصفية البحث</div>
@@ -78,9 +77,24 @@
                     </label>
                 </div>
             </div>
+
+            <div class="filter-section">
+                <div class="filter-title">تقييم العملاء</div>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="radio" name="rating" value="4"> <span class="rating-stars">★★★★☆</span> وأعلى
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="radio" name="rating" value="3"> <span class="rating-stars">★★★☆☆</span> وأعلى
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="radio" name="rating" value="0" checked> جميع التقييمات
+                    </label>
+                </div>
+            </div>
         </aside>
         
-        <main id="souq-widget-root">
+        <div class="search-results-area">
             <div class="results-header">
                 <h2 id="query-heading" style="margin: 0; font-size: 20px; font-weight: 900;">جاري البحث عن أفضل النتائج...</h2>
                 <div class="view-toggle">
@@ -92,8 +106,15 @@
                     </button>
                 </div>
             </div>
-        </main>
+            <main id="souq-widget-root"></main>
+        </div>
     </div>
+</div>
+
+<div id="back-to-top">
+    <a href="#" title="عد للأعلى">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path></svg>
+    </a>
 </div>
 
 <footer id='footer' itemscope='itemscope' itemtype='https://schema.org/WPFooter'></footer>
