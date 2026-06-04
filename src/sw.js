@@ -1,8 +1,9 @@
-const CACHE_NAME = 'iseekprice-v2';
+const CACHE_NAME = 'iseekprice-v3';
 const STATIC_ASSETS = [
   '/public/css/style.min.css',
-  '/public/assets/static/favicon.ico',
-  '/public/assets/icons/192.png'
+  '/public/fonts/cairo-regular.woff2',
+  '/public/fonts/cairo-600.woff2',
+  '/public/assets/static/favicon.ico'
 ];
 
 self.addEventListener('install', (event) => {
@@ -26,24 +27,25 @@ self.addEventListener('fetch', (event) => {
   
   const url = new URL(event.request.url);
 
-  if (url.pathname.endsWith('.bin') || 
-      url.pathname.endsWith('.json') || 
-      url.hostname.includes('google-analytics') ||
-      url.pathname.includes('/cdn-cgi/')) {
-    return;
-  }
+  if (url.hostname.includes('google-analytics') || url.pathname.includes('/cdn-cgi/')) return;
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const networkFetch = fetch(event.request).then((response) => {
-        if (url.origin === location.origin && response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
+      return fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const cacheCopy = networkResponse.clone();
+          if (url.pathname.match(/\.(webp|png|jpg|jpeg|woff2|css|js)$/)) {
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, cacheCopy));
+          }
         }
-        return response;
-      }).catch(() => cached);
-      
-      return cached || networkFetch;
+        return networkResponse;
+      }).catch(() => {
+        return null;
+      });
     })
   );
 });
