@@ -41,7 +41,7 @@ module.exports = async function() {
             fetchBufWithRetry(coreUrl),
             fetchBufWithRetry(feedUrl),
             fetchBufWithRetry(linksUrl),
-            fetchBufWithRetry(skuBuf),
+            fetchBufWithRetry(skuUrl),
             fetchBufWithRetry(promoUrl),
             fetchBufWithRetry(chartUrl)
         ]);
