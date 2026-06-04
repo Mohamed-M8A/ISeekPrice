@@ -41,7 +41,7 @@ module.exports = async function() {
             fetchBufWithRetry(coreUrl),
             fetchBufWithRetry(feedUrl),
             fetchBufWithRetry(linksUrl),
-            fetchBufWithRetry(skuUrl),
+            fetchBufWithRetry(skuBuf),
             fetchBufWithRetry(promoUrl),
             fetchBufWithRetry(chartUrl)
         ]);
@@ -52,12 +52,15 @@ module.exports = async function() {
             const id = coreBuf.readBigUInt64LE(i).toString();
             const rawSlug = coreBuf.toString('utf8', i + 16, i + 80).replace(/\0/g, '').trim();
             const cleanSlug = rawSlug.toLowerCase(); 
+            const productTitle = coreBuf.toString('utf8', i + 80, i + 280).replace(/\0/g, '').trim();
+            const autoMetaDescription = `اكتشف سعر ومواصفات ${productTitle} وتتبع حركة الأسعار، الخصومات، والتقييمات المتوفرة في السوق حالياً لشراء ذكي بأفضل قيمة.`.substring(0, 155);
 
             products.set(id, {
                 id: id,
                 recordIndex: i / 280,
                 slug: cleanSlug, 
-                title: coreBuf.toString('utf8', i + 80, i + 280).replace(/\0/g, '').trim(),
+                title: productTitle,
+                metaDescription: autoMetaDescription,
                 skus: [],
                 promo: null,
                 chart: []
