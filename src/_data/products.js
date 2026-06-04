@@ -1,19 +1,34 @@
 const fetch = require('node-fetch');
 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 module.exports = async function() {
     const country = (process.env.COUNTRY || 'SA').toUpperCase();
     const baseUrl = 'https://data.iseekprice.com/';
 
+    const fetchBufWithRetry = async (url, retries = 10, delayMs = 2000) => {
+        if (!url) return Buffer.alloc(0);
+        
+        for (let i = 1; i <= retries; i++) {
+            try {
+                const response = await fetch(url);
+                if (response.ok) {
+                    return Buffer.from(await response.arrayBuffer());
+                }
+            } catch (err) {
+            }
+            if (i < retries) await delay(delayMs);
+        }
+        throw new Error(`Fetch failed after 10 retries: ${url}`);
+    };
+
     try {
         const mapRes = await fetch(`${baseUrl}General/map.json?v=${Date.now()}`);
+        if (!mapRes.ok) {
+            throw new Error(`Failed to fetch map.json: ${mapRes.status}`);
+        }
         const map = await mapRes.json();
         const region = map.regions[country];
-
-        const fetchBuf = async (url) => {
-            if (!url) return Buffer.alloc(0);
-            const r = await fetch(url);
-            return r.ok ? Buffer.from(await r.arrayBuffer()) : Buffer.alloc(0);
-        };
 
         const coreUrl = `${baseUrl}General/core_${map.core}.bin`;
         const feedUrl = region && region.feed ? `${baseUrl}${country}/feed_${region.feed}.bin` : null;
@@ -23,22 +38,25 @@ module.exports = async function() {
         const chartUrl = region && region.fluctuation ? `${baseUrl}${country}/fluctuation_${region.fluctuation}.bin` : null;
 
         const [coreBuf, feedBuf, linksBuf, skuBuf, promoBuf, chartBuf] = await Promise.all([
-            fetchBuf(coreUrl),
-            fetchBuf(feedUrl),
-            fetchBuf(linksUrl),
-            fetchBuf(skuUrl),
-            fetchBuf(promoUrl),
-            fetchBuf(chartUrl)
+            fetchBufWithRetry(coreUrl),
+            fetchBufWithRetry(feedUrl),
+            fetchBufWithRetry(linksUrl),
+            fetchBufWithRetry(skuUrl),
+            fetchBufWithRetry(promoUrl),
+            fetchBufWithRetry(chartUrl)
         ]);
 
         const products = new Map();
 
-            for (let i = 0; i < coreBuf.length; i += 280) {
+        for (let i = 0; i < coreBuf.length; i += 280) {
             const id = coreBuf.readBigUInt64LE(i).toString();
+            const rawSlug = coreBuf.toString('utf8', i + 16, i + 80).replace(/\0/g, '').trim();
+            const cleanSlug = rawSlug.toLowerCase(); 
+
             products.set(id, {
                 id: id,
                 recordIndex: i / 280,
-                slug: coreBuf.toString('utf8', i + 16, i + 80).replace(/\0/g, '').trim(),
+                slug: cleanSlug, 
                 title: coreBuf.toString('utf8', i + 80, i + 280).replace(/\0/g, '').trim(),
                 skus: [],
                 promo: null,
@@ -143,6 +161,6 @@ module.exports = async function() {
         return Array.from(products.values());
 
     } catch (e) {
-        return [];
+        throw e; 
     }
 };
