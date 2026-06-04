@@ -1,4 +1,4 @@
-const CACHE_NAME = 'iseekprice-v3';
+const CACHE_NAME = 'iseekprice-v4';
 const STATIC_ASSETS = [
   '/public/css/style.min.css',
   '/public/fonts/cairo-regular.woff2',
@@ -27,7 +27,12 @@ self.addEventListener('fetch', (event) => {
   
   const url = new URL(event.request.url);
 
-  if (url.hostname.includes('google-analytics') || url.pathname.includes('/cdn-cgi/')) return;
+  if (url.pathname.endsWith('.json') || 
+      url.pathname.endsWith('.bin') || 
+      url.hostname.includes('google-analytics') || 
+      url.pathname.includes('/cdn-cgi/')) {
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
@@ -43,9 +48,7 @@ self.addEventListener('fetch', (event) => {
           }
         }
         return networkResponse;
-      }).catch(() => {
-        return null;
-      });
+      }).catch(() => null);
     })
   );
 });
