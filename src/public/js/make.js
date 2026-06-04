@@ -18,8 +18,7 @@ function createModal(){if(document.getElementById("imageModal"))return;document.
 createModal();const modal=document.getElementById("imageModal");const modalImage=document.getElementById("modalImage");window.openModal=function(index){const thumbnails=getThumbnails();const targetIndex=(typeof index==='number')?index:currentIndex;if(!thumbnails[targetIndex])return;modal.style.display="flex";modalImage.src=thumbnails[targetIndex].src;applyImageStyle(modalImage);currentIndex=targetIndex};window.closeModal=function(){modal.style.display="none"};window.navigateModal=function(direction){const thumbnails=getThumbnails();if(thumbnails.length===0)return;currentIndex=direction==="next"?(currentIndex+1)%thumbnails.length:(currentIndex-1+thumbnails.length)%thumbnails.length;modalImage.src=thumbnails[currentIndex].src;applyImageStyle(modalImage)}
 
 //  Customer IMG 
-const avatarURL="/public/assets/static/client.png";document.querySelectorAll(".avatar-placeholder").forEach(placeholder=>{const img=document.createElement("img");img.src=avatarURL;img.alt="أفاتار";img.className="reviewer-img";placeholder.appendChild(img)})
-
+const avatarURL="/public/assets/static/client.png";document.querySelectorAll(".avatar-placeholder").forEach(placeholder=>{const img=new Image();img.src=avatarURL;img.alt="عميل";img.className="reviewer-img";img.width=50;img.height=50;img.loading="lazy";placeholder.appendChild(img)})
 
 // =================== Tabs ===================
 
