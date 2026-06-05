@@ -353,9 +353,7 @@ window.downloadChartAsImage=async function(action='download'){const chartInstanc
 
 // =================== Telegram Alerts ===================
 
-document.addEventListener('DOMContentLoaded',function(){const uidEl=document.querySelector('.UID');const box=document.getElementById('telegram-alert-wrapper');if(!uidEl||!box)return;const uid = window.PRODUCT_DATA?.id || uidEl.innerText.trim();const bot='ISeekPrice_bot';const hostMatch=window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);const rawCountry=hostMatch?hostMatch[1].toUpperCase():"SA";
-                                                        
-const workerUrl='https://notify.iseekprice.com/submit-alert';const countriesMap={'SA':'السعودية 🇸🇦','AE':'الإمارات 🇦🇪','OM':'عُمان 🇴🇲','MA':'المغرب 🇦🇪','DZ':'الجزائر 🇩🇿','TN':'تونس 🇹🇳'};const countryName=countriesMap[rawCountry]||rawCountry;const modalHtml=`
+document.addEventListener('DOMContentLoaded',function(){const uidEl=document.querySelector('.UID');const box=document.getElementById('telegram-alert-wrapper');if(!uidEl||!box)return;const uid = window.PRODUCT_DATA?.id || uidEl.innerText.trim();const bot='ISeekPrice_bot';const hostMatch=window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);const rawCountry=hostMatch?hostMatch[1].toUpperCase():"SA";const workerUrl='https://notify.iseekprice.com/submit-alert';const countriesMap={'SA':'السعودية 🇸🇦','AE':'الإمارات 🇦🇪','OM':'عُمان 🇴🇲','MA':'المغرب 🇦🇪','DZ':'الجزائر 🇩🇿','TN':'تونس 🇹🇳'};const countryName=countriesMap[rawCountry]||rawCountry;const modalHtml=`
         <div class="is-overlay" id="isOverlay">
             <div class="is-modal">
                 <h3>🔔 تتبع السعر الذكي</h3>
