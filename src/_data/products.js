@@ -153,7 +153,7 @@ module.exports = async function() {
                         const pDate = new Date(Date.UTC(2025, 0, 1) + (timeInMinutes * 60 * 1000));
                         item.chart.push({
                             date: pDate.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
-                            price: +(priceRaw / 100).toFixed(2),
+                            price: (priceRaw / 100).toFixed(2),
                             rawTime: timeInMinutes
                         });
                     }
