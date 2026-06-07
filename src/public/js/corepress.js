@@ -100,8 +100,6 @@ if (footerInjector) {
     const socialLinks = [
         { label: "YouTube", icon: "i-youtube", url: "https://www.youtube.com/@ISeekPrice" },
         { label: "Pinterest", icon: "i-pinterest", url: "https://www.pinterest.com/ISeekPrice" },
-        { label: "Facebook", icon: "i-facebook", url: "https://www.facebook.com/profile.php?id=61579522981793" },
-        { label: "Instagram", icon: "i-instagram", url: "https://www.instagram.com/iseekprice/" },
         { label: "X", icon: "i-x", url: "https://x.com/ISeekPrice" },
         { label: "Telegram", icon: "i-telegram", url: "https://t.me/+bmBnY0FumOwxZDQ0" }
     ];
