@@ -1349,7 +1349,7 @@ body.dm #dark-toggler .icon-sun {
     margin-top: 20px;
     gap: 8px;
 }
-.thumbnail-container {
+.track-x {
     display: flex;
     overflow-x: auto;
     overflow-y: hidden;
@@ -1367,7 +1367,7 @@ body.dm #dark-toggler .icon-sun {
     width: max-content;
     direction: rtl;
 }
-.thumbnail-container img {
+.track-x img {
     flex-shrink: 0;
     width: 70px;
     height: 70px;
@@ -1376,8 +1376,8 @@ body.dm #dark-toggler .icon-sun {
     cursor: pointer;
     transition: border 0.3s ease;
 }
-.thumbnail-container img:hover,
-.thumbnail-container img.active-thumb {
+.track-x img:hover,
+.track-x img.active-thumb {
     border: 2px solid #000;
 }
 .gallery-wrapper {
@@ -1651,7 +1651,7 @@ body.dm #dark-toggler .icon-sun {
     #post-body embed,
     #post-body video,
     #post-body gif,
-    #post-body img:not(.thumbnail-container img):not(#mainImage):not(.profile-image):not(.fire-gif) {
+    #post-body img:not(.track-x img):not(#mainImage):not(.profile-image):not(.fire-gif) {
         width: 100% !important;
         max-width: 100% !important;
         height: auto !important;
@@ -1957,7 +1957,7 @@ body.dm #dark-toggler .icon-sun {
     .short-description {
         text-align: start;
     }
-    .thumbnail-container {
+    .track-x {
         justify-content: center;
         flex-wrap: wrap;
     }

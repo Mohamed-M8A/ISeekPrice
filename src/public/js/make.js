@@ -1,5 +1,5 @@
 // =================== IMGs ===================
-const thumbContainer=document.querySelector('.thumbnail-container');const thumbSlider=document.querySelector('.thumbnails-slider');const mainImg=document.getElementById('mainImage');let currentIndex=0;const scrollAmount=240;function getThumbnails(){return[...document.querySelectorAll('.thumbnail-container img')]}
+const thumbContainer=document.querySelector('.track-x');const thumbSlider=document.querySelector('.thumbnails-slider');const mainImg=document.getElementById('mainImage');let currentIndex=0;const scrollAmount=240;function getThumbnails(){return[...document.querySelectorAll('.track-x img')]}
 function applyImageStyle(img){if(!img)return;Object.assign(img.style,{objectFit:'contain',backgroundColor:'black',width:'100%',height:'100%'})}
 function changeImage(index){const thumbnails=getThumbnails();const selectedThumb=thumbnails[index];if(!selectedThumb)return;currentIndex=index;mainImg.src=selectedThumb.src;applyImageStyle(mainImg);if(selectedThumb._skuData){if(typeof window.updateSKUPrice==="function"){window.updateSKUPrice(selectedThumb._skuData)}}else{if(typeof window.resetToInitialData==="function"){window.resetToInitialData()}}
 thumbnails.forEach((img,i)=>img.classList.toggle('active-thumb',i===index));scrollThumbnailIntoView(index)}
