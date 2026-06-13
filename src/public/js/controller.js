@@ -330,6 +330,7 @@ class Renderer {
 // --- 6. Bootstrapper ---
     
         async function runGlobalBoot() {
+        await loadMap();     
         if (window.Ranker) window.Ranker.init();    
         const root = document.getElementById(WIDGET_CONFIG.ROOT_ID);
         if (!root || WidgetState.isInitializing) return;
