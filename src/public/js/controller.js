@@ -161,7 +161,7 @@ class Renderer {
                 </div>
             </div>
             <div class="product-content">
-                <h3 class="product-title">${safeTitle}</h3>
+                <h3 class="p-title">${safeTitle}</h3>
                 <div class="price-display">
                     <span class="discounted-price">${price} ${currencyConfig.symbol}</span>
                     ${feed.original > feed.price ? `<span class="original-price">${original} ${currencyConfig.symbol}</span>` : ''}
@@ -200,7 +200,7 @@ class Renderer {
   }
 }
 
-// --- 4. Global Actions (SKU Updates) ---
+// --- 4. Global Actions ---
     
     window.updateSKUPrice = function(item) {
         window.selectedSkuIndex = item.skuIdx;
