@@ -1,4 +1,5 @@
 {%- assign currentProduct = products | where: "slug", page.fileSlug | first -%}
+{%- assign extracted_image = content | split: 'src="' | slice: 1 | first | split: '"' | first -%}
 
 {%- capture shelf_html -%}
 <div id="dynamic-shelf">
@@ -58,8 +59,7 @@
   <link rel="icon" type="image/x-icon" href="/public/assets/static/favicon.ico">
   <link rel="stylesheet" href="/public/css/style.min.css">
   
-<script>
-    
+  <script>
     window.PRODUCT_DATA = {
         priceOriginal: {{ currentProduct.priceOriginal | default: 0 }},
         priceDiscounted: {{ currentProduct.priceDiscounted | default: 0 }},
@@ -79,8 +79,7 @@
     window.PRODUCT_PROMO = {{ currentProduct.promo | json }};           
     window.PRODUCT_SKUS = {{ currentProduct.skus | json }};
     window.PRODUCT_CHART = {{ currentProduct.chart | json }};
-    
-</script>
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <script src="/public/js/make.js" defer></script>
@@ -89,17 +88,40 @@
   <script src="/public/js/corepress.js" defer></script>
   <script src="/public/js/search.js" defer></script>
     
-
   <script type="application/ld+json" id="product-json-ld">
   {
     "@context": "https://schema.org/",
     "@type": "Product",
     "name": "{{ title }}",
+    "image": "{{ extracted_image | default: currentProduct.skus[0].image }}",
+    "description": "{{ currentProduct.metaDescription }}",
+    "sku": "{{ currentProduct.id }}",
+    "mpn": "{{ currentProduct.id }}",
+    "brand": {
+      "@type": "Brand",
+      "name": "{{ currentProduct.storeName | default: 'AliExpress' }}"
+    },
+    {% if currentProduct.reviews > 0 %}
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "{{ currentProduct.score }}",
+      "reviewCount": "{{ currentProduct.reviews }}",
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    {% endif %}
     "offers": {
       "@type": "Offer",
-      "priceCurrency": "{{ currency.code }}",
+      "url": "https://{{ (process.env.COUNTRY | default: 'SA') | downcase }}.iseekprice.com{{ page.url }}",
+      "priceCurrency": "{{ currency.code | default: 'SAR' }}",
+      "price": "{{ currentProduct.priceDiscounted | default: currentProduct.priceOriginal }}",
+      "priceValidUntil": "2025-12-31",
+      "itemCondition": "https://schema.org/NewCondition",
       "availability": "{% if currentProduct.inStock %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
-      "price": "{{ currentProduct.priceDiscounted | default: 0 }}"
+      "seller": {
+        "@type": "Organization",
+        "name": "{{ currentProduct.storeName | default: 'AliExpress' }}"
+      }
     }
   }
   </script>
@@ -130,9 +152,7 @@
           </main>
           <hr class="clean-divider">
           <div class="share-box-wrap">
-              <button id="shareOpenBtn" class="main-share-button">
-                  مشاركة مع الأصدقاء
-              </button>
+              <button id="shareOpenBtn" class="main-share-button">مشاركة مع الأصدقاء</button>
           </div>
           <hr class="clean-divider">
           <p>عروض ستعجبك</p>
