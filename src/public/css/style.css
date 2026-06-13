@@ -372,7 +372,7 @@ tr:hover {
     display: flex;
     flex-direction: column;
 }
-.post-title {
+.product-title {
     font-size: 14px;
     font-weight: 600;
     color: #111;
@@ -454,7 +454,7 @@ tr:hover {
     border-bottom-color: #fff;
     background: #1a1a1a;
 }
-.dm .post-title {
+.dm .product-title {
     color: #fff;
 }
 .dm .discounted-price {
@@ -481,7 +481,7 @@ tr:hover {
         grid-template-columns: repeat(2, 1fr);
         padding: 10px;
     }
-    .post-title {
+    .product-title {
         font-size: 13px;
         height: 36px;
     }
