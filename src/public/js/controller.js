@@ -128,7 +128,7 @@ class Renderer {
         
         const urlDatePath = this.getDatePath(product.urlDateOffset);
         card.href = `${domain}product/${urlDatePath}/${product.slug}/`;
-        card.className = "post-card title-link";
+        card.className = "product-card title-link";
         
         const imgDatePath = this.getDatePath(product.imgDateOffset);
         const imageUrl = `${WIDGET_CONFIG.IMG_BASE_URL}${imgDatePath}/${product.id}_1.webp`;
@@ -236,7 +236,7 @@ class Renderer {
         if (!document.getElementById('widget-revealed-css')) {
             const style = document.createElement('style');
             style.id = 'widget-revealed-css';
-            style.textContent = `.post-card{opacity:0;transform:translateY(15px);transition:opacity 0.5s ease,transform 0.5s ease;}.post-card.revealed{opacity:1;transform:translateY(0);}`;
+            style.textContent = `.product-card{opacity:0;transform:translateY(15px);transition:opacity 0.5s ease,transform 0.5s ease;}.product-card.revealed{opacity:1;transform:translateY(0);}`;
             document.head.appendChild(style);
         }
         if (WidgetState.activeWorker) {

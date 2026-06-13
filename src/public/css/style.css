@@ -294,7 +294,7 @@ tr:hover {
     padding: 20px;
     background: #fff;
 }
-.post-card {
+.product-card {
     background: #fff;
     border-radius: 0;
     overflow: hidden;
@@ -307,7 +307,7 @@ tr:hover {
     margin: -0.5px;
     transition: background-color 0.2s ease;
 }
-.post-card:hover {
+.product-card:hover {
     box-shadow: none;
     background: #fcfcfc;
 }
@@ -443,11 +443,11 @@ tr:hover {
 .dm .product-grid {
     background: #121212;
 }
-.dm .post-card {
+.dm .product-card {
     background: #121212;
     border-color: #fff;
 }
-.dm .post-card:hover {
+.dm .product-card:hover {
     background: #1a1a1a;
 }
 .dm .image-container {
