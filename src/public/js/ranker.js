@@ -31,8 +31,8 @@ window.Ranker = {
     },
 
     initDB() {
-        const req = indexedDB.open("RankerData", 1);
-        req.onupgradeneeded = e => e.target.result.createObjectStore("logs", { keyPath: "id", autoIncrement: true });
+        const req = indexedDB.open("RankerLog", 1);
+        req.onupgradeneeded = e => e.target.result.createObjectStore("v", { keyPath: "id", autoIncrement: true });
         req.onsuccess = e => this.db = e.target.result;
     },
 
@@ -41,32 +41,27 @@ window.Ranker = {
         const words = this.invertedIndex.get(idx);
         let maxW = 1;
         words.forEach(w => { if(this.weights[w]) maxW = Math.max(maxW, this.weights[w]); });
-        const tx = this.db.transaction("logs", "readwrite");
-        tx.objectStore("logs").add({ idx, price, impact: price * maxW, time: Date.now() });
+        const tx = this.db.transaction("v", "readwrite");
+        tx.objectStore("v").add({ idx, p: price, i: price * maxW, t: Date.now() });
         tx.oncomplete = () => this.analyze();
     },
 
     analyze() {
-        this.db.transaction("logs", "readonly").objectStore("logs").getAll().onsuccess = (e) => {
+        this.db.transaction("v", "readonly").objectStore("v").getAll().onsuccess = (e) => {
             const data = e.target.result; if (data.length < 3) return;
-            const avg = data.reduce((s, i) => s + i.impact, 0) / data.length;
+            const avg = data.reduce((s, i) => s + i.i, 0) / data.length;
             let tag = avg > 2000 ? "UXVhbGl0eUV4cGxvcmVy" : (avg > 700 ? "U3RhbmRhcmRTZWVrZXI=" : "VmFsdWVPcHRpbWl6ZXI=");
-            localStorage.setItem("_rnk_id", tag);
+            localStorage.setItem("_r_tag", tag);
         };
     },
 
     applyBoost(products) {
-        const tag = localStorage.getItem("_rnk_id");
+        const tag = localStorage.getItem("_r_tag");
         if (!tag) return products;
-        
         return [...products].sort((a, b) => {
-            let scoreA = 0, scoreB = 0;
-            if (tag === "UXVhbGl0eUV4cGxvcmVy") { 
-                scoreA = a.feed.price; scoreB = b.feed.price;
-            } else if (tag === "VmFsdWVPcHRpbWl6ZXI=") {
-                scoreA = -a.feed.price; scoreB = -b.feed.price;
-            }
-            return scoreB - scoreA;
+            if (tag === "UXVhbGl0eUV4cGxvcmVy") return b.feed.price - a.feed.price;
+            if (tag === "VmFsdWVPcHRpbWl6ZXI=") return a.feed.price - b.feed.price;
+            return 0;
         });
     }
 };
