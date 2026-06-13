@@ -1361,7 +1361,7 @@ body.dm #dark-toggler .icon-sun {
     direction: rtl;
     -webkit-overflow-scrolling: touch;
 }
-.thumbnails-slider {
+.track-s {
     display: flex;
     gap: 10px;
     width: max-content;
