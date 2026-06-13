@@ -1325,7 +1325,7 @@ body.dm #dark-toggler .icon-sun {
     background-color: #222;
     color: #fff;
 }
-.main-image-container {
+.view-box {
     position: relative;
     width: 100%;
     max-width: 500px;
@@ -1333,7 +1333,7 @@ body.dm #dark-toggler .icon-sun {
     min-height: 200px;
     aspect-ratio: 1/1;
 }
-.main-image-container img,
+.view-box img,
 #mainImage {
     width: 100%;
     border-radius: 0;
