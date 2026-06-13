@@ -114,7 +114,7 @@
           
         relatedRoot.innerHTML = filteredPosts.map(post => `
           <a href="/post/${post.Url}" class="rel-card">
-            <img src="${post.Img ? 'https://media.iseekprice.com/' + post.Img : '/public/assets/static/no-image.png'}">
+            <img src="${post.Img ? 'https://media.iseekprice.com/' + post.Img : '/public/assets/static/no-image.webp'}">
             <h3>${post.Title}</h3>
           </a>
         `).join('');
