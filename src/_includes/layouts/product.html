@@ -115,7 +115,7 @@
       "url": "https://{{ country | default: 'sa' | downcase }}.iseekprice.com{{ page.url }}",
       "priceCurrency": "{{ currency.code | default: 'SAR' }}",
       "price": "{{ currentProduct.priceDiscounted | default: currentProduct.priceOriginal }}",
-      "priceValidUntil": "{{ "now" | date: "%s" | plus: 86400 | date: "%Y-%m-%d" }}",
+      "priceValidUntil": "{{ dates.tomorrow }}",
       "itemCondition": "https://schema.org/NewCondition",
       "availability": "{% if currentProduct.inStock %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
       "seller": {
