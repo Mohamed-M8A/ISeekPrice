@@ -35,7 +35,7 @@ const actionsWrap = document.getElementById('actions-wrap');
                     <li data-value='TN'><img alt='TN' height='16' src='/public/assets/flags/tn.png' width='16'/> تونس</li>
                 </ul>
             </div>
-            <div class='dark-mode-toggle'>
+            <div class='dm-toggle'>
                 <button aria-label='Dark Mode' id='dark-toggler'><svg class='icon'><use href='/public/assets/static/icons.svg#i-moon'/></svg></button>
             </div>
             <div class='cart-widget' id='cart-widget-header'>
@@ -53,9 +53,9 @@ const actionsWrap = document.getElementById('actions-wrap');
     }
 
 
-const htmlEl=document.documentElement;const darkBtn=document.getElementById("dark-toggler");function applyTheme(theme,persist){const iconUse=darkBtn?darkBtn.querySelector("use"):null;const iconPath="/public/assets/static/icons.svg";if(theme==="dark"){htmlEl.classList.add("dark-mode");htmlEl.setAttribute("data-theme","dark");if(iconUse)iconUse.setAttribute("href",iconPath+"#i-sun");}else{htmlEl.classList.remove("dark-mode");htmlEl.setAttribute("data-theme","light");if(iconUse)iconUse.setAttribute("href",iconPath+"#i-moon");}
+const htmlEl=document.documentElement;const darkBtn=document.getElementById("dark-toggler");function applyTheme(theme,persist){const iconUse=darkBtn?darkBtn.querySelector("use"):null;const iconPath="/public/assets/static/icons.svg";if(theme==="dark"){htmlEl.classList.add("dm");htmlEl.setAttribute("data-theme","dark");if(iconUse)iconUse.setAttribute("href",iconPath+"#i-sun");}else{htmlEl.classList.remove("dm");htmlEl.setAttribute("data-theme","light");if(iconUse)iconUse.setAttribute("href",iconPath+"#i-moon");}
 if(persist)localStorage.setItem("theme",theme);}
-let savedTheme=localStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");applyTheme(savedTheme,!1);if(darkBtn){darkBtn.addEventListener("click",e=>{e.preventDefault();applyTheme(htmlEl.classList.contains("dark-mode")?"light":"dark",!0)})}
+let savedTheme=localStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");applyTheme(savedTheme,!1);if(darkBtn){darkBtn.addEventListener("click",e=>{e.preventDefault();applyTheme(htmlEl.classList.contains("dm")?"light":"dark",!0)})}
     
 
 function updateCartWidget(){const cart=JSON.parse(localStorage.getItem("cart"))||[];const countEl=document.getElementById("cart-count");if(countEl){countEl.textContent=cart.length;cart.length>0?countEl.classList.add("active"):countEl.classList.remove("active")}}
