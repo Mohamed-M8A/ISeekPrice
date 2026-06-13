@@ -320,7 +320,7 @@ if(!container&&shelf){container=document.createElement('div');container.classNam
 if(!container)return;const colors=['#ff4757','#e91e63','#ff6b81','#ff5722'];const theme=colors[Math.floor(Math.random()*colors.length)];container.style.setProperty('--theme-color',theme);let expiryTimestamp;if(typeof promoData.expiry==='number'&&promoData.expiry<10000000000){expiryTimestamp=Date.UTC(2025,0,1)+(promoData.expiry*60*1000)}else{expiryTimestamp=new Date(promoData.expiry).getTime()}
 const updateTimer=()=>{const diffMs=expiryTimestamp-Date.now();if(diffMs<=0){container.style.display='none';clearInterval(window.promoTimer);return}
 const d=Math.floor(diffMs/86400000);const h=Math.floor((diffMs%86400000)/3600000);const m=Math.floor((diffMs%3600000)/60000);const s=Math.floor((diffMs%60000)/1000);const timerEl=document.getElementById('promo-timer-text');if(timerEl){timerEl.textContent=d>0?`⏳ ينتهي خلال ${d} يوم`:`⏳ ينتهي خلال ${h}:${m}:${s}`}};container.style.display='flex';container.style.flexDirection='column';container.innerHTML=`
-        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px;">
+        <div class="coupon-row">
             <div class="coupon-code" id="couponCode">${promoData.code}</div>
             <button class="copy-button" onclick="copyCoupon('${promoData.code}')">نسخ الكوبون</button>
         </div>
