@@ -8,9 +8,11 @@ window.Ranker = {
         
         try {
             const weightRes = await fetch("/public/json/weights.json");
-            this.weights = await weightRes.json();
+            const data = await weightRes.json();
+            this.weights = data.keywords || data;
+            console.log("✅ Weights Loaded:", Object.keys(this.weights).length, "keywords");
         } catch (e) {
-            console.warn("Could not load weights.json, using empty weights");
+            console.warn("Could not load weights.json");
         }
 
         const path = window.getCloudPath("search");
@@ -35,16 +37,12 @@ window.Ranker = {
 
                 for (let j = 0; j < count; j++) {
                     const idx = idSize === 2 ? view.getUint16(offset, true) : view.getUint32(offset, true);
-                    
-                    if (!this.invertedIndex.has(idx)) {
-                        this.invertedIndex.set(idx, []);
-                    }
+                    if (!this.invertedIndex.has(idx)) this.invertedIndex.set(idx, []);
                     this.invertedIndex.get(idx).push(word);
-                    
                     offset += idSize;
                 }
             }
-            console.log("Ranker Engine: Memory Map Ready");
+            console.log("Ranker Ready: Memory Map built for", this.invertedIndex.size, "products");
         } catch (e) {
             console.error("Ranker Binary Load Error", e);
         }
@@ -52,7 +50,10 @@ window.Ranker = {
 
     initDB() {
         const req = indexedDB.open("RankerLog", 1);
-        req.onupgradeneeded = e => e.target.result.createObjectStore("v", { keyPath: "id", autoIncrement: true });
+        req.onupgradeneeded = e => {
+            const store = e.target.result.createObjectStore("v", { keyPath: "id", autoIncrement: true });
+            store.createIndex("by_time", "t");
+        };
         req.onsuccess = e => this.db = e.target.result;
     },
 
@@ -61,10 +62,13 @@ window.Ranker = {
 
         const words = this.invertedIndex.get(idx);
         let maxW = 1;
+        let dominantWord = "";
 
         words.forEach(w => {
-            if (this.weights[w]) {
-                maxW = Math.max(maxW, this.weights[w]);
+            const weight = this.weights[w];
+            if (weight && weight > maxW) {
+                maxW = weight;
+                dominantWord = w;
             }
         });
 
@@ -72,7 +76,9 @@ window.Ranker = {
         tx.objectStore("v").add({ 
             idx: idx, 
             p: price, 
-            i: price * maxW,
+            i: price * maxW, // التأثير (Impact)
+            w: maxW,         // الوزن اللي استخدمناه
+            kw: dominantWord, // الكلمة اللي خلتنا نقتنع إنه عميل "تقيل"
             t: Date.now() 
         });
 
@@ -80,14 +86,17 @@ window.Ranker = {
     },
 
     analyze() {
-        this.db.transaction("v", "readonly").objectStore("v").getAll().onsuccess = (e) => {
+        const store = this.db.transaction("v", "readonly").objectStore("v");
+        store.getAll().onsuccess = (e) => {
             const data = e.target.result; 
             if (data.length < 3) return;
 
-            const avg = data.reduce((s, i) => s + i.i, 0) / data.length;
+            const recentData = data.slice(-10);
+            const avg = recentData.reduce((s, i) => s + i.i, 0) / recentData.length;
             
-            let tag = avg > 2000 ? "UXVhbGl0eUV4cGxvcmVy" : (avg > 700 ? "U3RhbmRhcmRTZWVrZXI=" : "VmFsdWVPcHRpbWl6ZXI=");
+            let tag = avg > 3000 ? "UXVhbGl0eUV4cGxvcmVy" : (avg > 900 ? "U3RhbmRhcmRTZWVrZXI=" : "VmFsdWVPcHRpbWl6ZXI=");
             localStorage.setItem("_r_tag", tag);
+            console.log("Updated:", atob(tag));
         };
     },
 
@@ -96,12 +105,8 @@ window.Ranker = {
         if (!tag) return products;
 
         return [...products].sort((a, b) => {
-            if (tag === "UXVhbGl0eUV4cGxvcmVy") {
-                return b.feed.price - a.feed.price;
-            }
-            if (tag === "VmFsdWVPcHRpbWl6ZXI=") {
-                return a.feed.price - b.feed.price;
-            }
+            if (tag === "UXVhbGl0eUV4cGxvcmVy") return b.feed.price - a.feed.price;
+            if (tag === "VmFsdWVPcHRpbWl6ZXI=") return a.feed.price - b.feed.price;
             return 0;
         });
     }
