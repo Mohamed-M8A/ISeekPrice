@@ -292,7 +292,7 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
         }
     };
 
-    document.querySelectorAll('.Customer-Reviews .stars-group').forEach(group => {
+    document.querySelectorAll('.customer-reviews .stars-group').forEach(group => {
         const rating = parseFloat(group.getAttribute('data-rating')) || 5;
         drawStars(group, rating);
     });
