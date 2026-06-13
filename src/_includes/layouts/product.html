@@ -112,7 +112,7 @@
     {% endif %}
     "offers": {
       "@type": "Offer",
-      "url": "https://{{ (process.env.COUNTRY | default: 'SA') | downcase }}.iseekprice.com{{ page.url }}",
+      "url": "https://{{ country | default: 'sa' | downcase }}.iseekprice.com{{ page.url }}",
       "priceCurrency": "{{ currency.code | default: 'SAR' }}",
       "price": "{{ currentProduct.priceDiscounted | default: currentProduct.priceOriginal }}",
       "priceValidUntil": "2025-12-31",
