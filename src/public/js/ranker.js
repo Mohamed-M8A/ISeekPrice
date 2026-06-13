@@ -9,11 +9,8 @@ window.Ranker = {
         try {
             const weightRes = await fetch("/public/json/weights.json");
             const data = await weightRes.json();
-            this.weights = data.keywords || data;
-            console.log("✅ Weights Loaded:", Object.keys(this.weights).length, "keywords");
-        } catch (e) {
-            console.warn("Could not load weights.json");
-        }
+            this.weights = data.keywords ? data.keywords : data;
+        } catch (e) {}
 
         const path = window.getCloudPath("search");
         if (!path) return;
@@ -37,15 +34,14 @@ window.Ranker = {
 
                 for (let j = 0; j < count; j++) {
                     const idx = idSize === 2 ? view.getUint16(offset, true) : view.getUint32(offset, true);
-                    if (!this.invertedIndex.has(idx)) this.invertedIndex.set(idx, []);
+                    if (!this.invertedIndex.has(idx)) {
+                        this.invertedIndex.set(idx, []);
+                    }
                     this.invertedIndex.get(idx).push(word);
                     offset += idSize;
                 }
             }
-            console.log("Ranker Ready: Memory Map built for", this.invertedIndex.size, "products");
-        } catch (e) {
-            console.error("Ranker Binary Load Error", e);
-        }
+        } catch (e) {}
     },
 
     initDB() {
@@ -62,13 +58,14 @@ window.Ranker = {
 
         const words = this.invertedIndex.get(idx);
         let maxW = 1;
-        let dominantWord = "";
+        let matchedKeywords = [];
 
         words.forEach(w => {
-            const weight = this.weights[w];
-            if (weight && weight > maxW) {
-                maxW = weight;
-                dominantWord = w;
+            if (this.weights[w]) {
+                matchedKeywords.push(w);
+                if (this.weights[w] > maxW) {
+                    maxW = this.weights[w];
+                }
             }
         });
 
@@ -76,9 +73,9 @@ window.Ranker = {
         tx.objectStore("v").add({ 
             idx: idx, 
             p: price, 
-            i: price * maxW, // التأثير (Impact)
-            w: maxW,         // الوزن اللي استخدمناه
-            kw: dominantWord, // الكلمة اللي خلتنا نقتنع إنه عميل "تقيل"
+            i: price * maxW, 
+            w: maxW, 
+            kw: matchedKeywords, 
             t: Date.now() 
         });
 
@@ -92,11 +89,10 @@ window.Ranker = {
             if (data.length < 3) return;
 
             const recentData = data.slice(-10);
-            const avg = recentData.reduce((s, i) => s + i.i, 0) / recentData.length;
+            const avg = recentData.reduce((sum, item) => sum + item.i, 0) / recentData.length;
             
             let tag = avg > 3000 ? "UXVhbGl0eUV4cGxvcmVy" : (avg > 900 ? "U3RhbmRhcmRTZWVrZXI=" : "VmFsdWVPcHRpbWl6ZXI=");
             localStorage.setItem("_r_tag", tag);
-            console.log("Updated:", atob(tag));
         };
     },
 
@@ -105,8 +101,12 @@ window.Ranker = {
         if (!tag) return products;
 
         return [...products].sort((a, b) => {
-            if (tag === "UXVhbGl0eUV4cGxvcmVy") return b.feed.price - a.feed.price;
-            if (tag === "VmFsdWVPcHRpbWl6ZXI=") return a.feed.price - b.feed.price;
+            if (tag === "UXVhbGl0eUV4cGxvcmVy") {
+                return b.feed.price - a.feed.price;
+            }
+            if (tag === "VmFsdWVPcHRpbWl6ZXI=") {
+                return a.feed.price - b.feed.price;
+            }
             return 0;
         });
     }
