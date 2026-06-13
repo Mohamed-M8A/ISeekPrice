@@ -116,12 +116,16 @@ class Renderer {
         const d = new Date(Date.UTC(2025, 0, 1) + (offset * 86400000));
         return `${d.getUTCFullYear()}/${String(d.getUTCMonth() + 1).padStart(2, '0')}/${String(d.getUTCDate()).padStart(2, '0')}`;
     }
-
+    
     createCard(product, domain) {
         const feed = product?.feed;
         if (!product || !feed) return null;
-        
         const card = document.createElement("a");
+
+        card.onclick = () => {
+        if (window.Ranker) window.Ranker.track(product.recordIndex, feed.price);
+          };
+        
         const urlDatePath = this.getDatePath(product.urlDateOffset);
         card.href = `${domain}product/${urlDatePath}/${product.slug}/`;
         card.className = "post-card title-link";
@@ -175,23 +179,25 @@ class Renderer {
     }
 
     renderBatch(products, domain) {
-        const fragment = document.createDocumentFragment();
-        const newCards = [];
-        
-        products.forEach(p => {
-            const card = this.createCard(p, domain);
-            if (card) {
-                fragment.appendChild(card);
-                newCards.push(card);
-            }
-        });
-        
-        this.container.appendChild(fragment);
+    const fragment = document.createDocumentFragment();
+    const newCards = [];
+    
+    let displayedProducts = products;
+    if (window.Ranker) displayedProducts = window.Ranker.applyBoost(products);
 
-        newCards.forEach((card, index) => {
-            setTimeout(() => { card.classList.add('revealed'); }, index * 15);
-        });
-    }
+    displayedProducts.forEach(p => {
+        const card = this.createCard(p, domain);
+        if (card) {
+            fragment.appendChild(card);
+            newCards.push(card);
+        }
+    });
+    
+    this.container.appendChild(fragment);
+    newCards.forEach((card, index) => {
+        setTimeout(() => { card.classList.add('revealed'); }, index * 15);
+    });
+  }
 }
 
 // --- 4. Global Actions (SKU Updates) ---
@@ -324,6 +330,7 @@ class Renderer {
 // --- 6. Bootstrapper ---
     
         async function runGlobalBoot() {
+        if (window.Ranker) window.Ranker.init();    
         const root = document.getElementById(WIDGET_CONFIG.ROOT_ID);
         if (!root || WidgetState.isInitializing) return;
 
