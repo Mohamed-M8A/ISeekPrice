@@ -156,7 +156,7 @@ class Renderer {
             <div class="image-container">
                 ${badgeHTML}
                 <img class="post-image" alt="${safeTitle}" src="${WIDGET_CONFIG.PLACEHOLDER}" data-src="${imageUrl}">
-                <div class="external-cart-button">
+                <div class="cart-button">
                     <svg class='icon'><use href='/public/assets/static/icons.svg#i-cart'/></svg>
                 </div>
             </div>

@@ -340,7 +340,7 @@ tr:hover {
     z-index: 10;
     letter-spacing: 1px;
 }
-.external-cart-button {
+.cart-button {
     position: absolute;
     bottom: 12px;
     right: 12px;
@@ -357,12 +357,12 @@ tr:hover {
     border: 1px solid #000;
     transition: all 0.2s ease;
 }
-.external-cart-button svg,
-.external-cart-button i {
+.cart-button svg,
+.cart-button i {
     font-size: 14px !important;
     transform: scale(0.8);
 }
-.external-cart-button:hover {
+.cart-button:hover {
     background: #fff;
     color: #000;
 }
@@ -467,12 +467,12 @@ tr:hover {
     border-top-color: #fff;
     color: #ccc;
 }
-.dark-mode .external-cart-button {
+.dark-mode .cart-button {
     background: #fff;
     color: #121212;
     border-color: #fff;
 }
-.dark-mode .external-cart-button:hover {
+.dark-mode .cart-button:hover {
     background: #121212;
     color: #fff;
 }
@@ -488,7 +488,7 @@ tr:hover {
     .discounted-price {
         font-size: 17px;
     }
-    .external-cart-button {
+    .cart-button {
         width: 34px;
         height: 34px;
     }
