@@ -160,7 +160,7 @@ class Renderer {
                     <svg class='icon'><use href='/public/assets/static/icons.svg#i-cart'/></svg>
                 </div>
             </div>
-            <div class="post-content">
+            <div class="product-content">
                 <h3 class="post-title">${safeTitle}</h3>
                 <div class="price-display">
                     <span class="discounted-price">${price} ${currencyConfig.symbol}</span>
