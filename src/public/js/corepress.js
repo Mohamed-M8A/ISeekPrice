@@ -168,9 +168,9 @@ document.body.insertAdjacentHTML('beforeend',modalHTML);const m=document.getElem
 
 // =================== Track ===================
 
-const VIDManager={generate(){return`VID-${Date.now()}-${Math.random().toString(36).substring(2,9).toUpperCase()}-${Math.random().toString(36).substring(2,9).toUpperCase()}`},getPersistentId(){let i=localStorage.getItem("visitor_id");if(!i){i=this.generate();localStorage.setItem("visitor_id",i)}return i}};
+const VIDManager={generate(){return`${Date.now()}-${Math.random().toString(36).substring(2,9).toUpperCase()}-${Math.random().toString(36).substring(2,9).toUpperCase()}`},getPersistentId(){let i=localStorage.getItem("visitor_id");if(!i){i=this.generate();localStorage.setItem("visitor_id",i)}return i}};
 
-const SIDManager={generate(){return`SID-${Date.now()}-${Math.random().toString(36).substring(2,9).toUpperCase()}`},getSessionId(){let i=sessionStorage.getItem("session_id");if(!i){i=this.generate();sessionStorage.setItem("session_id",i)}return i}};
+const SIDManager={generate(){return`${Date.now()}-${Math.random().toString(36).substring(2,9).toUpperCase()}`},getSessionId(){let i=sessionStorage.getItem("session_id");if(!i){i=this.generate();sessionStorage.setItem("session_id",i)}return i}};
 
 const ISeekTracker = {
     queue: [],
