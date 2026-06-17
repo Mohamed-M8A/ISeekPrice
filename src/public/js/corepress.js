@@ -95,7 +95,7 @@ const footerInjector = document.getElementById('footer');
 if (footerInjector) {
     const sections = [
         { title: "عن الموقع", links: [{ text: "من نحن", url: "/page/info/about-us/" }, { text: "سياسة الموقع", url: "/page/info/policy/" }, { text: "اتصل بنا", url: "/page/info/contact/" }] },
-        { title: "الأكثر متابعة", links: [{ text: "IWatch", url: "/page/iwatch/" }, { text: "Blog", url: "/page/blog/" }, { text: "Chat", url: "/page/iseekchat/" }] }
+        { title: "الأكثر متابعة", links: [{ text: "IWatch", url: "/page/iwatch/" }, { text: "Blog", url: "/page/blog/" }] }
     ];
     const socialLinks = [
         { label: "YouTube", icon: "i-youtube", url: "https://www.youtube.com/@ISeekPrice" },
