@@ -44,6 +44,11 @@
     </div>
 
 <script>
+// ==========================================
+// 1. GLOBAL APPLICATION CONFIGURATION
+// Contains base URLs for fetching JSON data, 
+// videos, media assets, domain link, and SVG icons.
+// ==========================================
 const CONFIG = {
     DATA: "https://data.iseekprice.com/General/videos.json",
     VIDEO: "https://video.iseekprice.com/",
@@ -52,6 +57,11 @@ const CONFIG = {
     ICONS: "/public/assets/static/icons.svg"
 };
 
+// ==========================================
+// 2. LOCAL STORAGE MANAGER
+// Handles retrieving and toggling favorited 
+// videos using localStorage.
+// ==========================================
 const Storage = {
     getLikes: () => JSON.parse(localStorage.getItem('fav_vids') || '[]'),
     toggleLike: (uid) => {
@@ -63,6 +73,11 @@ const Storage = {
     }
 };
 
+// ==========================================
+// 3. UTILITY METHODS
+// Provides helper methods for encoding/decoding IDs 
+// to/from Hex, and managing URL query parameters.
+// ==========================================
 const Utils = {
     toHex: (u) => BigInt(u).toString(16),
     fromHex: (h) => {
@@ -76,6 +91,11 @@ const Utils = {
     }
 };
 
+// ==========================================
+// 4. GLOBAL AUDIO STATE & SYNCHRONIZATION
+// Tracks volume and mute state, syncing them across 
+// all video elements and controlling UI volume icons.
+// ==========================================
 let audioState = { isMuted: false, volume: 0.5 };
 
 function syncGlobalAudio() {
@@ -88,6 +108,11 @@ function syncGlobalAudio() {
     });
 }
 
+// ==========================================
+// 5. CORE APPLICATION OBJECT (INIT & ROUTING)
+// Main controller managing data initialization, 
+// active tabs, and routing between Grid view and Feed view.
+// ==========================================
 const app = {
     allData: [],
     activeTab: 'all',
@@ -121,6 +146,11 @@ const app = {
         }
     },
 
+    // ==========================================
+    // 6. GRID VIEW CONTROLLER
+    // Renders the main dashboard grid containing video cards 
+    // filtered by the selected tab (All or Liked).
+    // ==========================================
     showGrid() {
         document.getElementById('gridUI').style.display = 'block';
         document.getElementById('feedUI').style.display = 'none';
@@ -144,6 +174,12 @@ const app = {
         });
     },
 
+    // ==========================================
+    // 7. VERTICAL FEED VIEW & SCROLL OBSERVER
+    // Manages the TikTok/Reels style vertical scrolling view.
+    // Uses IntersectionObserver to auto-play/pause videos 
+    // and pre-load subsequent content.
+    // ==========================================
     showFeed(targetUid) {
         document.getElementById('gridUI').style.display = 'none';
         document.getElementById('feedUI').style.display = 'block';
@@ -192,6 +228,11 @@ const app = {
         if(list[0]) document.title = `${list[0].title} - iWatch`;
     },
 
+    // ==========================================
+    // 8. DYNAMIC DOM CARD CREATION
+    // Generates the full HTML markup for individual video cards, 
+    // including custom action buttons (like, share, buy) and overlays.
+    // ==========================================
     createFullCard(item) {
         const card = document.createElement('div');
         card.className = 'video-card';
@@ -238,6 +279,11 @@ const app = {
         return card;
     },
 
+    // ==========================================
+    // 9. EVENT HANDLERS & INTERACTION METHODS
+    // Implements logic for video scrubbing/seeking, muting, 
+    // liking, sharing via Web Share API, tab switching, and closing.
+    // ==========================================
     handleSeek(e, container) {
         e.stopPropagation();
         const v = container.closest('.video-card').querySelector('video');
@@ -276,6 +322,11 @@ const app = {
         this.render(); 
     }
 };
+
+// ==========================================
+// 10. APP INITIALIZATION TRIGGER
+// Execution begins here immediately when script loads.
+// ==========================================
 app.init();
 
 </script>
