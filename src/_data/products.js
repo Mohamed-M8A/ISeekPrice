@@ -11,9 +11,25 @@ module.exports = async function() {
         
         for (let i = 1; i <= retries; i++) {
             try {
-                const response = await fetch(url);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+                const response = await fetch(url, {
+                    signal: controller.signal,
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'Accept': 'application/json, application/octet-stream, */*',
+                        'Accept-Language': 'en-US,en;q=0.9',
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+
+                clearTimeout(timeoutId);
+
                 if (response.ok) {
                     return Buffer.from(await response.arrayBuffer());
+                } else {
+                    console.log(`[Fetch Attempt ${i} - Bad Status]: ${response.status} for ${url}`);
                 }
             } catch (err) {
                 console.log(`[Fetch Attempt ${i} Failed]: ${url} - ${err.message}`);
@@ -25,7 +41,14 @@ module.exports = async function() {
 
     try {
         const mapUrl = `${baseUrl}General/map.json?v=${Date.now()}`;
-        const mapBuf = await fetchBufWithRetry(mapUrl);
+        let mapBuf;
+        
+        try {
+            mapBuf = await fetchBufWithRetry(mapUrl);
+        } catch (mapError) {
+            console.error(`❌ خطأ في جلب ملف الخريطة الرئيسي: ${mapError.message}`);
+            return []; 
+        }
         
         const map = JSON.parse(mapBuf.toString('utf8'));
         const region = map.regions[country];
