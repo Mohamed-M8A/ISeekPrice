@@ -45,7 +45,7 @@ module.exports = async function() {
         try {
             mapBuf = await fetchBufWithRetry(mapUrl);
         } catch (mapError) {
-            console.error(`❌ خطأ في جلب ملف الخريطة الرئيسي: ${mapError.message}`);
+            console.error(`خطأ في جلب ملف الخريطة الرئيسي: ${mapError.message}`);
             return []; 
         }
         
