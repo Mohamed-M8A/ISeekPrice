@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 module.exports = async function() {
@@ -27,7 +25,8 @@ module.exports = async function() {
                 clearTimeout(timeoutId);
 
                 if (response.ok) {
-                    return Buffer.from(await response.arrayBuffer());
+                    const arrayBuffer = await response.arrayBuffer();
+                    return Buffer.from(arrayBuffer);
                 } else {
                     console.log(`[Fetch Attempt ${i} - Bad Status]: ${response.status} for ${url}`);
                 }
