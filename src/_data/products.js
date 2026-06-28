@@ -16,6 +16,7 @@ module.exports = async function() {
                     return Buffer.from(await response.arrayBuffer());
                 }
             } catch (err) {
+                console.log(`[Fetch Attempt ${i} Failed]: ${url} - ${err.message}`);
             }
             if (i < retries) await delay(delayMs);
         }
@@ -23,11 +24,10 @@ module.exports = async function() {
     };
 
     try {
-        const mapRes = await fetch(`${baseUrl}General/map.json?v=${Date.now()}`);
-        if (!mapRes.ok) {
-            throw new Error(`Failed to fetch map.json: ${mapRes.status}`);
-        }
-        const map = await mapRes.json();
+        const mapUrl = `${baseUrl}General/map.json?v=${Date.now()}`;
+        const mapBuf = await fetchBufWithRetry(mapUrl);
+        
+        const map = JSON.parse(mapBuf.toString('utf8'));
         const region = map.regions[country];
 
         const coreUrl = `${baseUrl}General/core_${map.core}.bin`;
