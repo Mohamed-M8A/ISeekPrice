@@ -115,10 +115,10 @@
 
         try {
             const v = Date.now();
-            const mapRes = await fetch(`${CONFIG.BASE_URL}General/map.json?v=${v}`);
+            const mapRes = await fetch(`${CONFIG.BASE_URL}general/map.json?v=${v}`);
             const fileMap = await mapRes.json();
 
-            const coreFile = `General/core_${fileMap.core}.bin`;
+            const coreFile = `general/core_${fileMap.core}.bin`;
             const feedHash = fileMap.regions[country]?.feed;
             const feedFile = `${country}/feed_${feedHash}.bin`;
 
