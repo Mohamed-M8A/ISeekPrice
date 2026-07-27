@@ -38,9 +38,9 @@ async function startRadar() {
     }
 
     try {
-        const mapRes = await fetch("https://data.iseekprice.com/General/map.json?v=" + Date.now());
+        const mapRes = await fetch("https://data.iseekprice.com/general/map.json?v=" + Date.now());
         const map = await mapRes.json();
-        const coreFile = `General/core_${map.core}.bin`;
+        const coreFile = `general/core_${map.core}.bin`;
         const recordSize = 280;
         const startByte = parseInt(idx) * recordSize;
         const endByte = startByte + (recordSize - 1);
