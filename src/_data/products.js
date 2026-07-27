@@ -1,7 +1,7 @@
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 module.exports = async function() {
-    const country = (process.env.COUNTRY || 'SA').toUpperCase();
+    const country = (process.env.COUNTRY || 'sa').toLowerCase();
     const baseUrl = 'https://data.iseekprice.com/';
 
     const fetchBufWithRetry = async (url, retries = 10, delayMs = 2000) => {
