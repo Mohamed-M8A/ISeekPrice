@@ -86,9 +86,9 @@
         PLACEHOLDER: "/public/assets/static/save.jpg"
     };
 
-    const currencySymbols = { SA: "ر.س", AE: "د.إ", OM: "ر.ع", MA: "د.م", DZ: "د.ج", TN: "د.ت" };
+    const currencySymbols = { sa: "ر.س", ae: "د.إ", om: "ر.ع", ma: "د.م", dz: "د.ج", tn: "د.ت" };
     const hostMatch = window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
-    const country = hostMatch ? hostMatch[1].toUpperCase() : "SA";
+    const country = hostMatch ? hostMatch[1].toLowerCase() : "sa";
     const symbol = currencySymbols[country] || "ر.س";
 
     let currentTask = { type: null, id: null };
