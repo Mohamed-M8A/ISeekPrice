@@ -52,7 +52,7 @@ module.exports = async function() {
         const map = JSON.parse(mapBuf.toString('utf8'));
         const region = map.regions[country];
 
-        const coreUrl = `${baseUrl}General/core_${map.core}.bin`;
+        const coreUrl = `${baseUrl}general/core_${map.core}.bin`;
         const feedUrl = region && region.feed ? `${baseUrl}${country}/feed_${region.feed}.bin` : null;
         const linksUrl = region && region.links ? `${baseUrl}${country}/links_${region.links}.bin` : null;
         const skuUrl = region && region.sku ? `${baseUrl}${country}/sku_${region.sku}.bin` : null;
