@@ -49,7 +49,7 @@ namespace ISeekPrice.VideoEngine
             var mapJson = await http.GetStringAsync($"{DATA_BUCKET_URL}/General/map.json?v={DateTime.Now.Ticks}");
             dynamic map = JsonConvert.DeserializeObject(mapJson);
             byte[] coreBuf = await http.GetByteArrayAsync($"{DATA_BUCKET_URL}/General/core_{map.core}.bin");
-            byte[] feedBuf = await http.GetByteArrayAsync($"{DATA_BUCKET_URL}/SA/feed_{map.regions.SA.feed}.bin");
+            byte[] feedBuf = await http.GetByteArrayAsync($"{DATA_BUCKET_URL}/sa/feed_{map.regions.sa.feed}.bin");
             var dictionary = new Dictionary<string, ProductData>();
             for (int i = 0; i < coreBuf.Length; i += 280)
             {
