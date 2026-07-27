@@ -12,17 +12,17 @@
     };
 
     const COUNTRY_MAP = {
-        "SA": { symbol: "ر.س" },
-        "AE": { symbol: "د.إ" },
-        "OM": { symbol: "ر.ع" },
-        "MA": { symbol: "د.م" },
-        "DZ": { symbol: "د.ج" },
-        "TN": { symbol: "د.ت" }
+        "sa": { symbol: "ر.س" },
+        "ae": { symbol: "د.إ" },
+        "om": { symbol: "ر.ع" },
+        "ma": { symbol: "د.م" },
+        "dz": { symbol: "د.ج" },
+        "tn": { symbol: "د.ت" }
     };
 
     const hostMatch = window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
     const country = hostMatch ? hostMatch[1].toLowerCase() : "sa";
-    const currencyConfig = COUNTRY_MAP[country] || COUNTRY_MAP["SA"];
+    const currencyConfig = COUNTRY_MAP[country] || COUNTRY_MAP["sa"];
     
     let fileMap = null;
 
