@@ -4,7 +4,7 @@
     const host = window.location.hostname;
     const isMainDomain = host === "iseekprice.com" || host === "www.iseekprice.com";
     const countryMatch = host.match(/^(sa|ae|om|ma|dz|tn)\./i);
-    const currentCountry = countryMatch ? countryMatch[1].toUpperCase() : "SA";
+    const currentCountry = countryMatch ? countryMatch[1].toLowerCase() : "sa";
 
     const logoWrap = document.getElementById('logo-wrap');
     if (logoWrap) logoWrap.innerHTML = `<a href='/'><img alt='Logo' src='/public/assets/static/favicon.webp'/></a>`;
@@ -21,18 +21,18 @@
 
 const actionsWrap = document.getElementById('actions-wrap');
     if (actionsWrap) {
-        const countryNamesAr = {"SA":"السعودية","AE":"الإمارات","OM":"عُمان","MA":"المغرب","DZ":"الجزائر","TN":"تونس"};
+        const countryNamesAr = {"sa":"السعودية","ae":"الإمارات","om":"عُمان","ma":"المغرب","dz":"الجزائر","tn":"تونس"};
         const currentNameAr = countryNamesAr[currentCountry] || "السعودية";
         actionsWrap.innerHTML = `
             <div class='custom-dropdown' id='countryDropdown'>
                 <div class='selected'><img alt='flag' height='16' src='/public/assets/flags/${currentCountry.toLowerCase()}.png' width='16'/> ${currentNameAr}</div>
                 <ul class='options'>
-                    <li data-value='SA'><img alt='SA' height='16' src='/public/assets/flags/sa.png' width='16'/> السعودية</li>
-                    <li data-value='AE'><img alt='AE' height='16' src='/public/assets/flags/ae.png' width='16'/> الإمارات</li>
-                    <li data-value='OM'><img alt='OM' height='16' src='/public/assets/flags/om.png' width='16'/> عُمان</li>
-                    <li data-value='MA'><img alt='MA' height='16' src='/public/assets/flags/ma.png' width='16'/> المغرب</li>
-                    <li data-value='DZ'><img alt='DZ' height='16' src='/public/assets/flags/dz.png' width='16'/> الجزائر</li>
-                    <li data-value='TN'><img alt='TN' height='16' src='/public/assets/flags/tn.png' width='16'/> تونس</li>
+                    <li data-value='sa'><img alt='sa' height='16' src='/public/assets/flags/sa.png' width='16'/> السعودية</li>
+                    <li data-value='ae'><img alt='ae' height='16' src='/public/assets/flags/ae.png' width='16'/> الإمارات</li>
+                    <li data-value='om'><img alt='om' height='16' src='/public/assets/flags/om.png' width='16'/> عُمان</li>
+                    <li data-value='ma'><img alt='ma' height='16' src='/public/assets/flags/ma.png' width='16'/> المغرب</li>
+                    <li data-value='dz'><img alt='dz' height='16' src='/public/assets/flags/dz.png' width='16'/> الجزائر</li>
+                    <li data-value='tn'><img alt='tn' height='16' src='/public/assets/flags/tn.png' width='16'/> تونس</li>
                 </ul>
             </div>
             <div class='dm-toggle'>
@@ -177,7 +177,7 @@ const ISeekTracker = {
     startTime: Date.now(),
     config: {
         workerUrl: "https://analytics.iseekprice.com",
-        sub: window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i)?.[1].toUpperCase() || "SA"
+        sub: window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i)?.[1].toLowerCase() || "sa"
     },
     getDeviceInfo() {
         const ua = navigator.userAgent;
