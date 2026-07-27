@@ -1,4 +1,3 @@
-// --- 1. Config & Global Variables ---
 
 (function() {
     const WIDGET_CONFIG = {
@@ -22,7 +21,7 @@
     };
 
     const hostMatch = window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);
-    const country = hostMatch ? hostMatch[1].toUpperCase() : "SA";
+    const country = hostMatch ? hostMatch[1].toLowerCase() : "sa";
     const currencyConfig = COUNTRY_MAP[country] || COUNTRY_MAP["SA"];
     
     let fileMap = null;
