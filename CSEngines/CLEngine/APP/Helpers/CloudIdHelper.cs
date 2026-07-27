@@ -9,8 +9,8 @@ namespace ISeekPriceEngine.Helpers
 {
     public class CloudIdHelper
     {
-        private const string MAP_URL = "https://data.iseekprice.com/General/map.json";
-        private const string BASE_URL = "https://data.iseekprice.com/General/";
+        private const string MAP_URL = "https://data.iseekprice.com/general/map.json";
+        private const string BASE_URL = "https://data.iseekprice.com/general/";
         private static readonly HttpClient _client = new HttpClient();
 
         public async Task<List<ulong>> GetMasterIdsAsync()
