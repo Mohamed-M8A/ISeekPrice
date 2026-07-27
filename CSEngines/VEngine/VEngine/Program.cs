@@ -36,7 +36,7 @@ namespace ISeekPrice.VideoEngine
                 string json = JsonConvert.SerializeObject(videoList, Newtonsoft.Json.Formatting.Indented);
 
                 File.WriteAllText(Path.Combine(outputDir, "videos.json"), json);
-                await UploadToR2(json, "General/videos.json");
+                await UploadToR2(json, "general/videos.json");
 
                 Console.WriteLine("SUCCESS");
             }
@@ -46,9 +46,9 @@ namespace ISeekPrice.VideoEngine
         static async Task<Dictionary<string, ProductData>> GetCombinedDataFromNetwork()
         {
             using var http = new HttpClient();
-            var mapJson = await http.GetStringAsync($"{DATA_BUCKET_URL}/General/map.json?v={DateTime.Now.Ticks}");
+            var mapJson = await http.GetStringAsync($"{DATA_BUCKET_URL}/general/map.json?v={DateTime.Now.Ticks}");
             dynamic map = JsonConvert.DeserializeObject(mapJson);
-            byte[] coreBuf = await http.GetByteArrayAsync($"{DATA_BUCKET_URL}/General/core_{map.core}.bin");
+            byte[] coreBuf = await http.GetByteArrayAsync($"{DATA_BUCKET_URL}/general/core_{map.core}.bin");
             byte[] feedBuf = await http.GetByteArrayAsync($"{DATA_BUCKET_URL}/sa/feed_{map.regions.sa.feed}.bin");
             var dictionary = new Dictionary<string, ProductData>();
             for (int i = 0; i < coreBuf.Length; i += 280)
