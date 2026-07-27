@@ -28,7 +28,7 @@ namespace ISeekPriceEngine.Services
         {
             try
             {
-                var response = await _client.GetAsync($"{_endpoint}/General/map.json");
+                var response = await _client.GetAsync($"{_endpoint}/general/map.json");
                 return response.IsSuccessStatusCode ? await response.Content.ReadAsStringAsync() : "{}";
             }
             catch { return "{}"; }
@@ -46,19 +46,19 @@ namespace ISeekPriceEngine.Services
             if (File.Exists(corePath))
             {
                 var h = GenerateHash(corePath, 280);
-                if (await UploadFile(corePath, $"General/core_{h}.bin")) { map["core"] = h; sb.AppendLine($" [+] Core Uploaded: {h}"); }
+                if (await UploadFile(corePath, $"general/core_{h}.bin")) { map["core"] = h; sb.AppendLine($" [+] Core Uploaded: {h}"); }
             }
 
             if (File.Exists(searchPath))
             {
                 var info = new FileInfo(searchPath);
                 var h = GenerateHash(searchPath, (int)(info.Length / 4), true);
-                if (await UploadFile(searchPath, $"General/search_{h}.bin")) { map["search"] = h; sb.AppendLine($" [+] Search Uploaded: {h}"); }
+                if (await UploadFile(searchPath, $"general/search_{h}.bin")) { map["search"] = h; sb.AppendLine($" [+] Search Uploaded: {h}"); }
             }
 
             if (File.Exists(blogPath))
             {
-                if (await UploadFile(blogPath, "General/posts.json"))
+                if (await UploadFile(blogPath, "general/posts.json"))
                 {
                     sb.AppendLine(" [+] Blog Uploaded: posts.json");
                 }
@@ -67,7 +67,7 @@ namespace ISeekPriceEngine.Services
             string updatedMap = JsonConvert.SerializeObject(map, Formatting.Indented);
             string tempMapPath = Path.Combine(outputDir, "map.json");
             File.WriteAllText(tempMapPath, updatedMap);
-            await UploadFile(tempMapPath, "General/map.json");
+            await UploadFile(tempMapPath, "general/map.json");
 
             return sb.ToString();
         }
