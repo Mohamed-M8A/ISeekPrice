@@ -96,7 +96,7 @@ async function fetchStoreMetadata(idx, storeId) {
         const country = hostMatch ? hostMatch[1].toUpperCase() : "SA";
         const v = Date.now();
         
-        const mapRes = await fetch(`https://data.iseekprice.com/General/map.json?v=${v}`);
+        const mapRes = await fetch(`https://data.iseekprice.com/general/map.json?v=${v}`);
         const map = await mapRes.json();
         
         const region = map.regions[country];
