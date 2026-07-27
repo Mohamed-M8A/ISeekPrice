@@ -39,7 +39,7 @@ module.exports = async function() {
     };
 
     try {
-        const mapUrl = `${baseUrl}General/map.json?v=${Date.now()}`;
+        const mapUrl = `${baseUrl}general/map.json?v=${Date.now()}`;
         let mapBuf;
         
         try {
