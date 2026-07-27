@@ -9,7 +9,6 @@ namespace ISeekPriceEngine
 {
     internal class Program
     {
-        private const string VERSION = "7.0.0";
         private static string _root => AppDomain.CurrentDomain.BaseDirectory;
         private static string _logPath => Path.GetFullPath(Path.Combine(_root, "..", "..", "..", "Log"));
         private static string _outputPath => Path.GetFullPath(Path.Combine(_root, "..", "..", "..", "Output"));
@@ -40,7 +39,7 @@ namespace ISeekPriceEngine
                 double blogSize = File.Exists(blogFile) ? new FileInfo(blogFile).Length / 1024.0 : 0;
 
                 report.AppendLine("============================================================");
-                report.AppendLine($"                SYSTEM STATUS REPORT V{VERSION}");
+                report.AppendLine($"                SYSTEM STATUS REPORT ");
                 report.AppendLine("============================================================");
                 report.AppendLine($" [*] Sync Timestamp     : {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 report.AppendLine($" [*] Total Products     : {result.productCount} Items Merged");
