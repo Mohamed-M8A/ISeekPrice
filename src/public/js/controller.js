@@ -47,7 +47,7 @@
         if (mapPromise) return mapPromise;
         mapPromise = (async () => {
             try {
-                const res = await fetch(`${WIDGET_CONFIG.BASE_URL}General/map.json?v=${Date.now()}`);
+                const res = await fetch(`${WIDGET_CONFIG.BASE_URL}general/map.json?v=${Date.now()}`);
                 if (res.ok) {
                     window.fileMap = await res.json();
                     fileMap = window.fileMap;
@@ -82,7 +82,7 @@
     function getCloudPath(type) {
         if (!fileMap) return null;
         if (type === "core" || type === "search" || type === "ids") {
-            return `General/${type}_${fileMap[type]}.bin`;
+            return `general/${type}_${fileMap[type]}.bin`;
         }
         const hash = fileMap.regions[country]?.[type];
         return hash ? `${country}/${type}_${hash}.bin` : null;
