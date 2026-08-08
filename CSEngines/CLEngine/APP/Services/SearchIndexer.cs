@@ -20,20 +20,24 @@ namespace ISeekPriceEngine.Services
             _invertedIndex = new Dictionary<string, List<int>>();
             _stopWords = new HashSet<string>();
             _whiteList = new HashSet<string>();
+
             if (File.Exists(blockPath))
             {
-                var customWords = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(blockPath));
+                var blockContent = File.ReadAllText(blockPath);
+                var customWords = JsonConvert.DeserializeObject<List<string>>(blockContent);
                 if (customWords != null)
                 {
                     foreach (var word in customWords) _stopWords.Add(NormalizeText(word));
                 }
+
                 string? directory = Path.GetDirectoryName(blockPath);
                 if (!string.IsNullOrEmpty(directory))
                 {
                     string whitePath = Path.Combine(directory, "white.json");
                     if (File.Exists(whitePath))
                     {
-                        var whiteWords = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(whitePath));
+                        var whiteContent = File.ReadAllText(whitePath);
+                        var whiteWords = JsonConvert.DeserializeObject<List<string>>(whiteContent);
                         if (whiteWords != null)
                         {
                             foreach (var word in whiteWords) _whiteList.Add(word.ToLower().Trim());
@@ -84,7 +88,12 @@ namespace ISeekPriceEngine.Services
         {
             int wordCount = _invertedIndex.Count;
             long totalPostings = _invertedIndex.Sum(x => (long)x.Value.Count);
-            int maxId = _invertedIndex.Count > 0 ? _invertedIndex.Max(x => x.Value.Count > 0 ? x.Value.Max() : 0) : 0;
+            int maxId = 0;
+            if (_invertedIndex.Count > 0)
+            {
+                maxId = _invertedIndex.Values.SelectMany(v => v).DefaultIfEmpty(0).Max();
+            }
+
             using (var ms = new MemoryStream())
             using (var writer = new BinaryWriter(ms))
             {
