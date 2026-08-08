@@ -16,9 +16,8 @@ namespace ISeekPriceEngine.Engines
         private string _productRoot => Path.Combine(_root, "src", "product");
         private string _blockPath => Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Data", "block.json"));
 
-        public async Task<(int productCount, SearchIndexer indexer)> ProjectToBinary(string outputPath)
+        public async Task<(byte[] coreBytes, SearchIndexer indexer)> ProjectToMemory()
         {
-            if (!Directory.Exists(outputPath)) Directory.CreateDirectory(outputPath);
             var idHelper = new CloudIdHelper();
             var masterIds = await idHelper.GetMasterIdsAsync();
             if (masterIds.Count == 0) throw new Exception("Cloud IDs empty.");
@@ -29,8 +28,8 @@ namespace ISeekPriceEngine.Engines
             var searchEngine = new SearchIndexer(_blockPath);
             int rowIndex = 0;
 
-            using (var coreFs = new FileStream(Path.Combine(outputPath, "core.bin"), FileMode.Create))
-            using (var coreWriter = new BinaryWriter(coreFs))
+            using (var ms = new MemoryStream())
+            using (var coreWriter = new BinaryWriter(ms))
             {
                 foreach (var id in masterIds)
                 {
@@ -47,9 +46,8 @@ namespace ISeekPriceEngine.Engines
                     }
                     rowIndex++;
                 }
+                return (ms.ToArray(), searchEngine);
             }
-            searchEngine.SaveIndex(outputPath);
-            return (articlesMap.Count, searchEngine);
         }
 
         private Dictionary<string, PostData> ScanAndParseProducts()
@@ -83,7 +81,6 @@ namespace ISeekPriceEngine.Engines
                 string dateStr = $"{pathParts[0]}-{pathParts[1]}-{pathParts[2]}";
                 if (DateTime.TryParse(dateStr, out var urlDate))
                     post.UrlDateOffset = (uint)Math.Max(0, (urlDate - refDate).TotalDays);
-
                 post.Slug = Path.GetFileNameWithoutExtension(pathParts.Last());
             }
             else
@@ -102,11 +99,21 @@ namespace ISeekPriceEngine.Engines
             post.Title = titleMatch.Success ? titleMatch.Groups[1].Value.Trim() : Path.GetFileNameWithoutExtension(filePath);
 
             StringBuilder indexableText = new StringBuilder();
-            string[] tags = { "short-description", "Description", "Important-Features", "Specifications" };
+            string[] tags = { "intro", "details", "features", "specs" };
+            
             foreach (var tag in tags)
             {
-                var m = Regex.Match(content, $@"class=[""']{tag}[""'][^>]*>\s*(.*?)\s*(?:</div>|</p>)", RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                if (m.Success) indexableText.AppendLine(m.Groups[1].Value);
+                var m = Regex.Match(content, $@"class=[""']{tag}[""'][^>]*>([\s\S]*?)</div>\s*(?=<div class=""(intro|details|features|specs|UID|Price-Chart|tab-buttons)"")", RegexOptions.IgnoreCase);
+                
+                if (m.Success)
+                {
+                    indexableText.AppendLine(m.Groups[1].Value);
+                }
+                else
+                {
+                    var fallbackMatch = Regex.Match(content, $@"class=[""']{tag}[""'][^>]*>\s*(.*?)\s*(?:</div>|</p>)", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                    if (fallbackMatch.Success) indexableText.AppendLine(fallbackMatch.Groups[1].Value);
+                }
             }
 
             post.SearchText = ExtractPlainText(indexableText.Length > 0 ? indexableText.ToString() : content);
