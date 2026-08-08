@@ -34,62 +34,50 @@ namespace ISeekPriceEngine.Services
             catch { return "{}"; }
         }
 
-        public async Task<string> ProcessDeployment(string outputDir, string currentMapJson)
+        public async Task<string> ProcessDeployment(byte[] coreData, byte[] searchData, string blogJson, string currentMapJson)
         {
             var map = JObject.Parse(currentMapJson);
             var sb = new StringBuilder();
 
-            string corePath = Path.Combine(outputDir, "core.bin");
-            string searchPath = Path.Combine(outputDir, "search.bin");
-            string blogPath = Path.Combine(outputDir, "posts.json");
-
-            if (File.Exists(corePath))
+            if (coreData != null)
             {
-                var h = GenerateHash(corePath, 280);
-                if (await UploadFile(corePath, $"general/core_{h}.bin")) { map["core"] = h; sb.AppendLine($" [+] Core Uploaded: {h}"); }
+                var h = GenerateHash(coreData, 280);
+                if (await UploadData(coreData, $"general/core_{h}.bin", "application/octet-stream")) { map["core"] = h; sb.AppendLine($" [+] Core Uploaded: {h}"); }
             }
 
-            if (File.Exists(searchPath))
+            if (searchData != null)
             {
-                var info = new FileInfo(searchPath);
-                var h = GenerateHash(searchPath, (int)(info.Length / 4), true);
-                if (await UploadFile(searchPath, $"general/search_{h}.bin")) { map["search"] = h; sb.AppendLine($" [+] Search Uploaded: {h}"); }
+                var h = GenerateHash(searchData, searchData.Length / 4, true);
+                if (await UploadData(searchData, $"general/search_{h}.bin", "application/octet-stream")) { map["search"] = h; sb.AppendLine($" [+] Search Uploaded: {h}"); }
             }
 
-            if (File.Exists(blogPath))
+            if (!string.IsNullOrEmpty(blogJson))
             {
-                if (await UploadFile(blogPath, "general/posts.json"))
-                {
-                    sb.AppendLine(" [+] Blog Uploaded: posts.json");
-                }
+                byte[] blogBytes = Encoding.UTF8.GetBytes(blogJson);
+                if (await UploadData(blogBytes, "general/posts.json", "application/json")) sb.AppendLine(" [+] Blog Uploaded");
             }
 
             string updatedMap = JsonConvert.SerializeObject(map, Formatting.Indented);
-            string tempMapPath = Path.Combine(outputDir, "map.json");
-            File.WriteAllText(tempMapPath, updatedMap);
-            await UploadFile(tempMapPath, "general/map.json");
+            await UploadData(Encoding.UTF8.GetBytes(updatedMap), "general/map.json", "application/json");
 
             return sb.ToString();
         }
 
-        private async Task<bool> UploadFile(string localPath, string cloudName)
+        private async Task<bool> UploadData(byte[] data, string cloudName, string contentType)
         {
             try
             {
-                string contentType = localPath.EndsWith(".json") ? "application/json" : "application/octet-stream";
-                var content = new ByteArrayContent(File.ReadAllBytes(localPath));
+                var content = new ByteArrayContent(data);
                 content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-
                 var response = await _client.PutAsync($"{_endpoint}/{cloudName}", content);
                 return response.IsSuccessStatusCode;
             }
             catch { return false; }
         }
 
-        private string GenerateHash(string path, int recordCount, bool manualCount = false)
+        private string GenerateHash(byte[] data, int recordCount, bool manualCount = false)
         {
-            var info = new FileInfo(path);
-            long size = info.Length;
+            long size = data.Length;
             int count = manualCount ? recordCount : (int)(size / recordCount);
             string timeHex = ((int)(DateTime.UtcNow - new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds).ToString("x8");
             string salt = Guid.NewGuid().ToString("n").Substring(0, 4);
