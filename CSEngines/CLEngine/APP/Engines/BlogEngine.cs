@@ -14,9 +14,9 @@ namespace ISeekPriceEngine.Engines
         private string _root => Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", ".."));
         private string _postRoot => Path.Combine(_root, "src", "post");
 
-        public void GenerateBlogJson(string outputPath)
+        public string GenerateBlogJsonToMemory()
         {
-            if (!Directory.Exists(_postRoot)) return;
+            if (!Directory.Exists(_postRoot)) return "[]";
 
             var blogPosts = new List<BlogEntry>();
             var htmlFiles = Directory.GetFiles(_postRoot, "*.html", SearchOption.AllDirectories);
@@ -49,8 +49,7 @@ namespace ISeekPriceEngine.Engines
                 blogPosts.Add(entry);
             }
 
-            if (!Directory.Exists(outputPath)) Directory.CreateDirectory(outputPath);
-            File.WriteAllText(Path.Combine(outputPath, "posts.json"), JsonConvert.SerializeObject(blogPosts, Formatting.Indented));
+            return JsonConvert.SerializeObject(blogPosts, Formatting.Indented);
         }
     }
 }
