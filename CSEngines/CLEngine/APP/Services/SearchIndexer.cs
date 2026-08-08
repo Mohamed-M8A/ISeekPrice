@@ -20,7 +20,6 @@ namespace ISeekPriceEngine.Services
             _invertedIndex = new Dictionary<string, List<int>>();
             _stopWords = new HashSet<string>();
             _whiteList = new HashSet<string>();
-
             if (File.Exists(blockPath))
             {
                 var customWords = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(blockPath));
@@ -28,15 +27,17 @@ namespace ISeekPriceEngine.Services
                 {
                     foreach (var word in customWords) _stopWords.Add(NormalizeText(word));
                 }
-
-                string directory = Path.GetDirectoryName(blockPath);
-                string whitePath = Path.Combine(directory, "white.json");
-                if (File.Exists(whitePath))
+                string? directory = Path.GetDirectoryName(blockPath);
+                if (!string.IsNullOrEmpty(directory))
                 {
-                    var whiteWords = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(whitePath));
-                    if (whiteWords != null)
+                    string whitePath = Path.Combine(directory, "white.json");
+                    if (File.Exists(whitePath))
                     {
-                        foreach (var word in whiteWords) _whiteList.Add(word.ToLower().Trim());
+                        var whiteWords = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(whitePath));
+                        if (whiteWords != null)
+                        {
+                            foreach (var word in whiteWords) _whiteList.Add(word.ToLower().Trim());
+                        }
                     }
                 }
             }
@@ -46,19 +47,12 @@ namespace ISeekPriceEngine.Services
         {
             if (string.IsNullOrWhiteSpace(text)) return "";
             string n = text.ToLower().Trim();
-
             if (_whiteList.Contains(n)) return n;
-
             n = Regex.Replace(n, @"[\u064B-\u0652ـ]", "");
             n = Regex.Replace(n, "[أإآ]", "ا");
             n = Regex.Replace(n, "ؤ", "و");
             n = Regex.Replace(n, "[ئى]", "ي");
-
-            if (n.EndsWith("ه"))
-            {
-                n = n.Substring(0, n.Length - 1) + "ة";
-            }
-
+            if (n.EndsWith("ه")) n = n.Substring(0, n.Length - 1) + "ة";
             if (n.Length > 4)
             {
                 if (n.StartsWith("ال")) n = n.Substring(2);
@@ -79,26 +73,20 @@ namespace ISeekPriceEngine.Services
                 var cleanWord = NormalizeText(word);
                 if (cleanWord.Length >= 2 && !_stopWords.Contains(cleanWord))
                 {
-                    if (!_invertedIndex.ContainsKey(cleanWord)) 
-                        _invertedIndex[cleanWord] = new List<int>();
-
+                    if (!_invertedIndex.ContainsKey(cleanWord)) _invertedIndex[cleanWord] = new List<int>();
                     var list = _invertedIndex[cleanWord];
-                    if (list.Count == 0 || list[list.Count - 1] != rowIndex)
-                    {
-                        list.Add(rowIndex);
-                    }
+                    if (list.Count == 0 || list[list.Count - 1] != rowIndex) list.Add(rowIndex);
                 }
             }
         }
 
-        public void SaveIndex(string outputPath)
+        public byte[] SaveToMemory()
         {
             int wordCount = _invertedIndex.Count;
             long totalPostings = _invertedIndex.Sum(x => (long)x.Value.Count);
-            int maxId = _invertedIndex.Count > 0 ? _invertedIndex.Max(x => x.Value.Max()) : 0;
-            string filePath = Path.Combine(outputPath, "search.bin");
-            using (var fs = new FileStream(filePath, FileMode.Create))
-            using (var writer = new BinaryWriter(fs))
+            int maxId = _invertedIndex.Count > 0 ? _invertedIndex.Max(x => x.Value.Count > 0 ? x.Value.Max() : 0) : 0;
+            using (var ms = new MemoryStream())
+            using (var writer = new BinaryWriter(ms))
             {
                 writer.Write(0);
                 writer.Write(wordCount);
@@ -117,9 +105,10 @@ namespace ISeekPriceEngine.Services
                         else writer.Write(idx);
                     }
                 }
-                int fileSize = (int)fs.Length;
-                fs.Seek(0, SeekOrigin.Begin);
+                int fileSize = (int)ms.Length;
+                ms.Seek(0, SeekOrigin.Begin);
                 writer.Write(fileSize);
+                return ms.ToArray();
             }
         }
     }
