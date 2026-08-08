@@ -17,9 +17,6 @@ function createModal(){if(document.getElementById("imageModal"))return;document.
     `)}
 createModal();const modal=document.getElementById("imageModal");const modalImage=document.getElementById("modalImage");window.openModal=function(index){const thumbnails=getThumbnails();const targetIndex=(typeof index==='number')?index:currentIndex;if(!thumbnails[targetIndex])return;modal.style.display="flex";modalImage.src=thumbnails[targetIndex].src;applyImageStyle(modalImage);currentIndex=targetIndex};window.closeModal=function(){modal.style.display="none"};window.navigateModal=function(direction){const thumbnails=getThumbnails();if(thumbnails.length===0)return;currentIndex=direction==="next"?(currentIndex+1)%thumbnails.length:(currentIndex-1+thumbnails.length)%thumbnails.length;modalImage.src=thumbnails[currentIndex].src;applyImageStyle(modalImage)}
 
-//  Customer IMG 
-const avatarURL="/public/assets/static/client.png";document.querySelectorAll(".avatar-placeholder").forEach(placeholder=>{const img=new Image();img.src=avatarURL;img.alt="عميل";img.className="reviewer-img";img.width=50;img.height=50;img.loading="lazy";placeholder.appendChild(img)})
-
 // =================== Tabs ===================
 
 let enableInitialScroll=!1;function showTab(id,btn,forceScroll=!1){document.querySelectorAll('[id^="tab"]').forEach(t=>t.style.display='none');document.querySelectorAll('.tab-buttons button').forEach(b=>b.classList.remove('active'));const target=document.getElementById(id);if(target){target.style.display='block';const targetTop=target.getBoundingClientRect().top+window.scrollY;const stickyHeight=document.querySelector('.tab-buttons')?.offsetHeight||0;setTimeout(()=>{if(enableInitialScroll||forceScroll){window.scrollTo({top:targetTop-stickyHeight-10,behavior:'smooth'})}},100)}
@@ -31,7 +28,6 @@ const textMap = {
   "المميزات": "المزايا",
   "المواصفات": "الخصائص الفنية",
   "الرسم البياني للسعر": "تحليل الأسعار",
-  "تقييم العملاء": "آراء المستخدمين",
 };
 
 document.querySelectorAll(".tab-buttons button").forEach(btn => {
@@ -40,11 +36,6 @@ document.querySelectorAll(".tab-buttons button").forEach(btn => {
     btn.textContent = textMap[oldText];
   }
 });
-
-
-// Tab (5)
-const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){goToReviewsBtn.addEventListener("click",function(e){e.preventDefault();const tabButtons=document.querySelectorAll('.tab-buttons button');const targetButton=Array.from(tabButtons).find(btn=>btn.getAttribute('onclick')?.includes("'tab5'"));if(targetButton){showTab('tab5',targetButton,!0);setTimeout(()=>{const reviewsSection=document.getElementById('tab5');if(reviewsSection){reviewsSection.scrollIntoView({behavior:'smooth'})}},300)}})}
-
 
 // =================== Product UI Layout & Data Injection ===================
 
@@ -261,7 +252,7 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
 
         drawStars(document.getElementById("stars"), parseFloat(data.score) || 0);
         const rv = document.getElementById("ratingValue"); if (rv) rv.textContent = data.score.toFixed(1);
-        const rc = document.getElementById("goToReviews"); if (rc) rc.textContent = (data.reviews || 0).toLocaleString() + " تقييمات";    
+        const rc = document.getElementById("goToReviews"); if (rc) { rc.textContent = (data.reviews || 0).toLocaleString() + " تقييمات"; rc.style.pointerEvents = "none"; rc.style.cursor = "default"; }    
                                              
         const moreRev = document.querySelector(".more-reviews-link a");
         if (moreRev && data.productAffCode) {
@@ -291,24 +282,6 @@ const goToReviewsBtn=document.getElementById("goToReviews");if(goToReviewsBtn){g
                 </div>`;
         }
     };
-
-    document.querySelectorAll('.customer-reviews .stars-group').forEach(group => {
-        const rating = parseFloat(group.getAttribute('data-rating')) || 5;
-        drawStars(group, rating);
-    });
-
-function injectReviewLink() {
-    const tab5 = document.getElementById('tab5');
-    if (tab5 && !tab5.querySelector('.more-reviews-link')) {
-        tab5.insertAdjacentHTML('beforeend', `
-            <div class="more-reviews-link" style="text-align:center; margin-top:20px;">
-                <a href="#" rel="noopener" target="_blank" style="color:#ffffff !important; background-color:#ff6000; padding:10px 20px; display:inline-block; border-radius:5px; font-weight:bold; text-decoration:none;">شاهد المزيد من المراجعات في المتجر الرسمي ←</a>
-            </div>
-        `);
-    }
-}
-
-    injectReviewLink();
 
 })();
 
