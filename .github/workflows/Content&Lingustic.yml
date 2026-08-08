@@ -1,21 +1,14 @@
 name: Content&Lingustic.Engine
-
 on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 */3 * *'
-
 jobs:
   build-and-run:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
 
     - name: Setup .NET 8.0
       uses: actions/setup-dotnet@v4
@@ -31,30 +24,5 @@ jobs:
         PROJECT_PATH=$(find . -name "CLEngine.csproj" | head -n 1)
         PROJECT_DIR=$(dirname "$PROJECT_PATH")
         cd "$PROJECT_DIR"
-        mkdir -p Output
-        mkdir -p Log
         dotnet restore
         dotnet run --configuration Release
-        if [ -f Log/sync_report.txt ]; then
-          cat Log/sync_report.txt
-        fi
-
-    - name: Commit and Push Outputs
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "github-actions[bot]"
-        
-        git fetch origin main
-        git checkout main
-        git reset --mixed origin/main
-        
-        git add **/Output/core.bin
-        git add **/Output/search.bin
-        git add **/Output/posts.json
-        
-        if git diff --quiet --cached; then
-          echo "No changes to commit."
-        else
-          git commit -m "Update Engine Outputs (Core, Search, Blog)"
-          git push origin main
-        fi
