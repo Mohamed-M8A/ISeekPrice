@@ -252,7 +252,7 @@ document.querySelectorAll(".tab-buttons button").forEach(btn => {
 
         drawStars(document.getElementById("stars"), parseFloat(data.score) || 0);
         const rv = document.getElementById("ratingValue"); if (rv) rv.textContent = data.score.toFixed(1);
-        const rc = document.getElementById("goToReviews"); if (rc) { rc.textContent = (data.reviews || 0).toLocaleString() + " تقييمات"; rc.style.pointerEvents = "none"; rc.style.cursor = "default"; }    
+        const rc = document.getElementById("reviewsCount"); if (rc) { rc.textContent = (data.reviews || 0).toLocaleString() + " تقييمات"; }    
                                              
         const moreRev = document.querySelector(".more-reviews-link a");
         if (moreRev && data.productAffCode) {
