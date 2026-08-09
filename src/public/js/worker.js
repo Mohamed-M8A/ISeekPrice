@@ -175,6 +175,17 @@ self.onmessage = async (e) => {
         }
 
         if (isFilteredSearch || targetStore || (filters && filters.sortBy)) {
+
+            if (targetStore && allMatchedRecords.length > 0) {
+                const firstOriginalRecord = allMatchedRecords.reduce((min, p) => p.recordIndex < min.recordIndex ? p : min, allMatchedRecords[0]);
+                
+                self.postMessage({ 
+                    searchId, 
+                    type: 'BATCH', 
+                    batch: [firstOriginalRecord] 
+                });
+            }
+            
             allMatchedRecords.sort((a, b) => {
                 if (isFilteredSearch && a.relevance !== b.relevance) return b.relevance - a.relevance;
                 const sortType = filters?.sortBy || 'relevance';
@@ -185,7 +196,7 @@ self.onmessage = async (e) => {
                 return b.feed.orders - a.feed.orders;
             });
 
-            console.log("%c📊 RESULTS: " + allMatchedRecords.length + " items found", "color: #e67e22; font-weight: bold;");
+            console.log("%c RESULTS: " + allMatchedRecords.length + " items found", "color: #e67e22; font-weight: bold;");
 
             const CHUNK_SIZE = 500;
             for (let i = 0; i < allMatchedRecords.length; i += CHUNK_SIZE) {
