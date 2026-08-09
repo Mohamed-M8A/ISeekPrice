@@ -175,17 +175,6 @@ self.onmessage = async (e) => {
         }
 
         if (isFilteredSearch || targetStore || (filters && filters.sortBy)) {
-
-            if (targetStore && allMatchedRecords.length > 0) {
-                const firstOriginalRecord = allMatchedRecords.reduce((min, p) => p.recordIndex < min.recordIndex ? p : min, allMatchedRecords[0]);
-                
-                self.postMessage({ 
-                    searchId, 
-                    type: 'BATCH', 
-                    batch: [firstOriginalRecord] 
-                });
-            }
-            
             allMatchedRecords.sort((a, b) => {
                 if (isFilteredSearch && a.relevance !== b.relevance) return b.relevance - a.relevance;
                 const sortType = filters?.sortBy || 'relevance';
