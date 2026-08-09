@@ -1,4 +1,4 @@
-name: ISeekPrice Industrial Build
+name: ISeekPrice
 on:
   push:
     branches:
