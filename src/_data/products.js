@@ -4,9 +4,15 @@ module.exports = async function() {
     const country = (process.env.COUNTRY || 'sa').toLowerCase();
     const baseUrl = 'https://data.iseekprice.com/';
 
+    const RECORD_SIZE = 9400;
+    const FEED_OFFSET = 8;
+    const PROMO_OFFSET = 32;
+    const SKU_OFFSET = 56;
+    const FLUX_OFFSET = 6476;
+
     const fetchBufWithRetry = async (url, retries = 10, delayMs = 2000) => {
         if (!url) return Buffer.alloc(0);
-        
+
         for (let i = 1; i <= retries; i++) {
             try {
                 const controller = new AbortController();
@@ -41,31 +47,25 @@ module.exports = async function() {
     try {
         const mapUrl = `${baseUrl}general/map.json?v=${Date.now()}`;
         let mapBuf;
-        
+
         try {
             mapBuf = await fetchBufWithRetry(mapUrl);
         } catch (mapError) {
             console.error(`خطأ في جلب ملف الخريطة الرئيسي: ${mapError.message}`);
-            return []; 
+            return [];
         }
-        
+
         const map = JSON.parse(mapBuf.toString('utf8'));
         const region = map.regions[country];
 
         const coreUrl = `${baseUrl}general/core_${map.core}.bin`;
-        const feedUrl = region && region.feed ? `${baseUrl}${country}/feed_${region.feed}.bin` : null;
         const linksUrl = region && region.links ? `${baseUrl}${country}/links_${region.links}.bin` : null;
-        const skuUrl = region && region.sku ? `${baseUrl}${country}/sku_${region.sku}.bin` : null;
-        const promoUrl = region && region.promo ? `${baseUrl}${country}/promo_${region.promo}.bin` : null;
-        const chartUrl = region && region.fluctuation ? `${baseUrl}${country}/fluctuation_${region.fluctuation}.bin` : null;
+        const buildUrl = region && region.build ? `${baseUrl}${country}/build_${region.build}.bin` : null;
 
-        const [coreBuf, feedBuf, linksBuf, skuBuf, promoBuf, chartBuf] = await Promise.all([
+        const [coreBuf, linksBuf, buildBuf] = await Promise.all([
             fetchBufWithRetry(coreUrl),
-            fetchBufWithRetry(feedUrl),
             fetchBufWithRetry(linksUrl),
-            fetchBufWithRetry(skuUrl),
-            fetchBufWithRetry(promoUrl),
-            fetchBufWithRetry(chartUrl)
+            fetchBufWithRetry(buildUrl)
         ]);
 
         const products = new Map();
@@ -73,42 +73,20 @@ module.exports = async function() {
         for (let i = 0; i < coreBuf.length; i += 280) {
             const id = coreBuf.readBigUInt64LE(i).toString();
             const rawSlug = coreBuf.toString('utf8', i + 16, i + 80).replace(/\0/g, '').trim();
-            const cleanSlug = rawSlug.toLowerCase(); 
+            const cleanSlug = rawSlug.toLowerCase();
             const productTitle = coreBuf.toString('utf8', i + 80, i + 280).replace(/\0/g, '').trim();
             const autoMetaDescription = `اكتشف سعر ومواصفات ${productTitle} وتتبع حركة الأسعار، الخصومات، والتقييمات المتوفرة في السوق حالياً لشراء ذكي بأفضل قيمة.`.substring(0, 155);
 
             products.set(id, {
                 id: id,
                 recordIndex: i / 280,
-                slug: cleanSlug, 
+                slug: cleanSlug,
                 title: productTitle,
                 metaDescription: autoMetaDescription,
                 skus: [],
                 promo: null,
                 chart: []
             });
-        }
-
-        for (let i = 0; i < feedBuf.length; i += 32) {
-            const id = feedBuf.readBigUInt64LE(i).toString();
-            if (products.has(id)) {
-                const item = products.get(id);
-                const status = feedBuf.readUInt8(i + 31);
-                Object.assign(item, {
-                    storeId: feedBuf.readUInt32LE(i + 8),
-                    priceOriginal: feedBuf.readUInt32LE(i + 12) / 100,
-                    priceDiscounted: feedBuf.readUInt32LE(i + 16) / 100,
-                    shippingFee: feedBuf.readUInt32LE(i + 20) / 100,
-                    orders: feedBuf.readUInt16LE(i + 24),
-                    reviews: feedBuf.readUInt16LE(i + 26),
-                    score: feedBuf.readUInt8(i + 28) / 10,
-                    minDelivery: feedBuf.readUInt8(i + 29),
-                    maxDelivery: feedBuf.readUInt8(i + 30),
-                    inStock: (status & 0x20) !== 0,
-                    hasSku: (status & 0x40) !== 0,
-                    hasPromo: (status & 0x80) !== 0
-                });
-            }
         }
 
         for (let i = 0; i < linksBuf.length; i += 100) {
@@ -121,64 +99,78 @@ module.exports = async function() {
             }
         }
 
-        for (let i = 0; i < skuBuf.length; i += 6428) {
-            const id = skuBuf.readBigUInt64LE(i).toString();
-            if (products.has(id)) {
-                const item = products.get(id);
+        for (let i = 0; i + RECORD_SIZE <= buildBuf.length; i += RECORD_SIZE) {
+            const id = buildBuf.readBigUInt64LE(i).toString();
+            if (!products.has(id)) continue;
+            const item = products.get(id);
+
+            const fo = i + FEED_OFFSET;
+            const status = buildBuf.readUInt8(fo + 23);
+            const hasPromo = (status & 0x80) !== 0;
+            const hasSku = (status & 0x40) !== 0;
+
+            Object.assign(item, {
+                storeId: buildBuf.readUInt32LE(fo),
+                priceOriginal: buildBuf.readUInt32LE(fo + 4) / 100,
+                priceDiscounted: buildBuf.readUInt32LE(fo + 8) / 100,
+                shippingFee: buildBuf.readUInt32LE(fo + 12) / 100,
+                orders: buildBuf.readUInt16LE(fo + 16),
+                reviews: buildBuf.readUInt16LE(fo + 18),
+                score: buildBuf.readUInt8(fo + 20) / 10,
+                minDelivery: buildBuf.readUInt8(fo + 21),
+                maxDelivery: buildBuf.readUInt8(fo + 22),
+                inStock: (status & 0x20) !== 0,
+                hasSku: hasSku,
+                hasPromo: hasPromo
+            });
+
+            if (hasPromo) {
+                const po = i + PROMO_OFFSET;
+                item.promo = {
+                    expiry: buildBuf.readUInt32LE(po),
+                    quantity: buildBuf.readUInt16LE(po + 4),
+                    code: buildBuf.toString('utf8', po + 6, po + 24).replace(/\0/g, '').trim()
+                };
+            }
+
+            if (hasSku) {
                 for (let s = 0; s < 30; s++) {
-                    const offset = i + 8 + (s * 214);
-                    const pDisc = skuBuf.readUInt32LE(offset + 4) / 100;
+                    const so = i + SKU_OFFSET + (s * 214);
+                    const pDisc = buildBuf.readUInt32LE(so + 4) / 100;
                     if (pDisc === 0) continue;
-                    
-                    const imgSlug = skuBuf.toString('utf8', offset + 14, offset + 54).replace(/\0/g, '').trim();
-                    const rawProps = skuBuf.toString('utf8', offset + 54, offset + 214).replace(/\0/g, '').trim();
+
+                    const imgSlug = buildBuf.toString('utf8', so + 14, so + 54).replace(/\0/g, '').trim();
+                    const rawProps = buildBuf.toString('utf8', so + 54, so + 214).replace(/\0/g, '').trim();
                     const props = rawProps ? rawProps.replace(/\|/g, " - ").trim() : "_";
                     const image = "https://ae-pic-a1.aliexpress-media.com/kf/" + imgSlug + (imgSlug.includes('.') ? "" : ".jpg");
 
                     item.skus.push({
                         skuIdx: s,
-                        priceOriginal: skuBuf.readUInt32LE(offset) / 100,
+                        priceOriginal: buildBuf.readUInt32LE(so) / 100,
                         priceDiscounted: pDisc,
-                        shippingFee: skuBuf.readUInt32LE(offset + 8) / 100,
-                        minDelivery: skuBuf.readUInt8(offset + 12),
-                        maxDelivery: skuBuf.readUInt8(offset + 13),
+                        shippingFee: buildBuf.readUInt32LE(so + 8) / 100,
+                        minDelivery: buildBuf.readUInt8(so + 12),
+                        maxDelivery: buildBuf.readUInt8(so + 13),
                         image: image,
                         props: props
                     });
                 }
             }
-        }
 
-        for (let i = 0; i < promoBuf.length; i += 32) {
-            const id = promoBuf.readBigUInt64LE(i).toString();
-            if (products.has(id)) {
-                const item = products.get(id);
-                item.promo = {
-                    expiry: promoBuf.readUInt32LE(i + 8),
-                    quantity: promoBuf.readUInt16LE(i + 12),
-                    code: promoBuf.toString('utf8', i + 14, i + 32).replace(/\0/g, '').trim()
-                };
-            }
-        }
-
-        for (let i = 0; i < chartBuf.length; i += 2932) {
-            const id = chartBuf.readBigUInt64LE(i).toString();
-            if (products.has(id)) {
-                const item = products.get(id);
-                const recordCount = chartBuf.readUInt32LE(i + 8);
-                for (let c = 0; c < recordCount; c++) {
-                    const offset = i + 12 + (c * 8);
-                    if (offset + 8 > i + 2932) break;
-                    const timeInMinutes = chartBuf.readUInt32LE(offset);
-                    const priceRaw = chartBuf.readInt32LE(offset + 4);
-                    if (timeInMinutes > 0 && priceRaw > 0) {
-                        const pDate = new Date(Date.UTC(2025, 0, 1) + (timeInMinutes * 60 * 1000));
-                        item.chart.push({
-                            date: pDate.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
-                            price: (priceRaw / 100).toFixed(2),
-                            rawTime: timeInMinutes
-                        });
-                    }
+            const fluxo = i + FLUX_OFFSET;
+            const recordCount = buildBuf.readUInt32LE(fluxo);
+            for (let c = 0; c < recordCount; c++) {
+                const offset = fluxo + 4 + (c * 8);
+                if (offset + 8 > i + RECORD_SIZE) break;
+                const timeInMinutes = buildBuf.readUInt32LE(offset);
+                const priceRaw = buildBuf.readInt32LE(offset + 4);
+                if (timeInMinutes > 0 && priceRaw > 0) {
+                    const pDate = new Date(Date.UTC(2025, 0, 1) + (timeInMinutes * 60 * 1000));
+                    item.chart.push({
+                        date: pDate.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
+                        price: (priceRaw / 100).toFixed(2),
+                        rawTime: timeInMinutes
+                    });
                 }
             }
         }
@@ -186,6 +178,6 @@ module.exports = async function() {
         return Array.from(products.values());
 
     } catch (e) {
-        throw e; 
+        throw e;
     }
 };
