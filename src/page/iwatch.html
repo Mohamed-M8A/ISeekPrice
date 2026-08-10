@@ -16,20 +16,24 @@
 
 <style>
 
-:root{--bg:#050505;--card-bg:#0d0d0d;--primary:#f38020;--accent:#0070f3;--text:#ffffff;--glass:rgba(255,255,255,0.06);--border:rgba(255,255,255,0.1)}*{box-sizing:border-box;margin:0;padding:0;scrollbar-width:none}::-webkit-scrollbar{display:none}body{background-color:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;direction:rtl;overflow-x:hidden}.hidden-view{display:none}
+:root{--bg:#050505;--card-bg:#0d0d0d;--primary:#f38020;--accent:#0070f3;--text:#ffffff;--glass:rgba(255,255,255,0.06);--border:rgba(255,255,255,0.1)}
+*{box-sizing:border-box;margin:0;padding:0;scrollbar-width:none;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{display:none}
+html,body{-webkit-user-select:none;user-select:none}
+body{background-color:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;direction:rtl;overflow-x:hidden}
+button{background:none;border:none;font:inherit;color:inherit;cursor:pointer;-webkit-appearance:none;appearance:none;padding:0}
+video{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.hidden-view{display:none}
 
-/* Header */
 .site-header{position:sticky;top:0;z-index:100;background:rgb(5 5 5 / .8);backdrop-filter:blur(12px);padding:10px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
 .logo-group{display:flex;align-items:center;gap:8px;cursor:pointer}
 .header-logo-img{width:26px;height:26px;object-fit:contain}
 .logo-txt{font-weight:800;font-size:1.2rem;color:var(--primary);letter-spacing:-.5px}
 .header-actions{display:flex;align-items:center;gap:10px}
 .back-link{color:var(--text);text-decoration:none;font-size:11px;font-weight:600;background:var(--accent);padding:5px 12px;border-radius:15px}
-.fav-nav-btn{position:relative;background:var(--glass);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.fav-nav-btn{background:var(--glass);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .fav-nav-btn svg{width:16px;height:16px}
-.fav-nav-count{position:absolute;top:-4px;left:-4px;background:var(--primary);color:#fff;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:50%;display:none;align-items:center;justify-content:center;padding:0 3px}
 
-/* Grid */
 .v-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:8px;max-width:1400px;margin:0 auto}
 @media(min-width:768px){.v-grid{grid-template-columns:repeat(4,1fr)}}
 @media(min-width:1200px){.v-grid{grid-template-columns:repeat(6,1fr)}}
@@ -38,9 +42,8 @@
 .g-badge{position:absolute;top:6px;right:6px;background:var(--primary);color:#fff;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:800;z-index:5}
 .g-title{position:absolute;bottom:0;left:0;width:100%;padding:8px;background:linear-gradient(to top,rgb(0 0 0 / .9),transparent);font-size:10px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-/* Vertical feed */
 .feed-container{height:100dvh;overflow-y:scroll;scroll-snap-type:y mandatory;max-width:480px;margin:0 auto;background:#000}
-.video-card{position:relative;width:100%;height:100dvh;scroll-snap-align:start;overflow:hidden}
+.video-card{position:relative;width:100%;height:100dvh;scroll-snap-align:start;overflow:hidden;-webkit-touch-callout:none}
 .video-card video{width:100%;height:100%;object-fit:cover;z-index:1}
 .v-bg-skeleton{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(30px);opacity:.2;z-index:0}
 .v-state-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;width:60px;height:60px;background:rgb(0 0 0 / .3);border-radius:50%;display:flex;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:0.3s}
@@ -49,21 +52,21 @@
 
 .v-top-bar{position:absolute;top:0;left:0;width:100%;padding:15px;z-index:20;display:flex;justify-content:space-between;align-items:center}
 .v-top-bar-left,.v-top-bar-right{display:flex;gap:8px;align-items:center}
-.v-mute-btn,.v-close-btn,.v-settings-btn{background:rgb(0 0 0 / .5);backdrop-filter:blur(8px);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.v-mute-btn,.v-close-btn,.v-settings-btn{background:rgb(0 0 0 / .5);backdrop-filter:blur(8px);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .v-mute-btn svg,.v-close-btn svg,.v-settings-btn svg{width:16px;height:16px;fill:#fff}
 
 .v-error-overlay{position:absolute;inset:0;background:rgba(0,0,0,.85);z-index:25;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:20px}
 .v-error-overlay.active{display:flex}
 .v-error-overlay p{font-size:13px;color:#ccc}
-.v-error-overlay button{background:var(--primary);border:none;color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer}
+.v-error-overlay button{background:var(--primary);color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700}
 
 .v-overlay{position:absolute;bottom:0;left:0;width:100%;padding:20px 15px;background:linear-gradient(to top,rgb(0 0 0 / .95) 20%,transparent 100%);z-index:10}
 .v-details{display:flex;flex-direction:column;gap:8px}
 .v-order-info{color:var(--primary);font-size:11px;font-weight:800}
 .v-title{font-size:14px;font-weight:600;line-height:1.4;text-shadow:0 1px 3px #000}
 .v-actions{display:flex;align-items:center;gap:10px;margin-top:10px}
-.btn-order{flex:1;background:var(--primary);color:#fff;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-weight:700;font-size:13px}
-.btn-fav,.btn-share{background:var(--glass);border:1px solid var(--border);color:#fff;width:40px;height:40px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.btn-order{flex:1;background:var(--primary);color:#fff;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.btn-fav,.btn-share{background:var(--glass);border:1px solid var(--border);color:#fff;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center}
 .btn-fav svg,.btn-share svg{width:18px;height:18px;fill:#fff}
 .btn-fav.active svg{fill:#ef4444!important}
 .v-progress-container{width:100%;height:12px;margin-top:12px;cursor:pointer;display:flex;align-items:center;position:relative;z-index:15}
@@ -76,25 +79,23 @@
 .seek-flash span{font-size:13px;font-weight:800;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.6)}
 @keyframes flashPop{0%{opacity:0;transform:translateY(-50%) scale(.8)}20%{opacity:1;transform:translateY(-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
 
-/* Settings panel */
 .settings-overlay{position:fixed;inset:0;background:rgb(0 0 0 / .6);backdrop-filter:blur(4px);z-index:300;display:none;align-items:flex-end;justify-content:center}
 .settings-overlay.active{display:flex}
 .settings-panel{background:#0d0d0d;border:1px solid var(--border);border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:20px;animation:slideUp .3s ease}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .settings-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
 .settings-header h3{font-size:15px;font-weight:800}
-.settings-close{background:var(--glass);border:1px solid var(--border);width:30px;height:30px;border-radius:50%;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.settings-close{background:var(--glass);border:1px solid var(--border);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
 .settings-group{margin-bottom:20px}
 .settings-label{font-size:12px;color:#888;font-weight:700;margin-bottom:10px;display:block}
 .speed-options{display:flex;gap:8px;flex-wrap:wrap}
-.speed-btn{background:var(--glass);border:1px solid var(--border);color:#fff;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer}
+.speed-btn{background:var(--glass);border:1px solid var(--border);color:#fff;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700}
 .speed-btn.active{background:var(--primary);border-color:var(--primary)}
 .quality-note{font-size:11px;color:#666;line-height:1.6}
 .volume-row{display:flex;align-items:center;gap:12px}
 .volume-row input[type="range"]{flex:1;accent-color:var(--primary)}
 
-/* Favorites sidebar (quick access while inside the feed) */
-.fav-toggle-btn{position:fixed;left:15px;bottom:20px;z-index:150;background:var(--primary);border:none;width:44px;height:44px;border-radius:50%;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 15px rgb(0 0 0 / .4)}
+.fav-toggle-btn{position:fixed;left:15px;bottom:20px;z-index:150;background:var(--primary);width:44px;height:44px;border-radius:50%;display:none;align-items:center;justify-content:center;box-shadow:0 4px 15px rgb(0 0 0 / .4)}
 .fav-toggle-btn svg{width:20px;height:20px;fill:#fff}
 .fav-sidebar-overlay{position:fixed;inset:0;background:rgb(0 0 0 / .6);z-index:200;display:none}
 .fav-sidebar-overlay.active{display:block}
@@ -108,15 +109,14 @@
 .fav-item-title{font-size:12px;line-height:1.4;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .fav-empty{font-size:12px;color:#666;text-align:center;padding:30px 10px}
 
-/* Dedicated favorites page, deliberately styled as a list rather than a grid */
 #favUI{min-height:100dvh;background:#0a0a0a}
 .fav-page-header{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#0a0a0a;z-index:10}
-.fav-back-btn{background:var(--glass);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.fav-back-btn{background:var(--glass);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .fav-back-btn svg{width:16px;height:16px}
 .fav-page-title{flex:1}
 .fav-page-title h2{font-size:16px;font-weight:800}
 .fav-page-title span{font-size:11px;color:#888}
-.fav-play-all{background:var(--primary);border:none;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.fav-play-all{background:var(--primary);color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .fav-play-all svg{width:16px;height:16px}
 .fav-list{max-width:700px;margin:0 auto;padding:8px 12px}
 .fav-row{display:flex;align-items:center;gap:12px;padding:10px 6px;border-bottom:1px solid var(--border)}
@@ -124,14 +124,13 @@
 .fav-row-info{flex:1;min-width:0}
 .fav-row-title{font-size:13px;font-weight:600;line-height:1.4;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .fav-row-meta{font-size:11px;color:var(--primary);font-weight:700}
-.fav-row-play,.fav-row-remove{background:var(--glass);border:1px solid var(--border);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.fav-row-play,.fav-row-remove{background:var(--glass);border:1px solid var(--border);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .fav-row-play svg,.fav-row-remove svg{width:13px;height:13px}
 .fav-empty-state{display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;gap:14px}
 .fav-empty-state svg{width:50px;height:50px;fill:none;stroke:#333;stroke-width:1.5}
 .fav-empty-state p{font-size:13px;color:#666}
-.fav-empty-state button{background:var(--primary);border:none;color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer}
+.fav-empty-state button{background:var(--primary);color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700}
 
-/* Small transient status messages */
 .app-toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;border:1px solid var(--border);opacity:0;transition:.3s;z-index:500}
 .app-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -149,7 +148,6 @@
             <div class="header-actions">
                 <button class="fav-nav-btn" id="favNavBtn" title="المفضلة">
                     <svg viewBox="0 0 24 24"><path d="M12 21s-6.7-4.35-9.3-8.55C.86 9.6 1.8 6 5 6c1.9 0 3.3 1 4 2.3C9.7 7 11.1 6 13 6c3.2 0 4.14 3.6 2.3 6.45C18.7 16.65 12 21 12 21z" fill="#fff"/></svg>
-                    <span class="fav-nav-count" id="favNavCount">0</span>
                 </button>
                 <a href="/" class="back-link">العودة للرئيسية</a>
             </div>
@@ -226,8 +224,7 @@
 
 <script>
 // ==========================================
-// Global endpoints used across the app: where video
-// metadata, video files and media assets are served from.
+// 1. GLOBAL CONFIGURATION
 // ==========================================
 const CONFIG = {
     DATA: "https://data.iseekprice.com/general/videos.json",
@@ -238,9 +235,7 @@ const CONFIG = {
 };
 
 // ==========================================
-// Keeps track of which videos the visitor marked as
-// favorite. Backed by localStorage so the list survives
-// page reloads and new sessions.
+// 2. LOCAL STORAGE — FAVORITES
 // ==========================================
 const Storage = {
     getLikes() {
@@ -256,9 +251,10 @@ const Storage = {
 };
 
 // ==========================================
-// Helpers for encoding video ids in the URL and for
-// reading/writing query parameters without losing history
-// state where it matters (see replaceParam vs pushParam).
+// 3. URL / ID UTILITIES — replaceParam is used for silent,
+// high-frequency updates (feed scrolling); pushParam is used
+// for deliberate navigation (favorites page, list selections)
+// so the browser back button behaves as expected in each case
 // ==========================================
 const Utils = {
     toHex(u) { return BigInt(u).toString(16); },
@@ -267,15 +263,11 @@ const Utils = {
         catch (e) { return null; }
     },
     getParam(p) { return new URLSearchParams(window.location.search).get(p); },
-    // Silently syncs the URL with the current state, used while
-    // scrolling through the feed so every history entry isn't spammed.
     replaceParam(params) {
         const url = new URL(window.location.href);
         Object.entries(params).forEach(([k, v]) => v === null ? url.searchParams.delete(k) : url.searchParams.set(k, v));
         window.history.replaceState({}, '', url.pathname + url.search);
     },
-    // Records a real navigation step (opening the favorites page,
-    // picking a video from a list) so the back button works as expected.
     pushParam(params) {
         const url = new URL(window.location.href);
         url.search = '';
@@ -285,9 +277,9 @@ const Utils = {
 };
 
 // ==========================================
-// Single source of truth for volume, mute state and
-// playback speed. Persists the preferences and keeps every
-// mounted <video> element in sync whenever they change.
+// 4. AUDIO & PLAYBACK SETTINGS — volume, mute and speed,
+// persisted in localStorage and applied to every mounted
+// video element; remembers the last volume before a mute
 // ==========================================
 const AudioSettings = {
     state: { volume: 0.5, muted: false, lastVolume: 0.5, speed: 1 },
@@ -338,11 +330,13 @@ const AudioSettings = {
 };
 
 // ==========================================
-// Handles loading, warming up and releasing video sources
-// as cards enter or leave the visible area, so only the
-// videos actually near the viewport are ever downloaded.
-// Videos are attached lazily via a data-src attribute and
-// only get a real src once they are close to being seen.
+// 5. VIDEO LOADER — lazy source loading and release. Each
+// video starts with only a data-src attribute; a real src is
+// attached once the card nears the viewport (rootMargin) and
+// removed again once it scrolls far away, so only a handful
+// of videos are ever downloaded at once. activate() also
+// force-pauses every other video as a safety net against any
+// intersection-timing race during fast scrolling
 // ==========================================
 const VideoLoader = {
     observer: null,
@@ -368,7 +362,7 @@ const VideoLoader = {
                 this.activate(card, video);
             } else if (entry.isIntersecting) {
                 this.warm(video);
-                if (!video.paused) video.pause();
+                video.pause();
             } else {
                 this.release(video);
             }
@@ -384,15 +378,14 @@ const VideoLoader = {
     },
 
     activate(card, video) {
+        document.querySelectorAll('#verticalFeed video').forEach(v => { if (v !== video) v.pause(); });
         this.warm(video);
         video.play().catch(() => {});
         AudioSettings.applyTo(video);
         this.activeVideo = video;
 
-        const title = card.getAttribute('data-title');
-        const uid = card.getAttribute('data-uid');
-        document.title = `${title} - iWatch`;
-        Utils.replaceParam({ v: Utils.toHex(uid) });
+        document.title = `${card.getAttribute('data-title')} - iWatch`;
+        Utils.replaceParam({ v: Utils.toHex(card.getAttribute('data-uid')) });
     },
 
     release(video) {
@@ -419,8 +412,7 @@ const VideoLoader = {
 };
 
 // ==========================================
-// Small view/interaction helpers shared by the grid, the
-// feed and the favorites screens.
+// 6. SHARED UI HELPERS
 // ==========================================
 function setView(view) {
     document.getElementById('gridUI').style.display = view === 'grid' ? 'block' : 'none';
@@ -429,13 +421,6 @@ function setView(view) {
     document.getElementById('favToggleBtn').style.display = view === 'feed' ? 'flex' : 'none';
     FavoritesSidebar.close();
     SettingsPanel.close();
-}
-
-function updateFavBadge() {
-    const count = Storage.getLikes().length;
-    const badge = document.getElementById('favNavCount');
-    badge.textContent = count;
-    badge.style.display = count > 0 ? 'flex' : 'none';
 }
 
 function showToast(message) {
@@ -482,7 +467,6 @@ function flashSeek(card, forward) {
 function toggleLikeFromCard(card, btn) {
     const liked = Storage.toggleLike(card.dataset.uid);
     btn.classList.toggle('active', liked);
-    updateFavBadge();
     if (document.getElementById('favSidebar').classList.contains('active')) FavoritesSidebar.render();
 }
 
@@ -499,8 +483,7 @@ function shareCard(card) {
 }
 
 // ==========================================
-// The bottom-sheet panel used to adjust playback speed and
-// volume. Reads from and writes to AudioSettings only.
+// 7. SETTINGS PANEL
 // ==========================================
 const SettingsPanel = {
     el: null,
@@ -534,8 +517,7 @@ const SettingsPanel = {
 };
 
 // ==========================================
-// A slide-in panel for jumping between favorited videos
-// without leaving the current feed.
+// 8. FAVORITES SIDEBAR — quick access while inside the feed
 // ==========================================
 const FavoritesSidebar = {
     el: null, overlay: null, list: null,
@@ -581,8 +563,8 @@ const FavoritesSidebar = {
 };
 
 // ==========================================
-// The standalone favorites screen: a full page, styled as a
-// list rather than a grid, with its own header and empty state.
+// 9. FAVORITES PAGE — standalone list-style screen, distinct
+// from the grid, with a header, play-all action and empty state
 // ==========================================
 const FavoritesPage = {
     listEl: null,
@@ -597,7 +579,6 @@ const FavoritesPage = {
             if (!row) return;
             if (e.target.closest('[data-action="remove"]')) {
                 Storage.toggleLike(row.dataset.uid);
-                updateFavBadge();
                 this.render();
                 return;
             }
@@ -632,8 +613,8 @@ const FavoritesPage = {
 };
 
 // ==========================================
-// Orchestrates routing between the grid, the feed and the
-// favorites page, and builds the individual video cards.
+// 10. CORE APPLICATION — routing between grid, feed and
+// favorites page, plus the video card builder
 // ==========================================
 const app = {
     allData: [],
@@ -801,8 +782,8 @@ const app = {
 };
 
 // ==========================================
-// A single delegated listener handles every button inside
-// the feed cards, instead of wiring a handler per element.
+// 11. FEED EVENT DELEGATION — one listener handles every
+// button inside every card instead of wiring each individually
 // ==========================================
 document.getElementById('verticalFeed').addEventListener('click', (e) => {
     const actionEl = e.target.closest('[data-action]');
@@ -824,6 +805,10 @@ document.getElementById('verticalFeed').addEventListener('click', (e) => {
     }
 });
 
+// ==========================================
+// 12. KEYBOARD SHORTCUTS — mirrors the on-screen double-tap
+// seek gesture for desktop use
+// ==========================================
 document.addEventListener('keydown', (e) => {
     if (document.getElementById('feedUI').style.display !== 'block') return;
     if (!VideoLoader.activeVideo) return;
@@ -832,13 +817,12 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ==========================================
-// Boot sequence
+// 13. BOOT
 // ==========================================
 AudioSettings.load();
 SettingsPanel.init();
 FavoritesSidebar.init();
 FavoritesPage.init();
-updateFavBadge();
 document.getElementById('favNavBtn').addEventListener('click', () => app.goFavorites());
 window.addEventListener('popstate', () => app.render());
 app.init();
