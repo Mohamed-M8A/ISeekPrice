@@ -14,13 +14,129 @@
     <title>iWatch - شاهد افضل الفيديوهات للمنتجات الرائجة</title>
     <link rel="icon" type="image/webp" href="/public/assets/static/iwatch.webp">
 
-    
 <style>
-    
-:root{--bg:#050505;--card-bg:#0d0d0d;--primary:#f38020;--accent:#0070f3;--text:#ffffff;--glass:rgba(255,255,255,0.06);--border:rgba(255,255,255,0.1)}*{box-sizing:border-box;margin:0;padding:0;scrollbar-width:none}::-webkit-scrollbar{display:none}body{background-color:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;direction:rtl;overflow-x:hidden}.site-header{position:sticky;top:0;z-index:100;background:rgb(5 5 5 / .8);backdrop-filter:blur(12px);padding:10px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}.logo-group{display:flex;align-items:center;gap:8px;cursor:pointer}.header-logo-img{width:26px;height:26px;object-fit:contain}.logo-txt{font-weight:800;font-size:1.2rem;color:var(--primary);letter-spacing:-.5px}.back-link{color:var(--text);text-decoration:none;font-size:11px;font-weight:600;background:var(--accent);padding:5px 12px;border-radius:15px}.tabs-nav{display:flex;justify-content:center;gap:8px;padding:12px;background:var(--bg)}.tab-btn{background:none;border:none;color:#888;padding:6px 16px;font-size:13px;font-weight:600;cursor:pointer;border-radius:20px;transition:0.2s}.tab-btn.active{background:var(--glass);color:var(--primary);box-shadow:inset 0 0 0 1px rgb(243 128 32 / .3)}.v-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:8px;max-width:1400px;margin:0 auto}@media(min-width:768px){.v-grid{grid-template-columns:repeat(4,1fr)}}@media(min-width:1200px){.v-grid{grid-template-columns:repeat(6,1fr)}}.grid-card{position:relative;aspect-ratio:9/16;background:var(--card-bg);overflow:hidden;cursor:pointer;border:1px solid var(--border)}.grid-card img{width:100%;height:100%;object-fit:cover}.g-badge{position:absolute;top:6px;right:6px;background:var(--primary);color:#fff;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:800;z-index:5}.g-title{position:absolute;bottom:0;left:0;width:100%;padding:8px;background:linear-gradient(to top,rgb(0 0 0 / .9),transparent);font-size:10px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hidden-view{display:none}.feed-container{height:100dvh;overflow-y:scroll;scroll-snap-type:y mandatory;max-width:480px;margin:0 auto;background:#000}.video-card{position:relative;width:100%;height:100dvh;scroll-snap-align:start;overflow:hidden}.video-card video{width:100%;height:100%;object-fit:cover;z-index:1}.v-bg-skeleton{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(30px);opacity:.2;z-index:0}.v-state-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;width:60px;height:60px;background:rgb(0 0 0 / .3);border-radius:50%;display:flex;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:0.3s}.v-state-overlay.active{opacity:1;transform:translate(-50%,-50%) scale(1.1)}.v-state-overlay svg{width:30px;height:30px;fill:#fff}.v-top-bar{position:absolute;top:0;left:0;width:100%;padding:15px;z-index:20;display:flex;justify-content:space-between;align-items:center}.v-mute-btn,.v-close-btn{background:rgb(0 0 0 / .5);backdrop-filter:blur(8px);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}.v-mute-btn svg,.v-close-btn svg{width:16px;height:16px;fill:#fff}.v-overlay{position:absolute;bottom:0;left:0;width:100%;padding:20px 15px;background:linear-gradient(to top,rgb(0 0 0 / .95) 20%,transparent 100%);z-index:10}.v-details{display:flex;flex-direction:column;gap:8px}.v-order-info{color:var(--primary);font-size:11px;font-weight:800}.v-title{font-size:14px;font-weight:600;line-height:1.4;text-shadow:0 1px 3px #000}.v-actions{display:flex;align-items:center;gap:10px;margin-top:10px}.btn-order{flex:1;background:var(--primary);color:#fff;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-weight:700;font-size:13px}.btn-fav,.btn-share{background:var(--glass);border:1px solid var(--border);color:#fff;width:40px;height:40px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center}.btn-fav svg,.btn-share svg{width:18px;height:18px;fill:#fff}.btn-fav.active svg,.btn-fav.active svg use{fill:#ef4444!important;color:#ef4444!important}.v-progress-container{width:100%;height:12px;margin-top:12px;cursor:pointer;display:flex;align-items:center;position:relative;z-index:15}.v-progress-bar{height:3px;background:var(--primary);width:0%;border-radius:2px;transition:width 0.1s linear;pointer-events:none}
+
+:root{--bg:#050505;--card-bg:#0d0d0d;--primary:#f38020;--accent:#0070f3;--text:#ffffff;--glass:rgba(255,255,255,0.06);--border:rgba(255,255,255,0.1)}*{box-sizing:border-box;margin:0;padding:0;scrollbar-width:none}::-webkit-scrollbar{display:none}body{background-color:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;direction:rtl;overflow-x:hidden}.hidden-view{display:none}
+
+/* Header */
+.site-header{position:sticky;top:0;z-index:100;background:rgb(5 5 5 / .8);backdrop-filter:blur(12px);padding:10px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.logo-group{display:flex;align-items:center;gap:8px;cursor:pointer}
+.header-logo-img{width:26px;height:26px;object-fit:contain}
+.logo-txt{font-weight:800;font-size:1.2rem;color:var(--primary);letter-spacing:-.5px}
+.header-actions{display:flex;align-items:center;gap:10px}
+.back-link{color:var(--text);text-decoration:none;font-size:11px;font-weight:600;background:var(--accent);padding:5px 12px;border-radius:15px}
+.fav-nav-btn{position:relative;background:var(--glass);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.fav-nav-btn svg{width:16px;height:16px}
+.fav-nav-count{position:absolute;top:-4px;left:-4px;background:var(--primary);color:#fff;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:50%;display:none;align-items:center;justify-content:center;padding:0 3px}
+
+/* Grid */
+.v-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:8px;max-width:1400px;margin:0 auto}
+@media(min-width:768px){.v-grid{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:1200px){.v-grid{grid-template-columns:repeat(6,1fr)}}
+.grid-card{position:relative;aspect-ratio:9/16;background:var(--card-bg);overflow:hidden;cursor:pointer;border:1px solid var(--border)}
+.grid-card img{width:100%;height:100%;object-fit:cover}
+.g-badge{position:absolute;top:6px;right:6px;background:var(--primary);color:#fff;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:800;z-index:5}
+.g-title{position:absolute;bottom:0;left:0;width:100%;padding:8px;background:linear-gradient(to top,rgb(0 0 0 / .9),transparent);font-size:10px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Vertical feed */
+.feed-container{height:100dvh;overflow-y:scroll;scroll-snap-type:y mandatory;max-width:480px;margin:0 auto;background:#000}
+.video-card{position:relative;width:100%;height:100dvh;scroll-snap-align:start;overflow:hidden}
+.video-card video{width:100%;height:100%;object-fit:cover;z-index:1}
+.v-bg-skeleton{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(30px);opacity:.2;z-index:0}
+.v-state-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;width:60px;height:60px;background:rgb(0 0 0 / .3);border-radius:50%;display:flex;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:0.3s}
+.v-state-overlay.active{opacity:1;transform:translate(-50%,-50%) scale(1.1)}
+.v-state-overlay svg{width:30px;height:30px;fill:#fff}
+
+.v-top-bar{position:absolute;top:0;left:0;width:100%;padding:15px;z-index:20;display:flex;justify-content:space-between;align-items:center}
+.v-top-bar-left,.v-top-bar-right{display:flex;gap:8px;align-items:center}
+.v-mute-btn,.v-close-btn,.v-settings-btn{background:rgb(0 0 0 / .5);backdrop-filter:blur(8px);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.v-mute-btn svg,.v-close-btn svg,.v-settings-btn svg{width:16px;height:16px;fill:#fff}
+
+.v-error-overlay{position:absolute;inset:0;background:rgba(0,0,0,.85);z-index:25;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:20px}
+.v-error-overlay.active{display:flex}
+.v-error-overlay p{font-size:13px;color:#ccc}
+.v-error-overlay button{background:var(--primary);border:none;color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer}
+
+.v-overlay{position:absolute;bottom:0;left:0;width:100%;padding:20px 15px;background:linear-gradient(to top,rgb(0 0 0 / .95) 20%,transparent 100%);z-index:10}
+.v-details{display:flex;flex-direction:column;gap:8px}
+.v-order-info{color:var(--primary);font-size:11px;font-weight:800}
+.v-title{font-size:14px;font-weight:600;line-height:1.4;text-shadow:0 1px 3px #000}
+.v-actions{display:flex;align-items:center;gap:10px;margin-top:10px}
+.btn-order{flex:1;background:var(--primary);color:#fff;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-weight:700;font-size:13px}
+.btn-fav,.btn-share{background:var(--glass);border:1px solid var(--border);color:#fff;width:40px;height:40px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.btn-fav svg,.btn-share svg{width:18px;height:18px;fill:#fff}
+.btn-fav.active svg{fill:#ef4444!important}
+.v-progress-container{width:100%;height:12px;margin-top:12px;cursor:pointer;display:flex;align-items:center;position:relative;z-index:15}
+.v-progress-bar{height:3px;background:var(--primary);width:0%;border-radius:2px;transition:width 0.1s linear;pointer-events:none}
+
+.seek-flash{position:absolute;top:50%;transform:translateY(-50%);width:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;pointer-events:none;z-index:16;animation:flashPop .6s ease forwards}
+.seek-flash.right{right:0}
+.seek-flash.left{left:0}
+.seek-flash svg{width:26px;height:26px}
+.seek-flash span{font-size:13px;font-weight:800;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.6)}
+@keyframes flashPop{0%{opacity:0;transform:translateY(-50%) scale(.8)}20%{opacity:1;transform:translateY(-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
+
+/* Settings panel */
+.settings-overlay{position:fixed;inset:0;background:rgb(0 0 0 / .6);backdrop-filter:blur(4px);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.settings-overlay.active{display:flex}
+.settings-panel{background:#0d0d0d;border:1px solid var(--border);border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:20px;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.settings-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.settings-header h3{font-size:15px;font-weight:800}
+.settings-close{background:var(--glass);border:1px solid var(--border);width:30px;height:30px;border-radius:50%;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.settings-group{margin-bottom:20px}
+.settings-label{font-size:12px;color:#888;font-weight:700;margin-bottom:10px;display:block}
+.speed-options{display:flex;gap:8px;flex-wrap:wrap}
+.speed-btn{background:var(--glass);border:1px solid var(--border);color:#fff;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer}
+.speed-btn.active{background:var(--primary);border-color:var(--primary)}
+.quality-note{font-size:11px;color:#666;line-height:1.6}
+.volume-row{display:flex;align-items:center;gap:12px}
+.volume-row input[type="range"]{flex:1;accent-color:var(--primary)}
+
+/* Favorites sidebar (quick access while inside the feed) */
+.fav-toggle-btn{position:fixed;left:15px;bottom:20px;z-index:150;background:var(--primary);border:none;width:44px;height:44px;border-radius:50%;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 15px rgb(0 0 0 / .4)}
+.fav-toggle-btn svg{width:20px;height:20px;fill:#fff}
+.fav-sidebar-overlay{position:fixed;inset:0;background:rgb(0 0 0 / .6);z-index:200;display:none}
+.fav-sidebar-overlay.active{display:block}
+.fav-sidebar{position:fixed;top:0;right:0;height:100%;width:280px;max-width:80%;background:#0d0d0d;border-left:1px solid var(--border);z-index:201;transform:translateX(100%);transition:transform .3s ease;overflow-y:auto;padding:15px}
+.fav-sidebar.active{transform:translateX(0)}
+.fav-sidebar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.fav-sidebar-header h3{font-size:14px;font-weight:800}
+.fav-item{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;cursor:pointer;margin-bottom:6px;transition:.2s}
+.fav-item:hover{background:var(--glass)}
+.fav-item img{width:45px;height:70px;object-fit:cover;border-radius:6px;flex-shrink:0}
+.fav-item-title{font-size:12px;line-height:1.4;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.fav-empty{font-size:12px;color:#666;text-align:center;padding:30px 10px}
+
+/* Dedicated favorites page, deliberately styled as a list rather than a grid */
+#favUI{min-height:100dvh;background:#0a0a0a}
+.fav-page-header{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#0a0a0a;z-index:10}
+.fav-back-btn{background:var(--glass);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.fav-back-btn svg{width:16px;height:16px}
+.fav-page-title{flex:1}
+.fav-page-title h2{font-size:16px;font-weight:800}
+.fav-page-title span{font-size:11px;color:#888}
+.fav-play-all{background:var(--primary);border:none;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.fav-play-all svg{width:16px;height:16px}
+.fav-list{max-width:700px;margin:0 auto;padding:8px 12px}
+.fav-row{display:flex;align-items:center;gap:12px;padding:10px 6px;border-bottom:1px solid var(--border)}
+.fav-row-thumb{width:56px;height:86px;object-fit:cover;border-radius:8px;flex-shrink:0}
+.fav-row-info{flex:1;min-width:0}
+.fav-row-title{font-size:13px;font-weight:600;line-height:1.4;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.fav-row-meta{font-size:11px;color:var(--primary);font-weight:700}
+.fav-row-play,.fav-row-remove{background:var(--glass);border:1px solid var(--border);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.fav-row-play svg,.fav-row-remove svg{width:13px;height:13px}
+.fav-empty-state{display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;gap:14px}
+.fav-empty-state svg{width:50px;height:50px;fill:none;stroke:#333;stroke-width:1.5}
+.fav-empty-state p{font-size:13px;color:#666}
+.fav-empty-state button{background:var(--primary);border:none;color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer}
+
+/* Small transient status messages */
+.app-toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;border:1px solid var(--border);opacity:0;transition:.3s;z-index:500}
+.app-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 </style>
-    
+
 </head>
 <body>
 
@@ -30,12 +146,14 @@
                 <img src="/public/assets/static/iwatch.webp" alt="logo" class="header-logo-img">
                 <span class="logo-txt">iWatch</span>
             </div>
-            <a href="/" class="back-link">العودة للرئيسية</a>
+            <div class="header-actions">
+                <button class="fav-nav-btn" id="favNavBtn" title="المفضلة">
+                    <svg viewBox="0 0 24 24"><path d="M12 21s-6.7-4.35-9.3-8.55C.86 9.6 1.8 6 5 6c1.9 0 3.3 1 4 2.3C9.7 7 11.1 6 13 6c3.2 0 4.14 3.6 2.3 6.45C18.7 16.65 12 21 12 21z" fill="#fff"/></svg>
+                    <span class="fav-nav-count" id="favNavCount">0</span>
+                </button>
+                <a href="/" class="back-link">العودة للرئيسية</a>
+            </div>
         </header>
-        <nav class="tabs-nav">
-            <button class="tab-btn active" onclick="app.switchTab('all', this)">الكل</button>
-            <button class="tab-btn" onclick="app.switchTab('likes', this)">المفضلة</button>
-        </nav>
         <main class="v-grid" id="mainGrid"></main>
     </div>
 
@@ -43,11 +161,73 @@
         <div class="feed-container" id="verticalFeed"></div>
     </div>
 
+    <div id="favUI" class="hidden-view">
+        <header class="fav-page-header">
+            <button class="fav-back-btn" id="favBackBtn">
+                <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="fav-page-title">
+                <h2>قائمة المفضلة</h2>
+                <span id="favPageCount">0 فيديو</span>
+            </div>
+            <button class="fav-play-all" id="favPlayAllBtn" title="تشغيل الكل">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg>
+            </button>
+        </header>
+        <div class="fav-list" id="favList"></div>
+        <div class="fav-empty-state" id="favEmptyState">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-6.7-4.35-9.3-8.55C.86 9.6 1.8 6 5 6c1.9 0 3.3 1 4 2.3C9.7 7 11.1 6 13 6c3.2 0 4.14 3.6 2.3 6.45C18.7 16.65 12 21 12 21z"/></svg>
+            <p>لا توجد فيديوهات في المفضلة بعد</p>
+            <button id="favEmptyBrowseBtn">تصفح الفيديوهات</button>
+        </div>
+    </div>
+
+    <div class="settings-overlay" id="settingsOverlay">
+        <div class="settings-panel">
+            <div class="settings-header">
+                <h3>الإعدادات</h3>
+                <button class="settings-close" id="settingsCloseBtn">&times;</button>
+            </div>
+            <div class="settings-group">
+                <span class="settings-label">سرعة التشغيل</span>
+                <div class="speed-options">
+                    <button class="speed-btn" data-speed="0.5">0.5x</button>
+                    <button class="speed-btn active" data-speed="1">1x</button>
+                    <button class="speed-btn" data-speed="1.25">1.25x</button>
+                    <button class="speed-btn" data-speed="1.5">1.5x</button>
+                    <button class="speed-btn" data-speed="2">2x</button>
+                </div>
+            </div>
+            <div class="settings-group">
+                <span class="settings-label">مستوى الصوت</span>
+                <div class="volume-row">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M3 10v4h4l5 5V5L7 10H3z"/></svg>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.05">
+                </div>
+            </div>
+            <div class="settings-group" style="margin-bottom:0">
+                <span class="settings-label">جودة الفيديو</span>
+                <p class="quality-note">الجودة تُضبط تلقائيًا حسب سرعة الاتصال، ولا تتوفر حاليًا خيارات جودة يدوية لهذا المصدر.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="fav-sidebar-overlay" id="favSidebarOverlay"></div>
+    <div class="fav-sidebar" id="favSidebar">
+        <div class="fav-sidebar-header">
+            <h3>المفضلة</h3>
+            <button class="settings-close" id="favSidebarCloseBtn">&times;</button>
+        </div>
+        <div id="favSidebarList"></div>
+    </div>
+    <button class="fav-toggle-btn" id="favToggleBtn" title="المفضلة">
+        <svg><use href="/public/assets/static/icons.svg#i-heart"/></svg>
+    </button>
+
 <script>
 // ==========================================
-// 1. GLOBAL APPLICATION CONFIGURATION
-// Contains base URLs for fetching JSON data, 
-// videos, media assets, domain link, and SVG icons.
+// Global endpoints used across the app: where video
+// metadata, video files and media assets are served from.
 // ==========================================
 const CONFIG = {
     DATA: "https://data.iseekprice.com/general/videos.json",
@@ -58,14 +238,16 @@ const CONFIG = {
 };
 
 // ==========================================
-// 2. LOCAL STORAGE MANAGER
-// Handles retrieving and toggling favorited 
-// videos using localStorage.
+// Keeps track of which videos the visitor marked as
+// favorite. Backed by localStorage so the list survives
+// page reloads and new sessions.
 // ==========================================
 const Storage = {
-    getLikes: () => JSON.parse(localStorage.getItem('fav_vids') || '[]'),
-    toggleLike: (uid) => {
-        let likes = Storage.getLikes();
+    getLikes() {
+        return JSON.parse(localStorage.getItem('fav_vids') || '[]');
+    },
+    toggleLike(uid) {
+        const likes = this.getLikes();
         const idx = likes.indexOf(String(uid));
         if (idx > -1) likes.splice(idx, 1); else likes.push(String(uid));
         localStorage.setItem('fav_vids', JSON.stringify(likes));
@@ -74,262 +256,594 @@ const Storage = {
 };
 
 // ==========================================
-// 3. UTILITY METHODS
-// Provides helper methods for encoding/decoding IDs 
-// to/from Hex, and managing URL query parameters.
+// Helpers for encoding video ids in the URL and for
+// reading/writing query parameters without losing history
+// state where it matters (see replaceParam vs pushParam).
 // ==========================================
 const Utils = {
-    toHex: (u) => BigInt(u).toString(16),
-    fromHex: (h) => {
+    toHex(u) { return BigInt(u).toString(16); },
+    fromHex(h) {
         try { return BigInt("0x" + h).toString(); }
-        catch(e) { return null; }
+        catch (e) { return null; }
     },
-    getParam: (p) => new URLSearchParams(window.location.search).get(p),
-    setParam: (v) => {
-        const url = v ? `?v=${v}` : window.location.pathname;
-        window.history.replaceState({}, '', url);  
+    getParam(p) { return new URLSearchParams(window.location.search).get(p); },
+    // Silently syncs the URL with the current state, used while
+    // scrolling through the feed so every history entry isn't spammed.
+    replaceParam(params) {
+        const url = new URL(window.location.href);
+        Object.entries(params).forEach(([k, v]) => v === null ? url.searchParams.delete(k) : url.searchParams.set(k, v));
+        window.history.replaceState({}, '', url.pathname + url.search);
+    },
+    // Records a real navigation step (opening the favorites page,
+    // picking a video from a list) so the back button works as expected.
+    pushParam(params) {
+        const url = new URL(window.location.href);
+        url.search = '';
+        Object.entries(params).forEach(([k, v]) => { if (v !== null && v !== undefined) url.searchParams.set(k, v); });
+        window.history.pushState({}, '', url.pathname + url.search);
     }
 };
 
 // ==========================================
-// 4. GLOBAL AUDIO STATE & SYNCHRONIZATION
-// Tracks volume and mute state, syncing them across 
-// all video elements and controlling UI volume icons.
+// Single source of truth for volume, mute state and
+// playback speed. Persists the preferences and keeps every
+// mounted <video> element in sync whenever they change.
 // ==========================================
-let audioState = { isMuted: false, volume: 0.5 };
+const AudioSettings = {
+    state: { volume: 0.5, muted: false, lastVolume: 0.5, speed: 1 },
 
-function syncGlobalAudio() {
-    document.querySelectorAll('video').forEach(v => {
-        v.muted = audioState.isMuted;
-        v.volume = audioState.volume;
-    });
-    document.querySelectorAll('.v-mute-btn svg use').forEach(u => {
-        u.setAttribute('href', `${CONFIG.ICONS}${audioState.isMuted ? '#i-volume-off' : '#i-volume-on'}`);
-    });
+    load() {
+        const saved = JSON.parse(localStorage.getItem('player_settings') || '{}');
+        this.state.volume = saved.volume ?? 0.5;
+        this.state.muted = saved.muted ?? false;
+        this.state.lastVolume = saved.lastVolume ?? this.state.volume;
+        this.state.speed = saved.speed ?? 1;
+    },
+    persist() {
+        localStorage.setItem('player_settings', JSON.stringify(this.state));
+    },
+    setVolume(val) {
+        this.state.volume = val;
+        if (val > 0) { this.state.muted = false; this.state.lastVolume = val; }
+        this.persist();
+        this.applyToAll();
+    },
+    toggleMute() {
+        if (this.state.muted) {
+            this.state.muted = false;
+            this.state.volume = this.state.lastVolume || 0.5;
+        } else {
+            this.state.muted = true;
+            if (this.state.volume > 0) this.state.lastVolume = this.state.volume;
+        }
+        this.persist();
+        this.applyToAll();
+    },
+    setSpeed(val) {
+        this.state.speed = val;
+        this.persist();
+        this.applyToAll();
+    },
+    applyTo(video) {
+        video.muted = this.state.muted;
+        video.volume = this.state.volume;
+        video.playbackRate = this.state.speed;
+    },
+    applyToAll() {
+        document.querySelectorAll('video').forEach(v => this.applyTo(v));
+        document.querySelectorAll('.v-mute-btn use').forEach(use => {
+            use.setAttribute('href', `${CONFIG.ICONS}${this.state.muted ? '#i-volume-off' : '#i-volume-on'}`);
+        });
+    }
+};
+
+// ==========================================
+// Handles loading, warming up and releasing video sources
+// as cards enter or leave the visible area, so only the
+// videos actually near the viewport are ever downloaded.
+// Videos are attached lazily via a data-src attribute and
+// only get a real src once they are close to being seen.
+// ==========================================
+const VideoLoader = {
+    observer: null,
+    activeVideo: null,
+
+    attach(container) {
+        if (this.observer) this.observer.disconnect();
+        this.observer = new IntersectionObserver(this.handleEntries.bind(this), {
+            root: container,
+            rootMargin: '150% 0px 150% 0px',
+            threshold: [0, 0.6]
+        });
+        container.querySelectorAll('.video-card').forEach(card => this.observer.observe(card));
+    },
+
+    handleEntries(entries) {
+        entries.forEach(entry => {
+            const card = entry.target;
+            const video = card.querySelector('video');
+            if (!video) return;
+
+            if (entry.intersectionRatio >= 0.6) {
+                this.activate(card, video);
+            } else if (entry.isIntersecting) {
+                this.warm(video);
+                if (!video.paused) video.pause();
+            } else {
+                this.release(video);
+            }
+        });
+    },
+
+    warm(video) {
+        if (!video.src && video.dataset.src) {
+            video.src = video.dataset.src;
+            video.preload = 'auto';
+            video.load();
+        }
+    },
+
+    activate(card, video) {
+        this.warm(video);
+        video.play().catch(() => {});
+        AudioSettings.applyTo(video);
+        this.activeVideo = video;
+
+        const title = card.getAttribute('data-title');
+        const uid = card.getAttribute('data-uid');
+        document.title = `${title} - iWatch`;
+        Utils.replaceParam({ v: Utils.toHex(uid) });
+    },
+
+    release(video) {
+        if (video.src) {
+            video.pause();
+            video.removeAttribute('src');
+            video.load();
+            video.preload = 'none';
+        }
+    },
+
+    retry(card) {
+        const video = card.querySelector('video');
+        if (!video) return;
+        card.querySelector('.v-error-overlay')?.classList.remove('active');
+        video.src = video.dataset.src;
+        video.load();
+        video.play().catch(() => this.showError(card));
+    },
+
+    showError(card) {
+        card.querySelector('.v-error-overlay')?.classList.add('active');
+    }
+};
+
+// ==========================================
+// Small view/interaction helpers shared by the grid, the
+// feed and the favorites screens.
+// ==========================================
+function setView(view) {
+    document.getElementById('gridUI').style.display = view === 'grid' ? 'block' : 'none';
+    document.getElementById('feedUI').style.display = view === 'feed' ? 'block' : 'none';
+    document.getElementById('favUI').style.display = view === 'fav' ? 'block' : 'none';
+    document.getElementById('favToggleBtn').style.display = view === 'feed' ? 'flex' : 'none';
+    FavoritesSidebar.close();
+    SettingsPanel.close();
+}
+
+function updateFavBadge() {
+    const count = Storage.getLikes().length;
+    const badge = document.getElementById('favNavCount');
+    badge.textContent = count;
+    badge.style.display = count > 0 ? 'flex' : 'none';
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'app-toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 2000);
+}
+
+function seekVideo(video, delta) {
+    if (!video.duration) return;
+    video.currentTime = Math.min(Math.max(video.currentTime + delta, 0), video.duration);
+}
+
+function togglePlayback(video, overlay) {
+    const use = overlay.querySelector('use');
+    if (video.paused) {
+        video.play();
+        use.setAttribute('href', `${CONFIG.ICONS}#i-play`);
+    } else {
+        video.pause();
+        use.setAttribute('href', `${CONFIG.ICONS}#i-pause`);
+    }
+    overlay.classList.add('active');
+    setTimeout(() => overlay.classList.remove('active'), 500);
+}
+
+function flashSeek(card, forward) {
+    const flash = document.createElement('div');
+    flash.className = `seek-flash ${forward ? 'right' : 'left'}`;
+    const arrow = forward
+        ? '<path d="M13 5l7 7-7 7M4 5l7 7-7 7" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+        : '<path d="M11 5l-7 7 7 7M20 5l-7 7 7 7" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+    flash.innerHTML = `<svg viewBox="0 0 24 24">${arrow}</svg><span>10 ثانية</span>`;
+    card.appendChild(flash);
+    setTimeout(() => flash.remove(), 600);
+}
+
+function toggleLikeFromCard(card, btn) {
+    const liked = Storage.toggleLike(card.dataset.uid);
+    btn.classList.toggle('active', liked);
+    updateFavBadge();
+    if (document.getElementById('favSidebar').classList.contains('active')) FavoritesSidebar.render();
+}
+
+function shareCard(card) {
+    const uid = card.dataset.uid;
+    const title = card.dataset.title;
+    const url = `${window.location.origin}${window.location.pathname}?v=${Utils.toHex(uid)}`;
+    if (navigator.share) {
+        navigator.share({ title, url });
+    } else {
+        navigator.clipboard.writeText(url);
+        showToast('تم نسخ الرابط');
+    }
 }
 
 // ==========================================
-// 5. CORE APPLICATION OBJECT (INIT & ROUTING)
-// Main controller managing data initialization, 
-// active tabs, and routing between Grid view and Feed view.
+// The bottom-sheet panel used to adjust playback speed and
+// volume. Reads from and writes to AudioSettings only.
+// ==========================================
+const SettingsPanel = {
+    el: null,
+
+    init() {
+        this.el = document.getElementById('settingsOverlay');
+        document.getElementById('settingsCloseBtn').addEventListener('click', () => this.close());
+        this.el.addEventListener('click', (e) => { if (e.target === this.el) this.close(); });
+        document.querySelectorAll('.speed-btn').forEach(btn => {
+            btn.addEventListener('click', () => this.setSpeed(parseFloat(btn.dataset.speed), btn));
+        });
+        document.getElementById('volumeSlider').addEventListener('input', (e) => {
+            AudioSettings.setVolume(parseFloat(e.target.value));
+        });
+    },
+    open() {
+        document.querySelectorAll('.speed-btn').forEach(b => {
+            b.classList.toggle('active', parseFloat(b.dataset.speed) === AudioSettings.state.speed);
+        });
+        document.getElementById('volumeSlider').value = AudioSettings.state.volume;
+        this.el.classList.add('active');
+    },
+    close() {
+        this.el.classList.remove('active');
+    },
+    setSpeed(val, btn) {
+        AudioSettings.setSpeed(val);
+        document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+};
+
+// ==========================================
+// A slide-in panel for jumping between favorited videos
+// without leaving the current feed.
+// ==========================================
+const FavoritesSidebar = {
+    el: null, overlay: null, list: null,
+
+    init() {
+        this.el = document.getElementById('favSidebar');
+        this.overlay = document.getElementById('favSidebarOverlay');
+        this.list = document.getElementById('favSidebarList');
+        document.getElementById('favToggleBtn').addEventListener('click', () => this.toggle());
+        document.getElementById('favSidebarCloseBtn').addEventListener('click', () => this.close());
+        this.overlay.addEventListener('click', () => this.close());
+    },
+    toggle() {
+        const opening = !this.el.classList.contains('active');
+        this.el.classList.toggle('active', opening);
+        this.overlay.classList.toggle('active', opening);
+        if (opening) this.render();
+    },
+    close() {
+        this.el.classList.remove('active');
+        this.overlay.classList.remove('active');
+    },
+    render() {
+        const items = app.allData.filter(i => Storage.getLikes().includes(String(i.uid)));
+        if (!items.length) {
+            this.list.innerHTML = `<div class="fav-empty">لا توجد فيديوهات مفضلة بعد</div>`;
+            return;
+        }
+        this.list.innerHTML = items.map(item => `
+            <div class="fav-item" data-uid="${item.uid}">
+                <img src="${CONFIG.MEDIA}${item.tPath}.webp" loading="lazy">
+                <div class="fav-item-title">${item.title}</div>
+            </div>
+        `).join('');
+        this.list.querySelectorAll('.fav-item').forEach(row => {
+            row.addEventListener('click', () => {
+                this.close();
+                Utils.pushParam({ v: Utils.toHex(row.dataset.uid) });
+                app.render();
+            });
+        });
+    }
+};
+
+// ==========================================
+// The standalone favorites screen: a full page, styled as a
+// list rather than a grid, with its own header and empty state.
+// ==========================================
+const FavoritesPage = {
+    listEl: null,
+
+    init() {
+        this.listEl = document.getElementById('favList');
+        document.getElementById('favBackBtn').addEventListener('click', () => app.exitFavorites());
+        document.getElementById('favEmptyBrowseBtn').addEventListener('click', () => app.exitFavorites());
+        document.getElementById('favPlayAllBtn').addEventListener('click', () => this.playAll());
+        this.listEl.addEventListener('click', (e) => {
+            const row = e.target.closest('.fav-row');
+            if (!row) return;
+            if (e.target.closest('[data-action="remove"]')) {
+                Storage.toggleLike(row.dataset.uid);
+                updateFavBadge();
+                this.render();
+                return;
+            }
+            Utils.pushParam({ v: Utils.toHex(row.dataset.uid) });
+            app.render();
+        });
+    },
+    render() {
+        const items = app.allData.filter(i => Storage.getLikes().includes(String(i.uid)));
+        document.getElementById('favPageCount').textContent = `${items.length} فيديو`;
+        document.getElementById('favPlayAllBtn').style.display = items.length ? 'flex' : 'none';
+        document.getElementById('favEmptyState').style.display = items.length ? 'none' : 'flex';
+        this.listEl.style.display = items.length ? 'block' : 'none';
+        this.listEl.innerHTML = items.map(item => `
+            <div class="fav-row" data-uid="${item.uid}">
+                <img class="fav-row-thumb" src="${CONFIG.MEDIA}${item.tPath}.webp" loading="lazy">
+                <div class="fav-row-info">
+                    <h3 class="fav-row-title">${item.title}</h3>
+                    <span class="fav-row-meta">${item.orders} طلب</span>
+                </div>
+                <button class="fav-row-play" title="تشغيل"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></button>
+                <button class="fav-row-remove" data-action="remove" title="إزالة من المفضلة"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></button>
+            </div>
+        `).join('');
+    },
+    playAll() {
+        const items = app.allData.filter(i => Storage.getLikes().includes(String(i.uid)));
+        if (!items.length) return;
+        Utils.pushParam({ v: Utils.toHex(items[0].uid) });
+        app.render();
+    }
+};
+
+// ==========================================
+// Orchestrates routing between the grid, the feed and the
+// favorites page, and builds the individual video cards.
 // ==========================================
 const app = {
     allData: [],
-    activeTab: 'all',
     originalTitle: document.title,
-    observer: null,
 
     async init() {
         try {
             const res = await fetch(`${CONFIG.DATA}?v=${Date.now()}`);
             this.allData = await res.json();
             this.render();
-            window.addEventListener('popstate', () => this.render());
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            console.error(e);
+        }
     },
 
     render() {
         const vHex = Utils.getParam('v');
         if (vHex) {
             const uid = Utils.fromHex(vHex);
-            const exists = uid ? this.allData.find(i => String(i.uid) === String(uid)) : null;
-            if (exists) {
-                this.showFeed(uid);
-            } else {
-                Utils.setParam(null);
-                document.title = this.originalTitle;
-                this.showGrid();
-            }
-        } else {
-            document.title = this.originalTitle;
-            this.showGrid();
+            const exists = uid && this.allData.find(i => String(i.uid) === String(uid));
+            if (exists) return this.showFeed(uid);
+            Utils.replaceParam({ v: null });
         }
+        if (Utils.getParam('view') === 'fav') return this.showFavoritesPage();
+        document.title = this.originalTitle;
+        this.showGrid();
     },
 
-    // ==========================================
-    // 6. GRID VIEW CONTROLLER
-    // Renders the main dashboard grid containing video cards 
-    // filtered by the selected tab (All or Liked).
-    // ==========================================
     showGrid() {
-        document.getElementById('gridUI').style.display = 'block';
-        document.getElementById('feedUI').style.display = 'none';
+        setView('grid');
         const container = document.getElementById('mainGrid');
         container.innerHTML = '';
-        
-        let list = this.activeTab === 'likes' ? this.allData.filter(i => Storage.getLikes().includes(String(i.uid))) : this.allData;
-        
-        list.forEach(item => {
+        this.allData.forEach(item => {
             const card = document.createElement('a');
-            const hexParam = Utils.toHex(item.uid);
+            const hex = Utils.toHex(item.uid);
             card.className = 'grid-card';
-            card.href = `?v=${hexParam}`;
+            card.href = `?v=${hex}`;
             card.innerHTML = `<div class="g-badge">${item.orders} طلب</div><img src="${CONFIG.MEDIA}${item.tPath}.webp" loading="lazy"><div class="g-title">${item.title}</div>`;
-            card.onclick = (e) => { 
-                e.preventDefault(); 
-                Utils.setParam(hexParam); 
-                this.render(); 
-            };
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+                Utils.replaceParam({ v: hex });
+                this.render();
+            });
             container.appendChild(card);
         });
     },
 
-    // ==========================================
-    // 7. VERTICAL FEED VIEW & SCROLL OBSERVER
-    // Manages the TikTok/Reels style vertical scrolling view.
-    // Uses IntersectionObserver to auto-play/pause videos 
-    // and pre-load subsequent content.
-    // ==========================================
     showFeed(targetUid) {
-        document.getElementById('gridUI').style.display = 'none';
-        document.getElementById('feedUI').style.display = 'block';
+        setView('feed');
         const container = document.getElementById('verticalFeed');
+
+        container.querySelectorAll('video').forEach(video => VideoLoader.release(video));
         container.innerHTML = '';
-        
-        let list = [...this.allData];
+
+        const list = [...this.allData];
         const idx = list.findIndex(i => String(i.uid) === String(targetUid));
-        if (idx > -1) {
-            const targetItem = list.splice(idx, 1)[0];
-            list.unshift(targetItem);
-        }
-        
+        if (idx > -1) list.unshift(list.splice(idx, 1)[0]);
+
         list.forEach(item => container.appendChild(this.createFullCard(item)));
-        
-        if (this.observer) this.observer.disconnect();
 
-        this.observer = new IntersectionObserver((entries) => {
-            entries.forEach(e => {
-                const v = e.target.querySelector('video');
-                if (e.isIntersecting) {
-                    v.preload = "auto";
-                    v.play().catch(()=>{}); 
-                    syncGlobalAudio(); 
-                    
-                    const currentUid = e.target.getAttribute('data-uid');
-                    const currentTitle = e.target.getAttribute('data-title');
-                    document.title = `${currentTitle} - iWatch`;
-                    Utils.setParam(Utils.toHex(currentUid));
+        VideoLoader.attach(container);
 
-                    let next1 = e.target.nextElementSibling;
-                    if (next1) {
-                        let v1 = next1.querySelector('video');
-                        v1.preload = "auto";
-                        let next2 = next1.nextElementSibling;
-                        if (next2) next2.querySelector('video').preload = "auto";
-                    }
-                } else {
-                    v.pause();
-                }
-            });
-        }, { threshold: 0.5 });
-
-        document.querySelectorAll('.video-card').forEach(c => this.observer.observe(c));
-        
-        if(list[0]) document.title = `${list[0].title} - iWatch`;
+        if (list[0]) document.title = `${list[0].title} - iWatch`;
     },
 
-    // ==========================================
-    // 8. DYNAMIC DOM CARD CREATION
-    // Generates the full HTML markup for individual video cards, 
-    // including custom action buttons (like, share, buy) and overlays.
-    // ==========================================
+    showFavoritesPage() {
+        setView('fav');
+        FavoritesPage.render();
+    },
+
+    goFavorites() {
+        Utils.pushParam({ view: 'fav' });
+        this.render();
+    },
+    exitFavorites() {
+        Utils.pushParam({});
+        this.render();
+    },
+    closeFeed() {
+        Utils.replaceParam({ v: null });
+        this.render();
+    },
+
     createFullCard(item) {
         const card = document.createElement('div');
         card.className = 'video-card';
-        card.setAttribute('data-uid', item.uid);
-        card.setAttribute('data-title', item.title);
-        
+        card.dataset.uid = item.uid;
+        card.dataset.title = item.title;
+
         const isLiked = Storage.getLikes().includes(String(item.uid));
+        const videoUrl = `${CONFIG.VIDEO}${item.vFile}.mp4`;
+
         card.innerHTML = `
             <div class="v-top-bar">
-                <div class="v-mute-btn" onclick="app.toggleMute(event)"><svg><use href="${CONFIG.ICONS}${audioState.isMuted ? '#i-volume-off' : '#i-volume-on'}"/></svg></div>
-                <div class="v-close-btn" onclick="app.closeFeed()"><svg><use href="${CONFIG.ICONS}#i-close"/></svg></div>
+                <div class="v-top-bar-left">
+                    <button class="v-settings-btn" data-action="settings" title="الإعدادات">
+                        <svg viewBox="0 0 24 24"><path d="M19.14,12.94a7.14,7.14,0,0,0,.06-1,7.14,7.14,0,0,0-.06-1l2.11-1.65a.5.5,0,0,0,.12-.64l-2-3.46a.5.5,0,0,0-.6-.22l-2.49,1a7.3,7.3,0,0,0-1.72-1L14.14,2.5a.5.5,0,0,0-.5-.42h-4a.5.5,0,0,0-.5.42l-.38,2.65a7.3,7.3,0,0,0-1.72,1l-2.49-1a.5.5,0,0,0-.6.22l-2,3.46a.5.5,0,0,0,.12.64L4.2,10.94a7.14,7.14,0,0,0-.06,1,7.14,7.14,0,0,0,.06,1L2.09,14.6a.5.5,0,0,0-.12.64l2,3.46a.5.5,0,0,0,.6.22l2.49-1a7.3,7.3,0,0,0,1.72,1l.38,2.65a.5.5,0,0,0,.5.42h4a.5.5,0,0,0,.5-.42l.38-2.65a7.3,7.3,0,0,0,1.72-1l2.49,1a.5.5,0,0,0,.6-.22l2-3.46a.5.5,0,0,0-.12-.64ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" fill="#fff"/></svg>
+                    </button>
+                </div>
+                <div class="v-top-bar-right">
+                    <button class="v-mute-btn" data-action="mute"><svg><use href="${CONFIG.ICONS}${AudioSettings.state.muted ? '#i-volume-off' : '#i-volume-on'}"/></svg></button>
+                    <button class="v-close-btn" data-action="close"><svg><use href="${CONFIG.ICONS}#i-close"/></svg></button>
+                </div>
             </div>
             <div class="v-state-overlay"><svg><use href="${CONFIG.ICONS}#i-play"/></svg></div>
             <div class="v-bg-skeleton" style="background-image:url(${CONFIG.MEDIA}${item.tPath}.webp)"></div>
-            <video src="${CONFIG.VIDEO}${item.vFile}.mp4" poster="${CONFIG.MEDIA}${item.tPath}.webp" loop playsinline muted preload="metadata"></video>
+            <video poster="${CONFIG.MEDIA}${item.tPath}.webp" data-src="${videoUrl}" loop playsinline muted preload="none"></video>
+            <div class="v-error-overlay">
+                <p>تعذر تحميل الفيديو</p>
+                <button data-action="retry">إعادة المحاولة</button>
+            </div>
             <div class="v-overlay">
                 <div class="v-details">
                     <div class="v-order-info">${item.orders} طلب مؤكد</div>
                     <h2 class="v-title">${item.title}</h2>
                     <div class="v-actions">
-                        <a href="${CONFIG.DOMAIN}${item.path}" target="_blank" class="btn-order" onclick="event.stopPropagation()">معاينة العرض</a>
-                        <button class="btn-fav ${isLiked ? 'active' : ''}" onclick="app.handleLike(event, this, '${item.uid}')"><svg><use href="${CONFIG.ICONS}#i-heart"/></svg></button>
-                        <button class="btn-share" onclick="app.handleShare(event, '${item.uid}', '${item.title}')"><svg><use href="${CONFIG.ICONS}#i-share-node"/></svg></button>
+                        <a href="${CONFIG.DOMAIN}${item.path}" target="_blank" class="btn-order" data-action="order">معاينة العرض</a>
+                        <button class="btn-fav ${isLiked ? 'active' : ''}" data-action="like"><svg><use href="${CONFIG.ICONS}#i-heart"/></svg></button>
+                        <button class="btn-share" data-action="share"><svg><use href="${CONFIG.ICONS}#i-share-node"/></svg></button>
                     </div>
                 </div>
-                <div class="v-progress-container" onclick="app.handleSeek(event, this)">
+                <div class="v-progress-container">
                     <div class="v-progress-bar"></div>
                 </div>
             </div>
         `;
-        
-        const v = card.querySelector('video'), overlay = card.querySelector('.v-state-overlay'), p = card.querySelector('.v-progress-bar');
-        card.onclick = () => {
-            const use = overlay.querySelector('svg use');
-            if(v.paused) { v.play(); use.setAttribute('href', `${CONFIG.ICONS}#i-play`); } 
-            else { v.pause(); use.setAttribute('href', `${CONFIG.ICONS}#i-pause`); }
-            overlay.classList.add('active');
-            setTimeout(() => overlay.classList.remove('active'), 500);
-        };
-        v.ontimeupdate = () => { 
-            const percent = (v.currentTime / v.duration) * 100;
-            p.style.width = `${percent}%`; 
-        };
+
+        const video = card.querySelector('video');
+        const overlay = card.querySelector('.v-state-overlay');
+        const progressBar = card.querySelector('.v-progress-bar');
+        const progressContainer = card.querySelector('.v-progress-container');
+
+        video.addEventListener('error', () => VideoLoader.showError(card));
+        video.addEventListener('timeupdate', () => {
+            if (video.duration) progressBar.style.width = `${(video.currentTime / video.duration) * 100}%`;
+        });
+
+        progressContainer.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const rect = progressContainer.getBoundingClientRect();
+            const ratio = (rect.right - e.clientX) / rect.width;
+            if (video.duration) video.currentTime = ratio * video.duration;
+        });
+
+        let tapTimer = null;
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('[data-action], .v-progress-container')) return;
+            if (tapTimer) {
+                clearTimeout(tapTimer);
+                tapTimer = null;
+                const rect = card.getBoundingClientRect();
+                const isRight = (e.clientX - rect.left) > rect.width / 2;
+                seekVideo(video, isRight ? 10 : -10);
+                flashSeek(card, isRight);
+                return;
+            }
+            tapTimer = setTimeout(() => {
+                togglePlayback(video, overlay);
+                tapTimer = null;
+            }, 250);
+        });
+
         return card;
-    },
-
-    // ==========================================
-    // 9. EVENT HANDLERS & INTERACTION METHODS
-    // Implements logic for video scrubbing/seeking, muting, 
-    // liking, sharing via Web Share API, tab switching, and closing.
-    // ==========================================
-    handleSeek(e, container) {
-        e.stopPropagation();
-        const v = container.closest('.video-card').querySelector('video');
-        const rect = container.getBoundingClientRect();
-        const pos = (rect.right - e.clientX) / rect.width;
-        v.currentTime = pos * v.duration;
-    },
-
-    toggleMute(e) { 
-        e.stopPropagation(); 
-        audioState.isMuted = !audioState.isMuted; 
-        syncGlobalAudio(); 
-    },
-
-    handleLike(e, btn, uid) { 
-        e.stopPropagation(); 
-        btn.classList.toggle('active', Storage.toggleLike(uid)); 
-    },
-
-    handleShare(e, uid, title) {
-        e.stopPropagation();
-        const url = `${window.location.origin}${window.location.pathname}?v=${Utils.toHex(uid)}`;
-        if (navigator.share) navigator.share({ title, url });
-        else { navigator.clipboard.writeText(url); alert("تم نسخ الرابط"); }
-    },
-
-    switchTab(tab, btn) {
-        this.activeTab = tab;
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        this.showGrid();
-    },
-
-    closeFeed() { 
-        Utils.setParam(null); 
-        this.render(); 
     }
 };
 
 // ==========================================
-// 10. APP INITIALIZATION TRIGGER
-// Execution begins here immediately when script loads.
+// A single delegated listener handles every button inside
+// the feed cards, instead of wiring a handler per element.
 // ==========================================
+document.getElementById('verticalFeed').addEventListener('click', (e) => {
+    const actionEl = e.target.closest('[data-action]');
+    if (!actionEl) return;
+    const action = actionEl.dataset.action;
+    if (action === 'order') return;
+
+    e.stopPropagation();
+    e.preventDefault();
+    const card = actionEl.closest('.video-card');
+
+    switch (action) {
+        case 'mute': AudioSettings.toggleMute(); break;
+        case 'close': app.closeFeed(); break;
+        case 'settings': SettingsPanel.open(); break;
+        case 'like': toggleLikeFromCard(card, actionEl); break;
+        case 'share': shareCard(card); break;
+        case 'retry': VideoLoader.retry(card); break;
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if (document.getElementById('feedUI').style.display !== 'block') return;
+    if (!VideoLoader.activeVideo) return;
+    if (e.key === 'ArrowRight') seekVideo(VideoLoader.activeVideo, 10);
+    else if (e.key === 'ArrowLeft') seekVideo(VideoLoader.activeVideo, -10);
+});
+
+// ==========================================
+// Boot sequence
+// ==========================================
+AudioSettings.load();
+SettingsPanel.init();
+FavoritesSidebar.init();
+FavoritesPage.init();
+updateFavBadge();
+document.getElementById('favNavBtn').addEventListener('click', () => app.goFavorites());
+window.addEventListener('popstate', () => app.render());
 app.init();
 
 </script>
-    
+
 </body>
 </html>
