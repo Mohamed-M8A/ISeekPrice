@@ -44,18 +44,23 @@ video{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 
 .feed-container{height:100dvh;overflow-y:scroll;scroll-snap-type:y mandatory;max-width:480px;margin:0 auto;background:#000}
 .video-card{position:relative;width:100%;height:100dvh;scroll-snap-align:start;overflow:hidden;-webkit-touch-callout:none}
-.video-card video{width:100%;height:100%;object-fit:cover;z-index:1}
+.video-card video{width:100%;height:100%;object-fit:cover;z-index:1;background:#000}
+.video-card.is-landscape video{object-fit:contain}
 .v-bg-skeleton{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(30px);opacity:.2;z-index:0}
 .v-state-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;width:60px;height:60px;background:rgb(0 0 0 / .3);border-radius:50%;display:flex;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:0.3s}
 .v-state-overlay.active{opacity:1;transform:translate(-50%,-50%) scale(1.1)}
 .v-state-overlay svg{width:30px;height:30px;fill:#fff}
+.v-loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:21;display:none;pointer-events:none}
+.v-loading.active{display:block}
+.v-loading svg{width:34px;height:34px;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 .v-top-bar{position:absolute;top:0;left:0;width:100%;padding:15px;z-index:20;display:flex;justify-content:space-between;align-items:center}
 .v-top-bar-left,.v-top-bar-right{display:flex;gap:8px;align-items:center}
 .v-mute-btn,.v-close-btn,.v-settings-btn{background:rgb(0 0 0 / .5);backdrop-filter:blur(8px);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .v-mute-btn svg,.v-close-btn svg,.v-settings-btn svg{width:16px;height:16px;fill:#fff}
 
-.v-error-overlay{position:absolute;inset:0;background:rgba(0,0,0,.85);z-index:25;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:20px}
+.v-error-overlay{position:absolute;inset:0;background:rgba(0,0,0,.85);z-index:18;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:20px}
 .v-error-overlay.active{display:flex}
 .v-error-overlay p{font-size:13px;color:#ccc}
 .v-error-overlay button{background:var(--primary);color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700}
@@ -394,6 +399,8 @@ const VideoLoader = {
             video.removeAttribute('src');
             video.load();
             video.preload = 'none';
+            const bar = video.closest('.video-card')?.querySelector('.v-progress-bar');
+            if (bar) bar.style.width = '0%';
         }
     },
 
@@ -403,6 +410,7 @@ const VideoLoader = {
         card.querySelector('.v-error-overlay')?.classList.remove('active');
         video.src = video.dataset.src;
         video.load();
+        AudioSettings.applyTo(video);
         video.play().catch(() => this.showError(card));
     },
 
@@ -720,6 +728,7 @@ const app = {
                 </div>
             </div>
             <div class="v-state-overlay"><svg><use href="${CONFIG.ICONS}#i-play"/></svg></div>
+            <div class="v-loading"><svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-dasharray="90 60"/></svg></div>
             <div class="v-bg-skeleton" style="background-image:url(${CONFIG.MEDIA}${item.tPath}.webp)"></div>
             <video poster="${CONFIG.MEDIA}${item.tPath}.webp" data-src="${videoUrl}" loop playsinline muted preload="none"></video>
             <div class="v-error-overlay">
@@ -744,10 +753,17 @@ const app = {
 
         const video = card.querySelector('video');
         const overlay = card.querySelector('.v-state-overlay');
+        const loading = card.querySelector('.v-loading');
         const progressBar = card.querySelector('.v-progress-bar');
         const progressContainer = card.querySelector('.v-progress-container');
 
         video.addEventListener('error', () => VideoLoader.showError(card));
+        video.addEventListener('loadedmetadata', () => {
+            if (video.videoWidth > video.videoHeight) card.classList.add('is-landscape');
+        });
+        video.addEventListener('waiting', () => loading.classList.add('active'));
+        video.addEventListener('playing', () => loading.classList.remove('active'));
+        video.addEventListener('canplay', () => loading.classList.remove('active'));
         video.addEventListener('timeupdate', () => {
             if (video.duration) progressBar.style.width = `${(video.currentTime / video.duration) * 100}%`;
         });
