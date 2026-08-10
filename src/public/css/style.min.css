@@ -181,6 +181,7 @@ small{font-size:13px}
 ol,ul{margin:0 0 1rem;padding-right:2rem}
 a{color:#0f77ff;text-decoration:none;transition:var(--transition)}
 a:hover{filter:brightness(.85)}
+a:hover img,a:hover svg{filter:none}
 hr{margin:1rem 0;border:0;height:1px;background:currentColor;opacity:.25}
 
 @media (prefers-reduced-motion:no-preference){
@@ -340,7 +341,7 @@ body.dm #dark-toggler .icon-sun{display:inline}
 #widget-toggle-btn{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:15px}
 #widget-desktop-cats{display:flex;gap:40px;flex:1;justify-content:flex-start}
 .widget-cat-wrapper{position:relative;display:flex;align-items:center;gap:10px}
-.widget-cat-link{color:#fff;position:relative;--underline-scale:0;display:inline-block;overflow:hidden;transition:color .25s ease}
+.widget-cat-link{color:#fff;text-decoration:none;padding:15px 0;position:relative;--underline-scale:0;display:inline-block;overflow:hidden;transition:color .25s ease}
 .widget-cat-link:hover{--underline-scale:1}
 .widget-cat-link::after{content:"";position:absolute;bottom:5px;right:0;width:100%;height:2px;background:#fff;transform:scaleX(var(--underline-scale));transform-origin:right;transition:transform .25s ease;display:block}
 .widget-expand-btn{cursor:pointer;font-size:14px;color:var(--text);background:var(--surface-alt);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;transition:background .2s ease}
