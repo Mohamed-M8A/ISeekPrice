@@ -143,21 +143,17 @@
   <div id="widget-overlay"></div>
 
   <div id="primary">
-      <article id="single-content">
-          <main>
-          <div id="post-body">
-              <hr class="clean-divider">
-              {{ content | replace: '<div id="dynamic-shelf"></div>', shelf_html }}
-          </div>
-          </main>
-          <hr class="clean-divider">
-          <div class="share-box-wrap">
-              <button id="shareOpenBtn" class="sh-m">مشاركة مع الأصدقاء</button>
-          </div>
-          <hr class="clean-divider">
-          <p>عروض ستعجبك</p>
-          <div id="souq-widget-root"></div>
-      </article>
+    <main>
+        <hr class="clean-divider">
+        {{ content | replace: '<div id="dynamic-shelf"></div>', shelf_html }}
+        <hr class="clean-divider">
+        <div class="share-box-wrap">
+        <button id="shareOpenBtn" class="sh-m">مشاركة مع الأصدقاء</button>
+        </div>
+        <hr class="clean-divider">
+        <p>عروض ستعجبك</p>
+        <div id="souq-widget-root"></div>
+    </main>
   </div>
 
 <footer id='footer' itemscope='itemscope' itemtype='https://schema.org/WPFooter'></footer>
