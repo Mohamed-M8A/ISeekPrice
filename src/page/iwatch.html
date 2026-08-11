@@ -22,17 +22,18 @@
 html,body{-webkit-user-select:none;user-select:none}
 body{background-color:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;direction:rtl;overflow-x:hidden}
 button{background:none;border:none;font:inherit;color:inherit;cursor:pointer;-webkit-appearance:none;appearance:none;padding:0}
-video{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+img,video{-webkit-user-select:none;user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none}
 .hidden-view{display:none}
 
-.site-header{position:sticky;top:0;z-index:100;background:rgb(5 5 5 / .8);backdrop-filter:blur(12px);padding:10px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.site-header{position:sticky;top:0;z-index:100;background:rgba(5,5,5,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:10px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
 .logo-group{display:flex;align-items:center;gap:8px;cursor:pointer}
 .header-logo-img{width:26px;height:26px;object-fit:contain}
 .logo-txt{font-weight:800;font-size:1.2rem;color:var(--primary);letter-spacing:-.5px}
 .header-actions{display:flex;align-items:center;gap:10px}
 .back-link{color:var(--text);text-decoration:none;font-size:11px;font-weight:600;background:var(--accent);padding:5px 12px;border-radius:15px}
-.fav-nav-btn{background:var(--glass);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.fav-nav-btn svg{width:16px;height:16px}
+.fav-nav-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;opacity:.9}
+.fav-nav-btn:active{opacity:.5}
+.fav-nav-btn svg{width:20px;height:20px}
 
 .v-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:8px;max-width:1400px;margin:0 auto}
 @media(min-width:768px){.v-grid{grid-template-columns:repeat(4,1fr)}}
@@ -40,14 +41,14 @@ video{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .grid-card{position:relative;aspect-ratio:9/16;background:var(--card-bg);overflow:hidden;cursor:pointer;border:1px solid var(--border)}
 .grid-card img{width:100%;height:100%;object-fit:cover}
 .g-badge{position:absolute;top:6px;right:6px;background:var(--primary);color:#fff;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:800;z-index:5}
-.g-title{position:absolute;bottom:0;left:0;width:100%;padding:8px;background:linear-gradient(to top,rgb(0 0 0 / .9),transparent);font-size:10px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g-title{position:absolute;bottom:0;left:0;width:100%;padding:8px;background:linear-gradient(to top,rgba(0,0,0,.9),transparent);font-size:10px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 .feed-container{height:100dvh;overflow-y:scroll;scroll-snap-type:y mandatory;max-width:480px;margin:0 auto;background:#000}
 .video-card{position:relative;width:100%;height:100dvh;scroll-snap-align:start;overflow:hidden;-webkit-touch-callout:none}
 .video-card video{width:100%;height:100%;object-fit:cover;z-index:1;background:#000}
 .video-card.is-landscape video{object-fit:contain}
 .v-bg-skeleton{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(30px);opacity:.2;z-index:0}
-.v-state-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;width:60px;height:60px;background:rgb(0 0 0 / .3);border-radius:50%;display:flex;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:0.3s}
+.v-state-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;width:60px;height:60px;background:rgba(0,0,0,.35);border-radius:50%;display:flex;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:0.3s}
 .v-state-overlay.active{opacity:1;transform:translate(-50%,-50%) scale(1.1)}
 .v-state-overlay svg{width:30px;height:30px;fill:#fff}
 .v-loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:21;display:none;pointer-events:none}
@@ -57,7 +58,7 @@ video{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 
 .v-top-bar{position:absolute;top:0;left:0;width:100%;padding:15px;z-index:20;display:flex;justify-content:space-between;align-items:center}
 .v-top-bar-left,.v-top-bar-right{display:flex;gap:8px;align-items:center}
-.v-mute-btn,.v-close-btn,.v-settings-btn{background:rgb(0 0 0 / .5);backdrop-filter:blur(8px);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.v-mute-btn,.v-close-btn,.v-settings-btn{background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .v-mute-btn svg,.v-close-btn svg,.v-settings-btn svg{width:16px;height:16px;fill:#fff}
 
 .v-error-overlay{position:absolute;inset:0;background:rgba(0,0,0,.85);z-index:18;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:20px}
@@ -65,7 +66,7 @@ video{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .v-error-overlay p{font-size:13px;color:#ccc}
 .v-error-overlay button{background:var(--primary);color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700}
 
-.v-overlay{position:absolute;bottom:0;left:0;width:100%;padding:20px 15px;background:linear-gradient(to top,rgb(0 0 0 / .95) 20%,transparent 100%);z-index:10}
+.v-overlay{position:absolute;bottom:0;left:0;width:100%;padding:20px 15px;background:linear-gradient(to top,rgba(0,0,0,.95) 20%,transparent 100%);z-index:10}
 .v-details{display:flex;flex-direction:column;gap:8px}
 .v-order-info{color:var(--primary);font-size:11px;font-weight:800}
 .v-title{font-size:14px;font-weight:600;line-height:1.4;text-shadow:0 1px 3px #000}
@@ -84,7 +85,7 @@ video{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .seek-flash span{font-size:13px;font-weight:800;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.6)}
 @keyframes flashPop{0%{opacity:0;transform:translateY(-50%) scale(.8)}20%{opacity:1;transform:translateY(-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
 
-.settings-overlay{position:fixed;inset:0;background:rgb(0 0 0 / .6);backdrop-filter:blur(4px);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:300;display:none;align-items:flex-end;justify-content:center}
 .settings-overlay.active{display:flex}
 .settings-panel{background:#0d0d0d;border:1px solid var(--border);border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:20px;animation:slideUp .3s ease}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
@@ -100,9 +101,9 @@ video{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .volume-row{display:flex;align-items:center;gap:12px}
 .volume-row input[type="range"]{flex:1;accent-color:var(--primary)}
 
-.fav-toggle-btn{position:fixed;left:15px;bottom:20px;z-index:150;background:var(--primary);width:44px;height:44px;border-radius:50%;display:none;align-items:center;justify-content:center;box-shadow:0 4px 15px rgb(0 0 0 / .4)}
+.fav-toggle-btn{position:fixed;left:15px;bottom:20px;z-index:150;background:var(--primary);width:44px;height:44px;border-radius:50%;display:none;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(0,0,0,.4)}
 .fav-toggle-btn svg{width:20px;height:20px;fill:#fff}
-.fav-sidebar-overlay{position:fixed;inset:0;background:rgb(0 0 0 / .6);z-index:200;display:none}
+.fav-sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none}
 .fav-sidebar-overlay.active{display:block}
 .fav-sidebar{position:fixed;top:0;right:0;height:100%;width:280px;max-width:80%;background:#0d0d0d;border-left:1px solid var(--border);z-index:201;transform:translateX(100%);transition:transform .3s ease;overflow-y:auto;padding:15px}
 .fav-sidebar.active{transform:translateX(0)}
@@ -152,7 +153,7 @@ video{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
             </div>
             <div class="header-actions">
                 <button class="fav-nav-btn" id="favNavBtn" title="المفضلة">
-                    <svg viewBox="0 0 24 24"><path d="M12 21s-6.7-4.35-9.3-8.55C.86 9.6 1.8 6 5 6c1.9 0 3.3 1 4 2.3C9.7 7 11.1 6 13 6c3.2 0 4.14 3.6 2.3 6.45C18.7 16.65 12 21 12 21z" fill="#fff"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#fff"/></svg>
                 </button>
                 <a href="/" class="back-link">العودة للرئيسية</a>
             </div>
@@ -179,7 +180,7 @@ video{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
         </header>
         <div class="fav-list" id="favList"></div>
         <div class="fav-empty-state" id="favEmptyState">
-            <svg viewBox="0 0 24 24"><path d="M12 21s-6.7-4.35-9.3-8.55C.86 9.6 1.8 6 5 6c1.9 0 3.3 1 4 2.3C9.7 7 11.1 6 13 6c3.2 0 4.14 3.6 2.3 6.45C18.7 16.65 12 21 12 21z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
             <p>لا توجد فيديوهات في المفضلة بعد</p>
             <button id="favEmptyBrowseBtn">تصفح الفيديوهات</button>
         </div>
@@ -335,42 +336,62 @@ const AudioSettings = {
 };
 
 // ==========================================
-// 5. VIDEO LOADER — lazy source loading and release. Each
-// video starts with only a data-src attribute; a real src is
-// attached once the card nears the viewport (rootMargin) and
-// removed again once it scrolls far away, so only a handful
-// of videos are ever downloaded at once. activate() also
-// force-pauses every other video as a safety net against any
-// intersection-timing race during fast scrolling
+// 5. VIDEO LOADER — two independent observers on purpose:
+// playObserver decides which single card is actually visible
+// and should play, using the real viewport with no margin;
+// preloadObserver uses a wide margin only to warm up or
+// release sources nearby. Mixing both concerns into one
+// observer previously caused several videos to report as
+// "visible enough" at once and play simultaneously.
+// activate() also force-pauses every other mounted video as
+// a safety net against any remaining timing race.
 // ==========================================
 const VideoLoader = {
-    observer: null,
+    playObserver: null,
+    preloadObserver: null,
     activeVideo: null,
+    onActivate: null,
 
-    attach(container) {
-        if (this.observer) this.observer.disconnect();
-        this.observer = new IntersectionObserver(this.handleEntries.bind(this), {
+    attach(container, onActivate) {
+        this.onActivate = onActivate || (() => {});
+        if (this.playObserver) this.playObserver.disconnect();
+        if (this.preloadObserver) this.preloadObserver.disconnect();
+
+        this.playObserver = new IntersectionObserver(this.handlePlayEntries.bind(this), {
+            root: container,
+            threshold: 0.6
+        });
+        this.preloadObserver = new IntersectionObserver(this.handlePreloadEntries.bind(this), {
             root: container,
             rootMargin: '150% 0px 150% 0px',
-            threshold: [0, 0.6]
+            threshold: 0
         });
-        container.querySelectorAll('.video-card').forEach(card => this.observer.observe(card));
     },
 
-    handleEntries(entries) {
-        entries.forEach(entry => {
-            const card = entry.target;
-            const video = card.querySelector('video');
-            if (!video) return;
+    observeCard(card) {
+        this.playObserver.observe(card);
+        this.preloadObserver.observe(card);
+    },
+    unobserveCard(card) {
+        this.playObserver.unobserve(card);
+        this.preloadObserver.unobserve(card);
+    },
 
-            if (entry.intersectionRatio >= 0.6) {
-                this.activate(card, video);
-            } else if (entry.isIntersecting) {
-                this.warm(video);
-                video.pause();
-            } else {
-                this.release(video);
-            }
+    handlePlayEntries(entries) {
+        entries.forEach(entry => {
+            const video = entry.target.querySelector('video');
+            if (!video) return;
+            if (entry.isIntersecting) this.activate(entry.target, video);
+            else video.pause();
+        });
+    },
+
+    handlePreloadEntries(entries) {
+        entries.forEach(entry => {
+            const video = entry.target.querySelector('video');
+            if (!video) return;
+            if (entry.isIntersecting) this.warm(video);
+            else this.release(video);
         });
     },
 
@@ -391,6 +412,7 @@ const VideoLoader = {
 
         document.title = `${card.getAttribute('data-title')} - iWatch`;
         Utils.replaceParam({ v: Utils.toHex(card.getAttribute('data-uid')) });
+        this.onActivate(card, video);
     },
 
     release(video) {
@@ -621,17 +643,32 @@ const FavoritesPage = {
 };
 
 // ==========================================
-// 10. CORE APPLICATION — routing between grid, feed and
+// 10. FEED WINDOW — keeps the number of mounted cards bounded
+// regardless of how many videos exist in total. BATCH_SIZE is
+// appended whenever the active card gets within BUFFER_AHEAD
+// of the end of what is rendered; anything more than
+// TRIM_BEHIND cards above the active one is unmounted and its
+// scroll offset compensated so the visible position is unaffected
+// ==========================================
+const FeedWindow = { BATCH_SIZE: 6, BUFFER_AHEAD: 3, TRIM_BEHIND: 4 };
+
+// ==========================================
+// 11. CORE APPLICATION — routing between grid, feed and
 // favorites page, plus the video card builder
 // ==========================================
 const app = {
     allData: [],
+    feedList: [],
+    renderedIndex: 0,
     originalTitle: document.title,
 
     async init() {
         try {
             const res = await fetch(`${CONFIG.DATA}?v=${Date.now()}`);
-            this.allData = await res.json();
+            const data = await res.json();
+            this.allData = Array.isArray(data)
+                ? data.filter(item => item && item.uid !== undefined && item.vFile && item.tPath)
+                : [];
             this.render();
         } catch (e) {
             console.error(e);
@@ -680,12 +717,53 @@ const app = {
         const list = [...this.allData];
         const idx = list.findIndex(i => String(i.uid) === String(targetUid));
         if (idx > -1) list.unshift(list.splice(idx, 1)[0]);
+        this.feedList = list;
+        this.renderedIndex = 0;
 
-        list.forEach(item => container.appendChild(this.createFullCard(item)));
-
-        VideoLoader.attach(container);
+        VideoLoader.attach(container, (card) => this.onCardActive(card));
+        this.appendCards(FeedWindow.BATCH_SIZE);
 
         if (list[0]) document.title = `${list[0].title} - iWatch`;
+    },
+
+    appendCards(count) {
+        const container = document.getElementById('verticalFeed');
+        const end = Math.min(this.renderedIndex + count, this.feedList.length);
+        for (let i = this.renderedIndex; i < end; i++) {
+            const card = this.createFullCard(this.feedList[i]);
+            card.dataset.index = i;
+            container.appendChild(card);
+            VideoLoader.observeCard(card);
+        }
+        this.renderedIndex = end;
+    },
+
+    onCardActive(card) {
+        const index = parseInt(card.dataset.index, 10);
+        if (index + FeedWindow.BUFFER_AHEAD >= this.renderedIndex && this.renderedIndex < this.feedList.length) {
+            this.appendCards(FeedWindow.BATCH_SIZE);
+        }
+        this.trimBehind(index);
+    },
+
+    trimBehind(currentIndex) {
+        const container = document.getElementById('verticalFeed');
+        let removedHeight = 0;
+        let card = container.firstElementChild;
+        while (card) {
+            const next = card.nextElementSibling;
+            const cardIndex = parseInt(card.dataset.index, 10);
+            if (cardIndex < currentIndex - FeedWindow.TRIM_BEHIND) {
+                removedHeight += card.offsetHeight;
+                VideoLoader.unobserveCard(card);
+                VideoLoader.release(card.querySelector('video'));
+                card.remove();
+                card = next;
+            } else {
+                break;
+            }
+        }
+        if (removedHeight > 0) container.scrollTop -= removedHeight;
     },
 
     showFavoritesPage() {
@@ -798,7 +876,7 @@ const app = {
 };
 
 // ==========================================
-// 11. FEED EVENT DELEGATION — one listener handles every
+// 12. FEED EVENT DELEGATION — one listener handles every
 // button inside every card instead of wiring each individually
 // ==========================================
 document.getElementById('verticalFeed').addEventListener('click', (e) => {
@@ -822,7 +900,7 @@ document.getElementById('verticalFeed').addEventListener('click', (e) => {
 });
 
 // ==========================================
-// 12. KEYBOARD SHORTCUTS — mirrors the on-screen double-tap
+// 13. KEYBOARD SHORTCUTS — mirrors the on-screen double-tap
 // seek gesture for desktop use
 // ==========================================
 document.addEventListener('keydown', (e) => {
@@ -833,8 +911,9 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ==========================================
-// 13. BOOT
+// 14. BOOT
 // ==========================================
+document.addEventListener('selectstart', (e) => e.preventDefault());
 AudioSettings.load();
 SettingsPanel.init();
 FavoritesSidebar.init();
