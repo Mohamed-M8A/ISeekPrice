@@ -4,11 +4,12 @@ module.exports = async function() {
     const country = (process.env.COUNTRY || 'sa').toLowerCase();
     const baseUrl = 'https://data.iseekprice.com/';
 
-    const RECORD_SIZE = 9400;
+    const RECORD_SIZE = 9492;
     const FEED_OFFSET = 8;
     const PROMO_OFFSET = 32;
-    const SKU_OFFSET = 56;
-    const FLUX_OFFSET = 6476;
+    const LINKS_OFFSET = 56;
+    const FLUX_OFFSET = 148;
+    const SKU_OFFSET = 3072;
 
     const fetchBufWithRetry = async (url, retries = 10, delayMs = 2000) => {
         if (!url) return Buffer.alloc(0);
@@ -59,12 +60,10 @@ module.exports = async function() {
         const region = map.regions[country];
 
         const coreUrl = `${baseUrl}general/core_${map.core}.bin`;
-        const linksUrl = region && region.links ? `${baseUrl}${country}/links_${region.links}.bin` : null;
         const buildUrl = region && region.build ? `${baseUrl}${country}/build_${region.build}.bin` : null;
 
-        const [coreBuf, linksBuf, buildBuf] = await Promise.all([
+        const [coreBuf, buildBuf] = await Promise.all([
             fetchBufWithRetry(coreUrl),
-            fetchBufWithRetry(linksUrl),
             fetchBufWithRetry(buildUrl)
         ]);
 
@@ -87,16 +86,6 @@ module.exports = async function() {
                 promo: null,
                 chart: []
             });
-        }
-
-        for (let i = 0; i < linksBuf.length; i += 100) {
-            const id = linksBuf.readBigUInt64LE(i).toString();
-            if (products.has(id)) {
-                const item = products.get(id);
-                item.productAffCode = linksBuf.toString('utf8', i + 16, i + 30).replace(/\0/g, '').trim();
-                item.storeAffCode = linksBuf.toString('utf8', i + 30, i + 44).replace(/\0/g, '').trim();
-                item.storeName = linksBuf.toString('utf8', i + 44, i + 100).replace(/\0/g, '').trim();
-            }
         }
 
         for (let i = 0; i + RECORD_SIZE <= buildBuf.length; i += RECORD_SIZE) {
@@ -133,6 +122,28 @@ module.exports = async function() {
                 };
             }
 
+            const lo = i + LINKS_OFFSET;
+            item.productAffCode = buildBuf.toString('utf8', lo + 8, lo + 22).replace(/\0/g, '').trim();
+            item.storeAffCode = buildBuf.toString('utf8', lo + 22, lo + 36).replace(/\0/g, '').trim();
+            item.storeName = buildBuf.toString('utf8', lo + 36, lo + 92).replace(/\0/g, '').trim();
+
+            const fluxo = i + FLUX_OFFSET;
+            const recordCount = buildBuf.readUInt32LE(fluxo);
+            for (let c = 0; c < recordCount; c++) {
+                const offset = fluxo + 4 + (c * 8);
+                if (offset + 8 > i + SKU_OFFSET) break;
+                const timeInMinutes = buildBuf.readUInt32LE(offset);
+                const priceRaw = buildBuf.readInt32LE(offset + 4);
+                if (timeInMinutes > 0 && priceRaw > 0) {
+                    const pDate = new Date(Date.UTC(2025, 0, 1) + (timeInMinutes * 60 * 1000));
+                    item.chart.push({
+                        date: pDate.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
+                        price: (priceRaw / 100).toFixed(2),
+                        rawTime: timeInMinutes
+                    });
+                }
+            }
+
             if (hasSku) {
                 for (let s = 0; s < 30; s++) {
                     const so = i + SKU_OFFSET + (s * 214);
@@ -153,23 +164,6 @@ module.exports = async function() {
                         maxDelivery: buildBuf.readUInt8(so + 13),
                         image: image,
                         props: props
-                    });
-                }
-            }
-
-            const fluxo = i + FLUX_OFFSET;
-            const recordCount = buildBuf.readUInt32LE(fluxo);
-            for (let c = 0; c < recordCount; c++) {
-                const offset = fluxo + 4 + (c * 8);
-                if (offset + 8 > i + RECORD_SIZE) break;
-                const timeInMinutes = buildBuf.readUInt32LE(offset);
-                const priceRaw = buildBuf.readInt32LE(offset + 4);
-                if (timeInMinutes > 0 && priceRaw > 0) {
-                    const pDate = new Date(Date.UTC(2025, 0, 1) + (timeInMinutes * 60 * 1000));
-                    item.chart.push({
-                        date: pDate.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
-                        price: (priceRaw / 100).toFixed(2),
-                        rawTime: timeInMinutes
                     });
                 }
             }
