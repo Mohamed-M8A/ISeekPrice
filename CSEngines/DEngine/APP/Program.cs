@@ -56,22 +56,27 @@ namespace DEngine
                 }
 
                 var promoHash = regionObj["promo"]?.ToString();
-                var skuHash = regionObj["sku"]?.ToString();
+                var linksHash = regionObj["links"]?.ToString();
                 var fluctuationHash = regionObj["fluctuation"]?.ToString();
+                var skuHash = regionObj["sku"]?.ToString();
 
                 var promoBytes = string.IsNullOrEmpty(promoHash)
                     ? Array.Empty<byte>()
                     : await r2.GetBytesAsync($"{region}/promo_{promoHash}.bin");
 
-                var skuBytes = string.IsNullOrEmpty(skuHash)
+                var linksBytes = string.IsNullOrEmpty(linksHash)
                     ? Array.Empty<byte>()
-                    : await r2.GetBytesAsync($"{region}/sku_{skuHash}.bin");
+                    : await r2.GetBytesAsync($"{region}/links_{linksHash}.bin");
 
                 var fluctuationBytes = string.IsNullOrEmpty(fluctuationHash)
                     ? Array.Empty<byte>()
                     : await r2.GetBytesAsync($"{region}/fluctuation_{fluctuationHash}.bin");
 
-                var merged = BuildMerger.Merge(feedBytes, promoBytes, skuBytes, fluctuationBytes);
+                var skuBytes = string.IsNullOrEmpty(skuHash)
+                    ? Array.Empty<byte>()
+                    : await r2.GetBytesAsync($"{region}/sku_{skuHash}.bin");
+
+                var merged = BuildMerger.Merge(feedBytes, promoBytes, skuBytes, fluctuationBytes, linksBytes);
                 var newHash = HashService.BuildFileHash(merged.Length, RecordSizes.BUILD_RECORD_SIZE, tsHex, region);
                 var cloudName = $"{region}/build_{newHash}.bin";
 
