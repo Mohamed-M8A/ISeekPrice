@@ -8,12 +8,13 @@ namespace DEngine.Core
 {
     public static class BuildMerger
     {
-        public static byte[] Merge(byte[] feed, byte[] promo, byte[] sku, byte[] fluctuation)
+        public static byte[] Merge(byte[] feed, byte[] promo, byte[] sku, byte[] fluctuation, byte[] links)
         {
             var feedMap = SliceByIndex(feed, RecordSizes.FEED_FULL);
             var promoMap = SliceByIndex(promo, RecordSizes.PROMO_FULL);
-            var skuMap = SliceByIndex(sku, RecordSizes.SKU_FULL);
+            var linksMap = SliceByIndex(links, RecordSizes.LINKS_FULL);
             var fluctuationMap = SliceByIndex(fluctuation, RecordSizes.FLUCTUATION_FULL);
+            var skuMap = SliceByIndex(sku, RecordSizes.SKU_FULL);
 
             var ids = feedMap.Keys.OrderBy(id => id).ToList();
 
@@ -30,13 +31,17 @@ namespace DEngine.Core
                     ? p.AsSpan(RecordSizes.ID_SIZE).ToArray()
                     : new byte[RecordSizes.PROMO_PAYLOAD]);
 
-                writer.Write(skuMap.TryGetValue(id, out var s)
-                    ? s.AsSpan(RecordSizes.ID_SIZE).ToArray()
-                    : new byte[RecordSizes.SKU_PAYLOAD]);
+                writer.Write(linksMap.TryGetValue(id, out var l)
+                    ? l.AsSpan(RecordSizes.ID_SIZE).ToArray()
+                    : new byte[RecordSizes.LINKS_PAYLOAD]);
 
                 writer.Write(fluctuationMap.TryGetValue(id, out var f)
                     ? f.AsSpan(RecordSizes.ID_SIZE).ToArray()
                     : new byte[RecordSizes.FLUCTUATION_PAYLOAD]);
+
+                writer.Write(skuMap.TryGetValue(id, out var s)
+                    ? s.AsSpan(RecordSizes.ID_SIZE).ToArray()
+                    : new byte[RecordSizes.SKU_PAYLOAD]);
             }
 
             return output.ToArray();
@@ -45,6 +50,8 @@ namespace DEngine.Core
         private static Dictionary<ulong, byte[]> SliceByIndex(byte[] buffer, int recordSize)
         {
             var map = new Dictionary<ulong, byte[]>();
+            if (buffer == null || buffer.Length < recordSize) return map;
+
             for (int offset = 0; offset + recordSize <= buffer.Length; offset += recordSize)
             {
                 var id = BitConverter.ToUInt64(buffer, offset);
