@@ -12,8 +12,8 @@ namespace ISeekPriceEngine.Services
     public class R2Service
     {
         private readonly string _accountId = Environment.GetEnvironmentVariable("R2_ACCOUNT_ID") ?? string.Empty;
-        private readonly string _bucketName = Environment.GetEnvironmentVariable("R2_BUCKET_NAME") ?? string.Empty;
         private readonly string _apiToken = Environment.GetEnvironmentVariable("R2_API_TOKEN") ?? string.Empty;
+        private readonly string _bucketName = "data";
         private readonly HttpClient _client;
         private readonly string _endpoint;
 
