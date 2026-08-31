@@ -17,8 +17,8 @@ jobs:
 
     - name: Execute Engine
       env:
+        R2_BUCKET_NAME: data
         R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
-        R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
         R2_API_TOKEN: ${{ secrets.R2_API_TOKEN }}
       run: |
         PROJECT_PATH=$(find . -name "CLEngine.csproj" | head -n 1)
