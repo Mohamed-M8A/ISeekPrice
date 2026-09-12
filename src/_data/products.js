@@ -59,8 +59,16 @@ module.exports = async function() {
         const map = JSON.parse(mapBuf.toString('utf8'));
         const region = map.regions[country];
 
+        if (!region || !region.build) {
+            throw new Error(
+                `Missing build data for country "${country}" — map.json has no ` +
+                `regions.${country}.build entry. Refusing to build this country ` +
+                `with empty/zero pricing data. Check map.json or the packer output.`
+            );
+        }
+
         const coreUrl = `${baseUrl}general/core_${map.core}.bin`;
-        const buildUrl = region && region.build ? `${baseUrl}${country}/build_${region.build}.bin` : null;
+        const buildUrl = `${baseUrl}${country}/build_${region.build}.bin`;
 
         const [coreBuf, buildBuf] = await Promise.all([
             fetchBufWithRetry(coreUrl),
