@@ -1,4 +1,4 @@
-name: VideoEngine
+name: Video.Engine
 
 on:
   schedule:
