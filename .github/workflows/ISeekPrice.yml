@@ -1,4 +1,4 @@
-name: ISeekPrice
+name: ISeekPrice.Engine
 on:
   push:
     branches:
