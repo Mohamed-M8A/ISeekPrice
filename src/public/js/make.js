@@ -21,21 +21,10 @@ createModal();const modal=document.getElementById("imageModal");const modalImage
 
 let enableInitialScroll=!1;function showTab(id,btn,forceScroll=!1){document.querySelectorAll('[id^="tab"]').forEach(t=>t.style.display='none');document.querySelectorAll('.tab-buttons button').forEach(b=>b.classList.remove('active'));const target=document.getElementById(id);if(target){target.style.display='block';const targetTop=target.getBoundingClientRect().top+window.scrollY;const stickyHeight=document.querySelector('.tab-buttons')?.offsetHeight||0;setTimeout(()=>{if(enableInitialScroll||forceScroll){window.scrollTo({top:targetTop-stickyHeight-10,behavior:'smooth'})}},100)}
 if(btn)btn.classList.add('active');}
-let tabCheck=setInterval(()=>{const firstBtn=document.querySelector('.tab-buttons button');const firstTab=document.getElementById('tab1');if(firstBtn&&firstTab){showTab('tab1',firstBtn);document.querySelectorAll('.tab-buttons button').forEach(btn=>{btn.addEventListener('click',()=>{const id=btn.getAttribute('onclick')?.match(/'(.*?)'/)?.[1];if(id)showTab(id,btn,!0);})});clearInterval(tabCheck)}},100);setTimeout(()=>clearInterval(tabCheck),5000)
-
-const textMap = {
-  "الوصف": "التفاصيل",
-  "المميزات": "المزايا",
-  "المواصفات": "الخصائص الفنية",
-  "الرسم البياني للسعر": "تحليل الأسعار",
-};
-
-document.querySelectorAll(".tab-buttons button").forEach(btn => {
-  const oldText = btn.textContent.trim();
-  if (textMap[oldText]) {
-    btn.textContent = textMap[oldText];
-  }
-});
+const TAB_LABELS={tab1:"التفاصيل",tab2:"المزايا",tab3:"الخصائص الفنية",tab4:"تحليل الأسعار"};
+function buildTabButtonsIfMissing(){if(document.querySelector('.tab-buttons'))return false;const firstTabId=Object.keys(TAB_LABELS).find(id=>document.getElementById(id));if(!firstTabId)return false;const wrapper=document.createElement('div');wrapper.className='tab-buttons';wrapper.innerHTML=Object.entries(TAB_LABELS).filter(([id])=>document.getElementById(id)).map(([id,label])=>`<button data-tab="${id}">${label}</button>`).join('');const firstTabEl=document.getElementById(firstTabId);firstTabEl.parentNode.insertBefore(wrapper,firstTabEl);const buttons=[...wrapper.querySelectorAll('button')];buttons.forEach(btn=>{btn.addEventListener('click',()=>showTab(btn.dataset.tab,btn,true))});if(buttons[0])showTab(buttons[0].dataset.tab,buttons[0]);return true}
+function wireLegacyTabButtons(){const legacyTextMap={"الوصف":TAB_LABELS.tab1,"المميزات":TAB_LABELS.tab2,"المواصفات":TAB_LABELS.tab3,"الرسم البياني للسعر":TAB_LABELS.tab4};let tabCheck=setInterval(()=>{const firstBtn=document.querySelector('.tab-buttons button');const firstTab=document.getElementById('tab1');if(firstBtn&&firstTab){showTab('tab1',firstBtn);document.querySelectorAll('.tab-buttons button').forEach(btn=>{btn.addEventListener('click',()=>{const id=btn.getAttribute('onclick')?.match(/'(.*?)'/)?.[1];if(id)showTab(id,btn,!0)});const oldText=btn.textContent.trim();if(legacyTextMap[oldText])btn.textContent=legacyTextMap[oldText]});clearInterval(tabCheck)}},100);setTimeout(()=>clearInterval(tabCheck),5000)}
+if(!buildTabButtonsIfMissing()){wireLegacyTabButtons()}
 
 // =================== Product UI Layout & Data Injection ===================
 
@@ -326,7 +315,7 @@ window.downloadChartAsImage=async function(action='download'){const chartInstanc
 
 // =================== Telegram Alerts ===================
 
-document.addEventListener('DOMContentLoaded',function(){const uidEl=document.querySelector('.UID');const box=document.getElementById('telegram-alert-wrapper');if(!uidEl||!box)return;const uid = window.PRODUCT_DATA?.id || uidEl.innerText.trim();const bot='ISeekPrice_bot';const hostMatch=window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);const rawCountry=hostMatch?hostMatch[1].toUpperCase():"SA";const workerUrl='https://notify.iseekprice.com/submit-alert';const countriesMap={'SA':'السعودية 🇸🇦','AE':'الإمارات 🇦🇪','OM':'عُمان 🇴🇲','MA':'المغرب 🇦🇪','DZ':'الجزائر 🇩🇿','TN':'تونس 🇹🇳'};const countryName=countriesMap[rawCountry]||rawCountry;const modalHtml=`
+document.addEventListener('DOMContentLoaded',function(){const uidEl=document.querySelector('.UID');const box=document.getElementById('telegram-alert-wrapper');if(!uidEl||!box)return;const uid = window.PRODUCT_DATA?.id || uidEl.innerText.trim();const bot='ISeekPrice_bot';const hostMatch=window.location.hostname.match(/^(sa|ae|om|ma|dz|tn)\./i);const rawCountry=hostMatch?hostMatch[1].toUpperCase():"SA";const workerUrl='https://notify.iseekprice.com/submit-alert';const countriesMap={'SA':'السعودية 🇸🇦','AE':'الإمارات 🇦🇪','OM':'عُمان 🇴🇲','MA':'المغرب 🇲🇦','DZ':'الجزائر 🇩🇿','TN':'تونس 🇹🇳'};const countryName=countriesMap[rawCountry]||rawCountry;const modalHtml=`
         <div class="is-overlay" id="isOverlay">
             <div class="is-modal">
                 <h3>🔔 تتبع السعر الذكي</h3>
