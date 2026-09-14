@@ -22,7 +22,7 @@
         <span class="price-original"></span>
     </div>
     <div class="sku-trigger-wrap">
-        <button id="skuHubBtn" class="sku-btn-minimal" onclick="window.SKU_HUB.toggle(true)" style="display:none">خيارات الموديلات والأسعار</button>
+        <button id="skuHubBtn" class="sku-btn-minimal" onclick="window.ProductPage.functions.SKU_HUB.toggle(true)" style="display:none">خيارات الموديلات والأسعار</button>
     </div>
     <div class="info-boxes-wrapper">
         <div class="info-box product-variant"><span class="label">الموديل</span><span class="value variant-value">_</span></div>
@@ -79,6 +79,14 @@
     window.PRODUCT_PROMO = {{ currentProduct.promo | json }};           
     window.PRODUCT_SKUS = {{ currentProduct.skus | json }};
     window.PRODUCT_CHART = {{ currentProduct.chart | json }};
+    window.ProductPage = window.ProductPage || {};
+    window.ProductPage.data = {
+        PRODUCT_DATA: window.PRODUCT_DATA,
+        PRODUCT_SKUS: window.PRODUCT_SKUS,
+        PRODUCT_PROMO: window.PRODUCT_PROMO,
+        PRODUCT_CHART: window.PRODUCT_CHART,
+        currentRecordIndex: window.currentRecordIndex
+    };
     </script>
     <script src="/public/js/corepress.js" defer></script>
     <script src="/public/js/ranker.js" defer></script>
