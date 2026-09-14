@@ -1,5 +1,7 @@
-
 (function() {
+    window.ProductPage = window.ProductPage || {};
+    window.ProductPage.functions = window.ProductPage.functions || {};
+
     const WIDGET_CONFIG = {
         ROOT_ID: 'souq-widget-root',
         DOMAIN: window.location.origin + "/",
@@ -201,12 +203,12 @@ class Renderer {
 
 // --- 4. Global Actions ---
     
-    window.updateSKUPrice = function(item) {
+    window.ProductPage.functions.updateSKUPrice = function(item) {
         window.selectedSkuIndex = item.skuIdx;
         
-        if (window.PRODUCT_DATA && typeof window.injectData === "function") {
-            window.injectData({
-                ...window.PRODUCT_DATA, 
+        if (window.ProductPage?.data?.PRODUCT_DATA && typeof window.ProductPage?.functions?.injectData === "function") {
+            window.ProductPage.functions.injectData({
+                ...window.ProductPage.data.PRODUCT_DATA, 
                 priceOriginal: item.priceOriginal,
                 priceDiscounted: item.priceDiscounted, 
                 shippingFee: item.shippingFee,
@@ -219,9 +221,9 @@ class Renderer {
         if (variantEl) variantEl.textContent = item.props;
     };
 
-    window.resetToInitialData = function() {
-        if (window.PRODUCT_DATA && typeof window.injectData === "function") {
-            window.injectData(window.PRODUCT_DATA);
+    window.ProductPage.functions.resetToInitialData = function() {
+        if (window.ProductPage?.data?.PRODUCT_DATA && typeof window.ProductPage?.functions?.injectData === "function") {
+            window.ProductPage.functions.injectData(window.ProductPage.data.PRODUCT_DATA);
             const variantEl = document.querySelector(".variant-value");
             if (variantEl) variantEl.textContent = "_";
         }
@@ -293,7 +295,7 @@ class Renderer {
             }
         };
 
-            window.triggerWorkerSearch = async () => {
+            window.ProductPage.functions.triggerWorkerSearch = async () => {
             grid.innerHTML = '';
             loader.style.display = 'flex';
             loadMoreBtn.style.display = 'none';
@@ -322,6 +324,7 @@ class Renderer {
                 filters: window.currentFilters || null
             });
         };
+        window.triggerWorkerSearch = window.ProductPage.functions.triggerWorkerSearch;
         loadMoreBtn.onclick = displayBatch;
         window.triggerWorkerSearch();
     }
@@ -362,22 +365,23 @@ class Renderer {
         }
     });
     
-    window.startWidget = initSearchWidget;
-    window.loadMap = loadMap;
+    window.ProductPage.functions.startWidget = initSearchWidget;
+    window.ProductPage.functions.loadMap = loadMap;
+    window.ProductPage.functions.getCloudPath = getCloudPath;
     window.getCloudPath = getCloudPath;
 
     document.addEventListener('DOMContentLoaded', () => {
-        if (window.PRODUCT_DATA && typeof window.injectData === 'function') {
-            window.injectData(window.PRODUCT_DATA);
+        if (window.ProductPage?.data?.PRODUCT_DATA && typeof window.ProductPage?.functions?.injectData === 'function') {
+            window.ProductPage.functions.injectData(window.ProductPage.data.PRODUCT_DATA);
         }
-        if (window.PRODUCT_SKUS && typeof window.renderSKUs === 'function') {
-            window.renderSKUs(window.PRODUCT_SKUS);
+        if (window.ProductPage?.data?.PRODUCT_SKUS && typeof window.ProductPage?.functions?.renderSKUs === 'function') {
+            window.ProductPage.functions.renderSKUs(window.ProductPage.data.PRODUCT_SKUS);
         }
-        if (window.PRODUCT_PROMO && typeof window.injectPromo === 'function') {
-            window.injectPromo(window.PRODUCT_PROMO);
+        if (window.ProductPage?.data?.PRODUCT_PROMO && typeof window.ProductPage?.functions?.injectPromo === 'function') {
+            window.ProductPage.functions.injectPromo(window.ProductPage.data.PRODUCT_PROMO);
         }
-        if (window.PRODUCT_CHART && typeof window.renderJSONChart === 'function') {
-            window.renderJSONChart(window.PRODUCT_CHART);
+        if (window.ProductPage?.data?.PRODUCT_CHART && typeof window.ProductPage?.functions?.renderJSONChart === 'function') {
+            window.ProductPage.functions.renderJSONChart(window.ProductPage.data.PRODUCT_CHART);
         }
     });
 
