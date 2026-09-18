@@ -1,4 +1,25 @@
-// =================== ✅ Search ===================
+/*
+ * FILE: search.js
+ * PURPOSE: Everything about the search & browse experience: the search
+ *          box (with recent-search history dropdown), rotating input
+ *          placeholders, the category navigation tree (mobile sidebar +
+ *          desktop bar), Arabic query normalization/synonym expansion,
+ *          and the sidebar price/rating/shipping filters.
+ *
+ * DEPENDS ON: controller.js's window.triggerWorkerSearch (called after
+ * filters change or a search is submitted).
+ *
+ * SECTIONS:
+ *   1) Search box + recent-search history dropdown
+ *   2) Rotating search placeholders
+ *   3) Navigation & category tree (sidebar + desktop bar)
+ *   4) Linguistic engine (Arabic normalization + synonym expansion)
+ *   5) Sidebar filters logic
+ */
+
+// ================================================================================================
+// 1. SEARCH BOX + RECENT-SEARCH HISTORY DROPDOWN
+// ================================================================================================
 const searchPageURL = "/page/search/";
 let searches = JSON.parse(localStorage.getItem('searches')) || [];
 
@@ -100,7 +121,9 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// =================== ✅ Search Placeholders ===================
+// ================================================================================================
+// 2. ROTATING SEARCH PLACEHOLDERS
+// ================================================================================================
 const placeholders = [
     "ماكينة قهوة ديلونجي","سماعات بلوتوث جالكسي بودز","مكنسة روبوت ذكية","شاحن مغناطيسي للآيفون","ستاند لابتوب قابل للطي",
     "مكواة بخار محمولة","عصارة فواكه كهربائية","كاميرا مراقبة واي فاي","ماوس لاسلكي لابتوب","منظف وجه كهربائي",
@@ -127,7 +150,9 @@ function rotatePlaceholder() {
 rotatePlaceholder();
 setInterval(rotatePlaceholder, 25000);
 
-// =================== ✅ Navigation & Categories ===================
+// ================================================================================================
+// 3. NAVIGATION & CATEGORY TREE
+// ================================================================================================
 const rawData = [
     // --- الهواتف والتابلت ---
     "جوال / آيفون * سامسونج * شاومي * ريلمي * أوبو * هواوي * فيفو * ون بلس * نوكيا * موتورولا * جوجل بكسل",
@@ -287,7 +312,9 @@ function applyResponsive() {
 applyResponsive();
 window.addEventListener('resize', applyResponsive);
 
-// =================== ✅ Linguistic Engine ===================
+// ================================================================================================
+// 4. LINGUISTIC ENGINE (NORMALIZATION + SYNONYMS)
+// ================================================================================================
 document.addEventListener("DOMContentLoaded", async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const query = urlParams.get("query")?.trim() || "";
@@ -372,7 +399,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.dispatchEvent(new Event('SearchTokensReady'));
 });
 
-// =================== ✅ Sidebar Filters Logic ===================
+// ================================================================================================
+// 5. SIDEBAR FILTERS LOGIC
+// ================================================================================================
 document.addEventListener("DOMContentLoaded", () => {
     const trigger = document.getElementById('mobile-filter-trigger');
     const filterSidebar = document.getElementById('search-sidebar');
