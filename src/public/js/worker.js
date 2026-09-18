@@ -1,6 +1,27 @@
+/*
+ * FILE: worker.js
+ * PURPOSE: Holds the source for a Web Worker (as a template string) that
+ *          does the heavy lifting for search: parsing the binary
+ *          core/feed data files, matching against a search lexicon, and
+ *          streaming matched product batches back to the main thread.
+ *          Runs off the main thread on purpose so large result sets don't
+ *          freeze the page.
+ *
+ * NOTE: Because this is a string (not a real .js module), your editor
+ * cannot lint or syntax-highlight it correctly — double-check brackets
+ * carefully when editing.
+ *
+ * CONSUMED BY: controller.js, which turns this string into a Blob and
+ * spins it up as a Worker.
+ *
+ * SECTIONS (inside the worker string):
+ *   1) Data structures & binary parsing (BinaryParser)
+ *   2) Worker state & lexicon cache
+ *   3) Main message handler (search + streaming results)
+ */
 const workerCode = `
 // ================================================================================================
-// [ SECTION 1: DATA STRUCTURE & BINARY PARSING LOGIC ]
+// 1. DATA STRUCTURE & BINARY PARSING LOGIC
 // ================================================================================================
 
 class BinaryParser {
@@ -34,7 +55,7 @@ class BinaryParser {
 }
 
 // ================================================================================================
-// [ SECTION 2: WORKER STATE & BINARY LEXICON CACHE ]
+// 2. WORKER STATE & BINARY LEXICON CACHE
 // ================================================================================================
 
 let cachedLexicon = null;
@@ -77,7 +98,7 @@ async function buildLexicon(baseUrl, searchPath) {
 }
 
 // ================================================================================================
-// [ SECTION 3: MAIN OPERATION HANDLER ]
+// 3. MAIN OPERATION HANDLER
 // ================================================================================================
 
 self.onmessage = async (e) => {
