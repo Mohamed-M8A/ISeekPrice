@@ -1,3 +1,25 @@
+/*
+ * FILE: ranker.js
+ * PURPOSE: Lightweight client-side personalization. Builds an inverted
+ *          search index (word -> product IDs) from a binary feed file,
+ *          logs which products the visitor clicks on into IndexedDB, then
+ *          classifies the visitor into a spending-tendency "tag" used to
+ *          reorder search results (cheapest-first / priciest-first).
+ *
+ * NOTE: This is a heuristic/experimental module — intentionally basic.
+ * The site's core (search + product page) should be solid before this
+ * gets more attention.
+ *
+ * DEPENDS ON: window.getCloudPath (defined in controller.js) must exist
+ * before init() is called.
+ *
+ * SECTIONS:
+ *   1) init — loads keyword weights + builds the inverted index
+ *   2) initDB — opens the IndexedDB click-log store
+ *   3) track — logs a click, weighted by matched keyword importance
+ *   4) analyze — computes a rolling "spending tendency" tag from recent clicks
+ *   5) applyBoost — reorders a result set based on the stored tag
+ */
 window.Ranker = {
     invertedIndex: new Map(),
     db: null,
