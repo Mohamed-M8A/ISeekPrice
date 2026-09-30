@@ -37,7 +37,6 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/manifest.json");
   eleventyConfig.addPassthroughCopy("src/sw.js");
   eleventyConfig.addPassthroughCopy("src/robots.txt");
-  eleventyConfig.addPassthroughCopy("src/tool/notes");
 
   return {
     htmlTemplateEngine: "liquid",
