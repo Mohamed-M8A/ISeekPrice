@@ -20,12 +20,12 @@
 
     const cfg = window.ProductPage.config;
 
-// ================================================================================================
-// 1. VISITOR ID MANAGER
-// ================================================================================================
-    const VIDManager = {
+    // ================================================================================================
+    // 1. VISITOR ID MANAGER
+    // ================================================================================================
+    const visitorManager = {
         generate() {
-            return `${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+            return `${Date.now()}-${Math.random().toString(36).substring(2, 9).toLowerCase()}-${Math.random().toString(36).substring(2, 9).toLowerCase()}`;
         },
         getPersistentId() {
             let id = localStorage.getItem('visitor_id');
@@ -37,12 +37,12 @@
         }
     };
 
-// ================================================================================================
-// 2. SESSION ID MANAGER
-// ================================================================================================
-    const SIDManager = {
+    // ================================================================================================
+    // 2. SESSION ID MANAGER
+    // ================================================================================================
+    const sessionManager = {
         generate() {
-            return `${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+            return `${Date.now()}-${Math.random().toString(36).substring(2, 9).toLowerCase()}`;
         },
         getSessionId() {
             let id = sessionStorage.getItem('session_id');
@@ -54,27 +54,32 @@
         }
     };
 
-// ================================================================================================
-// 3. ISEEKTRACKER: QUEUE + FLUSH
-// ================================================================================================
+    // ================================================================================================
+    // 3. ISEEKTRACKER: QUEUE + FLUSH
+    // ================================================================================================
     const ISeekTracker = {
         queue: [],
         startTime: Date.now(),
         config: {
             workerUrl: cfg.endpoints.analytics,
-            sub: cfg.country
+            country: cfg.country
         },
 
         getDeviceInfo() {
             const ua = navigator.userAgent;
-            let type = 'Desktop';
-            if (/tablet|ipad|playbook|silk/i.test(ua)) type = 'Tablet';
-            else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Opera Mini/i.test(ua)) type = 'Mobile';
+            let type = 'desktop';
+            if (/tablet|ipad|playbook|silk/i.test(ua)) type = 'tablet';
+            else if (/mobile|android|iphone|ipod|iemobile|blackberry|kindle|opera mini/i.test(ua)) type = 'mobile';
             return { type, res: `${screen.width}x${screen.height}` };
         },
 
-        pushEvent(ev, det = '', dest = '') {
-            this.queue.push({ ev, det, dest, ts: Date.now() });
+        pushEvent(eventType, detail = '', destination = '') {
+            this.queue.push({
+                'event-type': eventType,
+                'detail': detail,
+                'destination': destination,
+                'timestamp': Date.now()
+            });
         },
 
         flush() {
@@ -82,17 +87,17 @@
             const duration = Math.floor((Date.now() - this.startTime) / 1000);
             const device = this.getDeviceInfo();
             const payload = {
-                vid: VIDManager.getPersistentId(),
-                sid: SIDManager.getSessionId(),
-                dur: duration,
-                sub: this.config.sub,
-                path: window.location.pathname,
-                ref: document.referrer || 'direct',
-                pid: document.querySelector(cfg.selectors.external.uidElement)?.innerText.trim() || 'none',
-                ua: navigator.userAgent,
-                dt: device.type,
-                sr: device.res,
-                events: this.queue
+                'visitor-id': visitorManager.getPersistentId(),
+                'session-id': sessionManager.getSessionId(),
+                'duration': duration,
+                'country': this.config.country,
+                'path': window.location.pathname,
+                'referrer': document.referrer || 'direct',
+                'product-id': document.querySelector(cfg.selectors.external.uidElement)?.innerText.trim() || 'none',
+                'user-agent': navigator.userAgent,
+                'device-type': device.type,
+                'screen-resolution': device.res,
+                'events': this.queue
             };
             const data = JSON.stringify(payload);
             if (navigator.sendBeacon) {
@@ -110,13 +115,13 @@
         },
 
         init() {
-            this.pushEvent('VIEW');
+            this.pushEvent('view');
             document.addEventListener('click', (e) => {
                 const el = e.target.closest('a, button, .add-to-cart, .cart-button');
                 if (el) {
                     const info = el.innerText.trim() || el.ariaLabel || el.className || 'click';
                     const destination = el.tagName === 'A' ? el.href : '';
-                    this.pushEvent('CLICK', info.substring(0, 50), destination);
+                    this.pushEvent('click', info.substring(0, 50), destination);
                     if (destination && !destination.includes(window.location.hostname)) {
                         this.flush();
                     }
