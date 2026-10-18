@@ -1,0 +1,31 @@
+name: Build and Deploy Site
+
+on:
+  repository_dispatch:
+    types: [data_updated]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        country: [sa, ae, om, ma, dz, tn]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Country Site with Eleventy
+        env:
+          COUNTRY: ${{ matrix.country }}
+        run: npx @11ty/eleventy
